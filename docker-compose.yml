@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: healthyrecord-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: "crear_mi_registro"
+      POSTGRES_USER: "agordillo"
+      POSTGRES_PASSWORD: "1234567890"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+
+volumes:
+  db_data:

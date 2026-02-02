@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Tu salud, clara y segura</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap");
+
+    :root {
+      --bg: #ffffff;
+      --bg-2: #e7f9f2;
+      --ink: #0d1b16;
+      --muted: #3e5a4f;
+      --primary: #00c389;
+      --primary-2: #009d6f;
+      --accent: #06038d;
+      --brand-blue: #06038d;
+      --card: #ffffff;
+      --line: #d3efe5;
+      --shadow: 0 20px 60px rgba(13, 27, 22, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background: #ffffff;
+      line-height: 1.6;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 150px;
+      height: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 18px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--brand-blue);
+    }
+
+    .nav-cta {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .button {
+      padding: 12px 20px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .button.primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 12px 30px rgba(26, 127, 90, 0.3);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--brand-blue);
+      border: 1px solid var(--brand-blue);
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 80px 24px 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 40px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(36px, 5vw, 54px);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 18px;
+      margin-bottom: 24px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      padding: 16px;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--line);
+    }
+
+    .stat strong {
+      font-size: 20px;
+      display: block;
+      color: var(--primary-2);
+    }
+
+    .hero-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      top: -80px;
+      right: -80px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(6, 3, 141, 0.18), transparent 70%);
+    }
+
+    .record-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .record-card {
+      background: var(--bg-2);
+      border-radius: 18px;
+      padding: 16px;
+      border: 1px solid #d9ebe0;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 70px 24px;
+    }
+
+    .section-title {
+      font-family: "Fraunces", serif;
+      font-size: clamp(28px, 3.2vw, 40px);
+      margin-bottom: 16px;
+    }
+
+    .section-subtitle {
+      color: var(--muted);
+      max-width: 680px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    .feature {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(13, 27, 22, 0.08);
+    }
+
+    .feature h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .feature p {
+      color: var(--muted);
+    }
+
+    .timeline {
+      display: grid;
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .timeline-item {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .timeline-item span {
+      color: var(--muted);
+    }
+
+    .cta {
+      margin-top: 40px;
+      background: linear-gradient(120deg, #0f5f46 0%, #1a7f5a 60%, #2b9a70 100%);
+      color: #fff;
+      border-radius: 28px;
+      padding: 36px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      align-items: center;
+    }
+
+    .cta p {
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .cta .button.secondary {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.6);
+    }
+
+    .pricing {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+      margin-top: 26px;
+    }
+
+    .habit-form {
+      margin-top: 28px;
+      background: var(--card);
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+      box-shadow: 0 12px 30px rgba(13, 27, 22, 0.08);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .habit-form label {
+      display: grid;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .habit-form input,
+    .habit-form textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .habit-form input:focus,
+    .habit-form textarea:focus {
+      outline: 2px solid rgba(0, 195, 137, 0.25);
+      border-color: var(--primary);
+    }
+
+    .habit-form select:focus {
+      outline: 2px solid rgba(0, 195, 137, 0.25);
+      border-color: var(--primary);
+    }
+
+    .habit-form select {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .form-status {
+      font-weight: 600;
+      color: var(--primary-2);
+    }
+
+    .price-card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid var(--line);
+    }
+
+    .price-card.highlight {
+      border: 2px solid var(--primary);
+      box-shadow: 0 16px 30px rgba(26, 127, 90, 0.2);
+    }
+
+    .price-card h4 {
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+
+    .price-card strong {
+      font-size: 28px;
+      color: var(--primary-2);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 30px 24px 50px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .footer-brand {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .footer-brand img {
+      width: 170px;
+      height: auto;
+    }
+
+    .hamburger {
+      display: none;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .mobile-nav {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 24px 20px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none;
+      }
+      .hamburger {
+        display: inline-block;
+      }
+      .nav-cta {
+        display: none;
+      }
+      .mobile-nav {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav">
+      <a class="brand" href="#">
+        <img src="Healthy Record logo.png" alt="Healthy Record" />
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Hábitos</a>
+        <a href="#records">Rutina</a>
+        <a href="#pricing">Planes</a>
+        <a href="#contact">Contacto</a>
+      </nav>
+      <div class="nav-cta">
+        <button class="button secondary">Ver demo</button>
+        <button class="button primary">Empieza hoy</button>
+      </div>
+      <button class="hamburger" aria-label="Abrir menú">☰</button>
+    </div>
+    <div class="mobile-nav" id="mobileNav">
+      <a href="#features">Hábitos</a>
+      <a href="#records">Rutina</a>
+      <a href="#pricing">Planes</a>
+      <a href="#contact">Contacto</a>
+      <button class="button primary">Empieza hoy</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="reveal">
+      <h1>Mejora tus hábitos diarios con claridad y constancia.</h1>
+      <p>Healthy Record se enfoca en alimentación, hidratación, higiene del sueño y actividad física. Además, llevamos el InBody y a nuestra nutricionista a las oficinas para revisiones y seguimiento mensual de colaboradores y sus familias.</p>
+      <div class="hero-actions">
+        <a class="button primary" href="#registro">Crear mi registro</a>
+        <button class="button secondary">Ver cómo funciona</button>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <strong>98%</strong>
+          usuarios reportan mayor claridad
+        </div>
+        <div class="stat">
+          <strong>24/7</strong>
+          acceso seguro y sincronizado
+        </div>
+        <div class="stat">
+          <strong>3 min</strong>
+          para crear un resumen clínico
+        </div>
+      </div>
+    </div>
+    <div class="hero-card reveal">
+      <h2>Panel de salud en tiempo real</h2>
+      <p>Una vista resumida de tus indicadores clave, alertas y próximos pasos recomendados.</p>
+      <div class="record-grid">
+        <div class="record-card">
+          <strong>Hidratación</strong>
+          <p>1.8 L · 75% meta</p>
+        </div>
+        <div class="record-card">
+          <strong>Actividad</strong>
+          <p>7,450 pasos · 5 días</p>
+        </div>
+        <div class="record-card">
+          <strong>Alimentación</strong>
+          <p>3 comidas · balanceadas</p>
+        </div>
+        <div class="record-card">
+          <strong>Sueño</strong>
+          <p>7h 20m · buena calidad</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <h2 class="section-title reveal">Hábitos diarios con acompañamiento presencial.</h2>
+    <p class="section-subtitle reveal">Diseñado para empresas que quieren constancia y bienestar real. Registra lo esencial, detecta patrones y recibe seguimiento mensual en la oficina.</p>
+    <div class="feature-grid">
+      <div class="feature reveal">
+        <h3>Plan de alimentación</h3>
+        <p>Organiza comidas, porciones y horarios con enfoque flexible.</p>
+      </div>
+      <div class="feature reveal">
+        <h3>Visitas con InBody</h3>
+        <p>Mediciones corporales en oficina para ajustar metas con precisión.</p>
+      </div>
+      <div class="feature reveal">
+        <h3>Nutricionista en sitio</h3>
+        <p>Revisiones personalizadas y seguimiento mensual.</p>
+      </div>
+      <div class="feature reveal">
+        <h3>Familias incluidas</h3>
+        <p>Seguimiento para colaboradores y sus familiares.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="records">
+    <h2 class="section-title reveal">Rutina diaria, simple y medible.</h2>
+    <p class="section-subtitle reveal">Cada registro mejora tu consistencia y te da claridad sobre tus avances.</p>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div>
+          <strong>Alimentación diaria</strong>
+          <span>Plan en verde · balanceado</span>
+        </div>
+        <span>Hoy · 09:20</span>
+      </div>
+      <div class="timeline-item reveal">
+        <div>
+          <strong>Visita mensual InBody</strong>
+          <span>Resultados entregados</span>
+        </div>
+        <span>Ayer · 18:40</span>
+      </div>
+      <div class="timeline-item reveal">
+        <div>
+          <strong>Rutina de descanso</strong>
+          <span>7h 30m · +12% mejora</span>
+        </div>
+        <span>01 feb · 22:05</span>
+      </div>
+    </div>
+
+    <div class="cta reveal">
+      <div>
+        <h3>Seguimiento mensual en tu empresa.</h3>
+        <p>Visitamos tu oficina con InBody y nutricionista para reforzar hábitos y medir avances.</p>
+      </div>
+      <div>
+        <button class="button secondary">Agendar visita</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <h2 class="section-title reveal">Plan para empresas.</h2>
+    <p class="section-subtitle reveal">Un solo plan diseñado para equipos completos.</p>
+    <div class="pricing">
+      <div class="price-card highlight reveal">
+        <h4>Empresas</h4>
+        <strong>US$25 + IVA / mes</strong>
+        <p>Por usuario. Incluye seguimiento mensual, visita con InBody y nutricionista para colaboradores y familiares.</p>
+        <button class="button primary">Solicitar propuesta</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <h2 class="section-title reveal">Hablemos de tus hábitos.</h2>
+    <p class="section-subtitle reveal">Agenda una demo o cuéntanos qué hábito quieres mejorar primero.</p>
+    <div class="cta reveal">
+      <div>
+        <h3>¿Listo para llevar bienestar a tu empresa?</h3>
+        <p>Coordinamos visitas mensuales con InBody y nutricionista en tus oficinas.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="button primary">Agendar demo</button>
+        <button class="button secondary">Escribir al equipo</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="registro">
+    <h2 class="section-title reveal">Registro individual de hábitos</h2>
+    <p class="section-subtitle reveal">Cuéntanos tu situación actual para darte un plan personalizado.</p>
+    <form class="habit-form reveal" id="habitForm">
+      <div class="form-grid">
+        <label>
+          Nombre completo
+          <input type="text" name="nombre" placeholder="Tu nombre" required />
+        </label>
+        <label>
+          Correo electrónico
+          <input type="email" name="email" placeholder="tu@email.com" required />
+        </label>
+        <label>
+          WhatsApp
+          <input type="tel" name="whatsapp" placeholder="+52 1 55 1234 5678" required />
+        </label>
+      </div>
+
+      <label>
+        Alimentación diaria
+        <select name="alimentacion" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>Balanceada (3 comidas + snacks saludables)</option>
+          <option>Regular (2-3 comidas, pocos snacks)</option>
+          <option>Irregular (saltas comidas)</option>
+          <option>Alta en ultraprocesados</option>
+        </select>
+      </label>
+
+      <label>
+        Sueño (horas por noche)
+        <select name="sueno" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>7-8 horas</option>
+          <option>6-7 horas</option>
+          <option>Menos de 6 horas</option>
+          <option>Más de 8 horas</option>
+        </select>
+      </label>
+
+      <label>
+        Calidad del sueño
+        <select name="calidad_sueno" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>Buena (descanso continuo)</option>
+          <option>Regular (algunos despertares)</option>
+          <option>Baja (despertares frecuentes)</option>
+        </select>
+      </label>
+
+      <label>
+        Hidratación diaria
+        <select name="hidratacion" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>2 litros o más</option>
+          <option>1.5 a 2 litros</option>
+          <option>1 a 1.5 litros</option>
+          <option>Menos de 1 litro</option>
+        </select>
+      </label>
+
+      <label>
+        Actividad física semanal
+        <select name="ejercicio" required>
+          <option value="" disabled selected>Selecciona una opción</option>
+          <option>3+ días (30-60 min)</option>
+          <option>1-2 días (30-60 min)</option>
+          <option>Solo caminatas ligeras</option>
+          <option>No realizo actividad física</option>
+        </select>
+      </label>
+
+      <button class="button primary" type="submit">Enviar registro</button>
+      <div class="form-status" id="formStatus" aria-live="polite"></div>
+    </form>
+  </section>
+
+  <footer>
+    <div class="footer-brand">
+      <img src="Healthy Record logo.png" alt="Healthy Record" />
+    </div>
+    Healthy Record · Seguridad, claridad y confianza para tu bienestar.
+  </footer>
+
+  <script>
+    const hamburger = document.querySelector(".hamburger");
+    const mobileNav = document.getElementById("mobileNav");
+
+    hamburger.addEventListener("click", () => {
+      mobileNav.style.display = mobileNav.style.display === "flex" ? "none" : "flex";
+    });
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+
+    document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+
+    const habitForm = document.getElementById("habitForm");
+    const formStatus = document.getElementById("formStatus");
+
+    habitForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      formStatus.textContent = "Enviando...";
+
+      const data = {
+        nombre: habitForm.nombre.value.trim(),
+        email: habitForm.email.value.trim(),
+        whatsapp: habitForm.whatsapp.value.trim(),
+        alimentacion: habitForm.alimentacion.value,
+        sueno_horas: habitForm.sueno.value,
+        sueno_calidad: habitForm.calidad_sueno.value,
+        hidratacion: habitForm.hidratacion.value,
+        ejercicio: habitForm.ejercicio.value
+      };
+
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo enviar el registro");
+        }
+
+        habitForm.reset();
+        formStatus.textContent = "Registro enviado correctamente.";
+      } catch (error) {
+        formStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
+      }
+    });
+  </script>
+</body>
+</html>

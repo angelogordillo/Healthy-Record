@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Registros</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap");
+
+    :root {
+      --ink: #0d1b16;
+      --muted: #3e5a4f;
+      --primary: #00c389;
+      --brand-blue: #06038d;
+      --line: #d3efe5;
+      --card: #ffffff;
+      --bg: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 40px 24px 60px;
+    }
+
+    header {
+      max-width: 1100px;
+      margin: 0 auto 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    h1 {
+      font-size: clamp(24px, 3vw, 34px);
+    }
+
+    .badge {
+      color: #fff;
+      background: var(--brand-blue);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .table-card {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .filters {
+      max-width: 1100px;
+      margin: 0 auto 18px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .filters label {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .filters input,
+    .filters select {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+
+    .filters-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .button {
+      border: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .button.primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .button.secondary {
+      background: transparent;
+      border: 1px solid var(--brand-blue);
+      color: var(--brand-blue);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(0, 195, 137, 0.12);
+      color: #007a57;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    @media (max-width: 900px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        padding: 12px;
+      }
+
+      td {
+        border: none;
+        padding: 6px 0;
+      }
+
+      td::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        color: var(--muted);
+        margin-bottom: 2px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Registros de hábitos</h1>
+      <p class="status" id="status">Cargando registros...</p>
+    </div>
+    <span class="badge">Healthy Record</span>
+  </header>
+
+  <form class="filters" id="filtersForm">
+    <div class="filters-grid">
+      <label>
+        Nombre
+        <input type="text" name="nombre" placeholder="Buscar nombre" />
+      </label>
+      <label>
+        Email
+        <input type="text" name="email" placeholder="Buscar email" />
+      </label>
+      <label>
+        WhatsApp
+        <input type="text" name="whatsapp" placeholder="Buscar WhatsApp" />
+      </label>
+      <label>
+        Alimentación
+        <select name="alimentacion">
+          <option value="">Todas</option>
+          <option>Balanceada (3 comidas + snacks saludables)</option>
+          <option>Regular (2-3 comidas, pocos snacks)</option>
+          <option>Irregular (saltas comidas)</option>
+          <option>Alta en ultraprocesados</option>
+        </select>
+      </label>
+      <label>
+        Sueño (horas)
+        <select name="sueno_horas">
+          <option value="">Todas</option>
+          <option>7-8 horas</option>
+          <option>6-7 horas</option>
+          <option>Menos de 6 horas</option>
+          <option>Más de 8 horas</option>
+        </select>
+      </label>
+      <label>
+        Calidad sueño
+        <select name="sueno_calidad">
+          <option value="">Todas</option>
+          <option>Buena (descanso continuo)</option>
+          <option>Regular (algunos despertares)</option>
+          <option>Baja (despertares frecuentes)</option>
+        </select>
+      </label>
+      <label>
+        Hidratación
+        <select name="hidratacion">
+          <option value="">Todas</option>
+          <option>2 litros o más</option>
+          <option>1.5 a 2 litros</option>
+          <option>1 a 1.5 litros</option>
+          <option>Menos de 1 litro</option>
+        </select>
+      </label>
+      <label>
+        Ejercicio
+        <select name="ejercicio">
+          <option value="">Todas</option>
+          <option>3+ días (30-60 min)</option>
+          <option>1-2 días (30-60 min)</option>
+          <option>Solo caminatas ligeras</option>
+          <option>No realizo actividad física</option>
+        </select>
+      </label>
+      <label>
+        Desde
+        <input type="date" name="date_from" />
+      </label>
+      <label>
+        Hasta
+        <input type="date" name="date_to" />
+      </label>
+    </div>
+    <div class="filters-actions">
+      <button class="button primary" type="submit">Aplicar filtros</button>
+      <button class="button secondary" type="button" id="clearFilters">Limpiar</button>
+      <a class="button secondary" id="exportCsv" href="#" download>Exportar CSV</a>
+    </div>
+  </form>
+
+  <section class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>WhatsApp</th>
+          <th>Alimentación</th>
+          <th>Sueño (horas)</th>
+          <th>Calidad sueño</th>
+          <th>Hidratación</th>
+          <th>Ejercicio</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <script>
+    const rows = document.getElementById("rows");
+    const status = document.getElementById("status");
+    const filtersForm = document.getElementById("filtersForm");
+    const clearFilters = document.getElementById("clearFilters");
+    const exportCsv = document.getElementById("exportCsv");
+
+    const buildQuery = () => {
+      const params = new URLSearchParams();
+      const data = new FormData(filtersForm);
+      for (const [key, value] of data.entries()) {
+        if (value) {
+          params.append(key, value.toString());
+        }
+      }
+      return params.toString();
+    };
+
+    const formatDate = (value) => {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return value;
+      return date.toLocaleString("es-ES", {
+        dateStyle: "medium",
+        timeStyle: "short"
+      });
+    };
+
+    const loadData = () => {
+      const query = buildQuery();
+      const url = query ? `/api/registrations?${query}` : "/api/registrations";
+      exportCsv.href = query ? `/api/registrations.csv?${query}` : "/api/registrations.csv";
+      status.textContent = "Cargando registros...";
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          rows.innerHTML = "";
+          data.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+            <td data-label="Nombre">${item.nombre}</td>
+            <td data-label="Email">${item.email}</td>
+            <td data-label="WhatsApp">${item.whatsapp || "-"}</td>
+            <td data-label="Alimentación"><span class="pill">${item.alimentacion}</span></td>
+            <td data-label="Sueño (horas)">${item.sueno_horas}</td>
+            <td data-label="Calidad sueño">${item.sueno_calidad}</td>
+            <td data-label="Hidratación">${item.hidratacion}</td>
+            <td data-label="Ejercicio">${item.ejercicio}</td>
+            <td data-label="Fecha">${formatDate(item.created_at)}</td>
+          `;
+            rows.appendChild(tr);
+          });
+          status.textContent = `Total registros: ${data.length}`;
+        })
+        .catch(() => {
+          status.textContent = "No se pudieron cargar los registros.";
+        });
+    };
+
+    filtersForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      loadData();
+    });
+
+    clearFilters.addEventListener("click", () => {
+      filtersForm.reset();
+      loadData();
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
