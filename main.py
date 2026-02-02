@@ -8,6 +8,7 @@ import psycopg2
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from dotenv import load_dotenv
 
@@ -31,6 +32,9 @@ app.add_middleware(
     allow_methods=["*"] ,
     allow_headers=["*"],
 )
+
+static_dir = Path(__file__).parent
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 class HabitRegistration(BaseModel):
     nombre: str
