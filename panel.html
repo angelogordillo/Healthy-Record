@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Panel de Salud</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap");
+
+    :root {
+      --bg: #ffffff;
+      --ink: #0d1b16;
+      --muted: #3e5a4f;
+      --primary: #00c389;
+      --primary-2: #009d6f;
+      --brand-blue: #06038d;
+      --line: #d3efe5;
+      --card: #ffffff;
+      --shadow: 0 18px 40px rgba(13, 27, 22, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .brand img {
+      width: 150px;
+      height: auto;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 14px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .nav-links a:hover {
+      color: var(--brand-blue);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 28px 80px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .headline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .headline h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(28px, 4vw, 44px);
+    }
+
+    .badge {
+      background: rgba(6, 3, 141, 0.1);
+      color: var(--brand-blue);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .metric {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .progress {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0, 195, 137, 0.15);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
+      width: 0;
+      transition: width 0.6s ease;
+    }
+
+    .panel-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .chart {
+      height: 180px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 8px 8px 0 0;
+      background: rgba(6, 3, 141, 0.12);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      color: var(--brand-blue);
+      font-size: 12px;
+      font-weight: 600;
+      padding-bottom: 6px;
+      min-height: 20px;
+      transition: height 0.6s ease;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .list-item {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .tag {
+      background: rgba(0, 195, 137, 0.12);
+      color: #007a57;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/">
+      <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
+    </a>
+    <nav class="nav-links">
+      <a href="/">Inicio</a>
+      <a href="/panel">Panel</a>
+      <a href="/admin">Admin</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="headline">
+      <div>
+        <h1>Panel de salud y hábitos</h1>
+        <p>Vista general con hábitos diarios, tendencias semanales y seguimiento familiar.</p>
+      </div>
+      <span class="badge">Datos simulados</span>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>Alimentación</h3>
+        <div class="metric">83% cumplimiento</div>
+        <div class="progress"><span style="width: 83%"></span></div>
+      </article>
+      <article class="card">
+        <h3>Hidratación</h3>
+        <div class="metric">1.9 L / 2.5 L</div>
+        <div class="progress"><span style="width: 76%"></span></div>
+      </article>
+      <article class="card">
+        <h3>Sueño</h3>
+        <div class="metric">7h 20m</div>
+        <div class="progress"><span style="width: 88%"></span></div>
+      </article>
+      <article class="card">
+        <h3>Actividad</h3>
+        <div class="metric">4 de 5 días</div>
+        <div class="progress"><span style="width: 80%"></span></div>
+      </article>
+    </section>
+
+    <section class="panel-row">
+      <article class="card">
+        <h3>Tendencia semanal</h3>
+        <div class="chart" id="weekChart"></div>
+      </article>
+      <article class="card">
+        <h3>Alertas activas</h3>
+        <div class="list">
+          <div class="list-item">
+            <div>
+              <strong>Hidratación baja</strong><br />
+              2 días por debajo de la meta
+            </div>
+            <span class="tag">Prioritario</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Hora de dormir</strong><br />
+              3 noches con sueño tardío
+            </div>
+            <span class="tag">Seguimiento</span>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="two-col">
+      <article class="card">
+        <h3>Equipo / Familia</h3>
+        <div class="list">
+          <div class="list-item">
+            <div><strong>Equipo marketing</strong><br />15 colaboradores</div>
+            <span class="tag">Visita 12 Mar</span>
+          </div>
+          <div class="list-item">
+            <div><strong>Familias activas</strong><br />38 perfiles</div>
+            <span class="tag">80% activos</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Próximas acciones</h3>
+        <div class="list">
+          <div class="list-item">
+            <div><strong>Visita InBody</strong><br />Resultados listos para enviar</div>
+            <span class="tag">Hoy</span>
+          </div>
+          <div class="list-item">
+            <div><strong>Reporte mensual</strong><br />Resumen para RRHH</div>
+            <span class="tag">En 2 días</span>
+          </div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const weekData = [64, 72, 70, 78, 86, 80, 90];
+    const chart = document.getElementById("weekChart");
+    weekData.forEach((value, index) => {
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      bar.style.height = `${value}%`;
+      bar.textContent = `${value}%`;
+      chart.appendChild(bar);
+    });
+  </script>
+</body>
+</html>
