@@ -433,6 +433,64 @@
         display: flex;
       }
     }
+
+    @media (max-width: 640px) {
+      .nav {
+        padding: 14px 16px;
+      }
+
+      body {
+        font-size: 16px;
+      }
+
+      h1, h2, h3 {
+        letter-spacing: 0.01em;
+      }
+
+      .hero {
+        padding: 50px 16px 40px;
+      }
+
+      .section {
+        padding: 50px 16px;
+      }
+
+      .hero-actions,
+      .nav-cta,
+      .filters-actions {
+        width: 100%;
+      }
+
+      .hero-actions .button,
+      .habit-form .button,
+      .cta .button {
+        width: 100%;
+        text-align: center;
+        padding: 14px 18px;
+        font-size: 16px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing,
+      .feature-grid,
+      .timeline,
+      .record-grid,
+      .panel-row,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        padding: 18px;
+      }
+
+      .habit-form {
+        padding: 18px;
+      }
+    }
   </style>
 </head>
 <body>
