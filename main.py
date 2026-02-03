@@ -1,5 +1,5 @@
 from pathlib import Path
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 import os
 import base64
 import csv
@@ -149,7 +149,7 @@ def percent(value: float | None):
 
 
 def build_panel_data():
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     since_30 = now - timedelta(days=30)
     since_7 = now - timedelta(days=7)
     with get_conn() as conn:
