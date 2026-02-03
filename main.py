@@ -338,6 +338,10 @@ def export_registrations_csv(
             ]
         )
         for row in rows:
+            row = list(row)
+            # Force Excel to treat certain fields as text
+            row[2] = f"\t{row[2]}"  # colaboradores_rango
+            row[4] = f"\t{row[4]}"  # telefono_movil
             writer.writerow(row)
         csv_data = output.getvalue()
         return Response(
