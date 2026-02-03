@@ -6,7 +6,6 @@ import csv
 import io
 import json
 import secrets
-import random
 import asyncio
 import anyio
 import psycopg2
@@ -90,50 +89,24 @@ HIDRATACION_META = 2.0
 SUENO_META = 7.0
 
 
-def seeded_random(seed_value: str):
-    seed = abs(hash(seed_value)) % (2**32)
-    rng = random.Random(seed)
-    return rng
-
-
-def simulate_biometrics(now: datetime, total_registrations: int):
-    seed_key = f"{now.date().isoformat()}-{total_registrations}"
-    rng = seeded_random(seed_key)
-
-    peso = rng.uniform(62.0, 88.0)
-    pasos = int(rng.uniform(4200, 8800))
-    grasa_total = rng.uniform(18.0, 32.0)
-    musculo_total = rng.uniform(30.0, 42.0)
-
-    def split_variation(base: float, variance: float):
-        return [
-            round(base + rng.uniform(-variance, variance), 1),
-            round(base + rng.uniform(-variance, variance), 1),
-            round(base + rng.uniform(-variance, variance), 1),
-            round(base + rng.uniform(-variance, variance), 1),
-            round(base + rng.uniform(-variance, variance), 1),
-        ]
-
-    grasa_parts = split_variation(grasa_total, 2.0)
-    musculo_parts = split_variation(musculo_total, 2.5)
-
+def simulate_biometrics():
     return {
-        "peso_kg": round(peso, 1),
-        "pasos_hoy": pasos,
+        "peso_kg": 87.5,
+        "pasos_hoy": 6800,
         "pasos_meta": PASOS_META,
         "grasa": {
-            "brazo_izq": grasa_parts[0],
-            "brazo_der": grasa_parts[1],
-            "pierna_izq": grasa_parts[2],
-            "pierna_der": grasa_parts[3],
-            "tronco": grasa_parts[4],
+            "brazo_izq": 261.6,
+            "brazo_der": 261.9,
+            "pierna_izq": 227.6,
+            "pierna_der": 226.8,
+            "tronco": 315.6,
         },
         "musculo": {
-            "brazo_izq": musculo_parts[0],
-            "brazo_der": musculo_parts[1],
-            "pierna_izq": musculo_parts[2],
-            "pierna_der": musculo_parts[3],
-            "tronco": musculo_parts[4],
+            "brazo_izq": 93.9,
+            "brazo_der": 94.2,
+            "pierna_izq": 99.7,
+            "pierna_der": 99.6,
+            "tronco": 91.9,
         },
     }
 
@@ -203,7 +176,7 @@ def build_panel_data():
     actividad_pct = percent(safe_avg(actividad_scores))
     hidratacion_l_prom = safe_avg(hidratacion_litros)
     sueno_h_prom = safe_avg(sueno_horas_vals)
-    biometrics = simulate_biometrics(now, total_registrations)
+    biometrics = simulate_biometrics()
 
     week_scores = {}
     hydration_by_day = {}
