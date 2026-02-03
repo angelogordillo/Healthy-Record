@@ -205,6 +205,40 @@
         align-items: flex-start;
       }
     }
+
+    @media (max-width: 640px) {
+      header {
+        padding: 14px 18px;
+      }
+
+      .brand img {
+        width: 130px;
+      }
+
+      .nav-links {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .container {
+        padding: 24px 18px 60px;
+      }
+
+      .grid,
+      .panel-row,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .headline h1 {
+        font-size: 28px;
+      }
+    }
   </style>
 </head>
 <body>
