@@ -297,9 +297,36 @@
     </table>
   </section>
 
+  <section class="table-card">
+    <header style="margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; align-items: center;">
+      <div>
+        <h2 style="font-size: 20px;">Empresas registradas</h2>
+        <p class="status" id="companyStatus">Cargando empresas...</p>
+      </div>
+      <a class="button secondary" id="exportCompanies" href="#" download>Exportar empresas CSV</a>
+    </header>
+    <table>
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th>Web</th>
+          <th>Rango colaboradores</th>
+          <th>Contacto</th>
+          <th>Teléfono</th>
+          <th>Email corporativo</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody id="companyRows"></tbody>
+    </table>
+  </section>
+
   <script>
     const rows = document.getElementById("rows");
     const status = document.getElementById("status");
+    const companyRows = document.getElementById("companyRows");
+    const companyStatus = document.getElementById("companyStatus");
+    const exportCompanies = document.getElementById("exportCompanies");
     const filtersForm = document.getElementById("filtersForm");
     const clearFilters = document.getElementById("clearFilters");
     const exportCsv = document.getElementById("exportCsv");
@@ -355,6 +382,33 @@
         });
     };
 
+    const loadCompanies = () => {
+      companyStatus.textContent = "Cargando empresas...";
+      exportCompanies.href = "/api/companies.csv";
+      fetch("/api/companies")
+        .then(response => response.json())
+        .then(data => {
+          companyRows.innerHTML = "";
+          data.forEach(item => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td data-label="Empresa">${item.empresa_nombre}</td>
+              <td data-label="Web">${item.empresa_web || "-"}</td>
+              <td data-label="Rango">${item.colaboradores_rango}</td>
+              <td data-label="Contacto">${item.contacto_nombre}</td>
+              <td data-label="Teléfono">${item.telefono_movil}</td>
+              <td data-label="Email">${item.email_corporativo}</td>
+              <td data-label="Fecha">${formatDate(item.created_at)}</td>
+            `;
+            companyRows.appendChild(tr);
+          });
+          companyStatus.textContent = `Total empresas: ${data.length}`;
+        })
+        .catch(() => {
+          companyStatus.textContent = "No se pudieron cargar las empresas.";
+        });
+    };
+
     filtersForm.addEventListener("submit", (event) => {
       event.preventDefault();
       loadData();
@@ -366,6 +420,7 @@
     });
 
     loadData();
+    loadCompanies();
   </script>
 </body>
 </html>

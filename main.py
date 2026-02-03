@@ -347,3 +347,74 @@ def export_registrations_csv(
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/companies")
+def list_companies(_: bool = Depends(require_basic_auth)):
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT empresa_nombre, empresa_web, colaboradores_rango, contacto_nombre, telefono_movil,
+                           email_corporativo, created_at
+                    FROM company_registrations
+                    ORDER BY created_at DESC
+                    LIMIT 200;
+                    """
+                )
+                rows = cur.fetchall()
+        return [
+            {
+                "empresa_nombre": row[0],
+                "empresa_web": row[1],
+                "colaboradores_rango": row[2],
+                "contacto_nombre": row[3],
+                "telefono_movil": row[4],
+                "email_corporativo": row[5],
+                "created_at": row[6].isoformat(),
+            }
+            for row in rows
+        ]
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/companies.csv")
+def export_companies_csv(_: bool = Depends(require_basic_auth)):
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT empresa_nombre, empresa_web, colaboradores_rango, contacto_nombre, telefono_movil,
+                           email_corporativo, created_at
+                    FROM company_registrations
+                    ORDER BY created_at DESC
+                    LIMIT 2000;
+                    """
+                )
+                rows = cur.fetchall()
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(
+            [
+                "empresa_nombre",
+                "empresa_web",
+                "colaboradores_rango",
+                "contacto_nombre",
+                "telefono_movil",
+                "email_corporativo",
+                "created_at",
+            ]
+        )
+        for row in rows:
+            writer.writerow(row)
+        csv_data = output.getvalue()
+        return Response(
+            content=csv_data,
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=empresas.csv"},
+        )
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
