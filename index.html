@@ -718,6 +718,10 @@
           Contraseña
           <input type="password" name="password" placeholder="Crea una contraseña" required />
         </label>
+        <label>
+          Repetir contraseña
+          <input type="password" name="password_confirm" placeholder="Repite la contraseña" required />
+        </label>
       </div>
       <button class="button primary" type="submit">Crear registro empresa</button>
       <div class="form-status" id="companyStatus" aria-live="polite"></div>
@@ -805,6 +809,10 @@
       };
 
       try {
+        if (companyForm.password.value !== companyForm.password_confirm.value) {
+          companyStatus.textContent = "Las contraseñas no coinciden.";
+          return;
+        }
         const response = await fetch("/api/company-register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
