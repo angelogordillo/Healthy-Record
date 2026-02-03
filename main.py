@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
+from passlib.context import CryptContext
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -36,6 +37,8 @@ app.add_middleware(
 static_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 class HabitRegistration(BaseModel):
     nombre: str
     email: EmailStr
@@ -45,6 +48,16 @@ class HabitRegistration(BaseModel):
     sueno_calidad: str
     hidratacion: str
     ejercicio: str
+
+
+class CompanyRegistration(BaseModel):
+    empresa_nombre: str
+    empresa_web: str | None = None
+    colaboradores_rango: str
+    contacto_nombre: str
+    telefono_movil: str
+    email_corporativo: EmailStr
+    password: str
 
 
 def get_conn():
@@ -128,6 +141,35 @@ def register(payload: HabitRegistration):
                         payload.sueno_calidad,
                         payload.hidratacion,
                         payload.ejercicio,
+                    ),
+                )
+                new_id = cur.fetchone()[0]
+        return {"ok": True, "id": new_id}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/company-register")
+def company_register(payload: CompanyRegistration):
+    try:
+        password_hash = pwd_context.hash(payload.password)
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO company_registrations
+                      (empresa_nombre, empresa_web, colaboradores_rango, contacto_nombre, telefono_movil, email_corporativo, password_hash)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id;
+                    """,
+                    (
+                        payload.empresa_nombre,
+                        payload.empresa_web,
+                        payload.colaboradores_rango,
+                        payload.contacto_nombre,
+                        payload.telefono_movil,
+                        payload.email_corporativo,
+                        password_hash,
                     ),
                 )
                 new_id = cur.fetchone()[0]

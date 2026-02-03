@@ -445,6 +445,7 @@
         <a href="#features">Hábitos</a>
         <a href="#records">Rutina</a>
         <a href="/panel">Panel</a>
+        <a href="#empresa">Registro empresas</a>
         <a href="#pricing">Planes</a>
         <a href="#contact">Contacto</a>
       </nav>
@@ -457,6 +458,8 @@
     <div class="mobile-nav" id="mobileNav">
       <a href="#features">Hábitos</a>
       <a href="#records">Rutina</a>
+      <a href="/panel">Panel</a>
+      <a href="#empresa">Registro empresas</a>
       <a href="#pricing">Planes</a>
       <a href="#contact">Contacto</a>
       <button class="button primary">Empieza hoy</button>
@@ -673,6 +676,54 @@
     </form>
   </section>
 
+  <section class="section" id="empresa">
+    <h2 class="section-title reveal">Registro empresas</h2>
+    <p class="section-subtitle reveal">Crea tu acceso corporativo y coordina el seguimiento mensual con InBody y nutricionista.</p>
+    <form class="habit-form reveal" id="companyForm">
+      <div class="form-grid">
+        <label>
+          Nombre de la empresa
+          <input type="text" name="empresa_nombre" placeholder="Nombre de la empresa" required />
+        </label>
+        <label>
+          Página web
+          <input type="url" name="empresa_web" placeholder="https://empresa.com" />
+        </label>
+        <label>
+          Colaboradores (rango)
+          <select name="colaboradores_rango" required>
+            <option value="" disabled selected>Selecciona un rango</option>
+            <option>1-20</option>
+            <option>21-50</option>
+            <option>51-100</option>
+            <option>101-250</option>
+            <option>251-500</option>
+            <option>501-1000</option>
+            <option>1000+</option>
+          </select>
+        </label>
+        <label>
+          Nombre del contacto
+          <input type="text" name="contacto_nombre" placeholder="Nombre del contacto" required />
+        </label>
+        <label>
+          Teléfono móvil
+          <input type="tel" name="telefono_movil" placeholder="+52 1 55 1234 5678" required />
+        </label>
+        <label>
+          Correo corporativo
+          <input type="email" name="email_corporativo" placeholder="nombre@empresa.com" required />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" name="password" placeholder="Crea una contraseña" required />
+        </label>
+      </div>
+      <button class="button primary" type="submit">Crear registro empresa</button>
+      <div class="form-status" id="companyStatus" aria-live="polite"></div>
+    </form>
+  </section>
+
   <footer>
     <div class="footer-brand">
       <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
@@ -703,6 +754,8 @@
 
     const habitForm = document.getElementById("habitForm");
     const formStatus = document.getElementById("formStatus");
+    const companyForm = document.getElementById("companyForm");
+    const companyStatus = document.getElementById("companyStatus");
 
     habitForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -734,6 +787,38 @@
         formStatus.textContent = "Registro enviado correctamente.";
       } catch (error) {
         formStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
+      }
+    });
+
+    companyForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      companyStatus.textContent = "Enviando...";
+
+      const data = {
+        empresa_nombre: companyForm.empresa_nombre.value.trim(),
+        empresa_web: companyForm.empresa_web.value.trim() || null,
+        colaboradores_rango: companyForm.colaboradores_rango.value,
+        contacto_nombre: companyForm.contacto_nombre.value.trim(),
+        telefono_movil: companyForm.telefono_movil.value.trim(),
+        email_corporativo: companyForm.email_corporativo.value.trim(),
+        password: companyForm.password.value
+      };
+
+      try {
+        const response = await fetch("/api/company-register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo enviar el registro");
+        }
+
+        companyForm.reset();
+        companyStatus.textContent = "Registro de empresa creado correctamente.";
+      } catch (error) {
+        companyStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
       }
     });
   </script>
