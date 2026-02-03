@@ -273,29 +273,29 @@
         <h1>Panel de salud y hábitos</h1>
         <p>Vista general con hábitos diarios, tendencias semanales y seguimiento familiar.</p>
       </div>
-      <span class="badge">Datos simulados</span>
+      <span class="badge" id="liveBadge">Conectando...</span>
     </section>
 
     <section class="grid">
       <article class="card">
         <h3>Alimentación</h3>
-        <div class="metric">83% cumplimiento</div>
-        <div class="progress"><span style="width: 83%"></span></div>
+        <div class="metric" id="metricAlimentacion">--</div>
+        <div class="progress"><span id="progressAlimentacion"></span></div>
       </article>
       <article class="card">
         <h3>Hidratación</h3>
-        <div class="metric">1.9 L / 2.5 L</div>
-        <div class="progress"><span style="width: 76%"></span></div>
+        <div class="metric" id="metricHidratacion">--</div>
+        <div class="progress"><span id="progressHidratacion"></span></div>
       </article>
       <article class="card">
         <h3>Sueño</h3>
-        <div class="metric">7h 20m</div>
-        <div class="progress"><span style="width: 88%"></span></div>
+        <div class="metric" id="metricSueno">--</div>
+        <div class="progress"><span id="progressSueno"></span></div>
       </article>
       <article class="card">
-        <h3>Actividad</h3>
-        <div class="metric">4 de 5 días</div>
-        <div class="progress"><span style="width: 80%"></span></div>
+        <h3>Pasos diarios</h3>
+        <div class="metric" id="metricActividad">--</div>
+        <div class="progress"><span id="progressActividad"></span></div>
       </article>
     </section>
 
@@ -306,22 +306,33 @@
       </article>
       <article class="card">
         <h3>Alertas activas</h3>
+        <div class="list" id="alertsList"></div>
+      </article>
+    </section>
+
+    <section class="panel-row">
+      <article class="card">
+        <h3>Biometría diaria</h3>
         <div class="list">
           <div class="list-item">
             <div>
-              <strong>Hidratación baja</strong><br />
-              2 días por debajo de la meta
+              <strong>Peso</strong><br />
+              <span id="metricPeso">--</span>
             </div>
-            <span class="tag">Prioritario</span>
+            <span class="tag">Hoy</span>
           </div>
           <div class="list-item">
             <div>
-              <strong>Hora de dormir</strong><br />
-              3 noches con sueño tardío
+              <strong>Pasos</strong><br />
+              <span id="metricPasos">--</span>
             </div>
-            <span class="tag">Seguimiento</span>
+            <span class="tag">Meta 7000</span>
           </div>
         </div>
+      </article>
+      <article class="card">
+        <h3>Composición por extremidad</h3>
+        <div class="list" id="bodyComposition"></div>
       </article>
     </section>
 
@@ -356,15 +367,147 @@
   </main>
 
   <script>
-    const weekData = [64, 72, 70, 78, 86, 80, 90];
-    const chart = document.getElementById("weekChart");
-    weekData.forEach((value, index) => {
-      const bar = document.createElement("div");
-      bar.className = "bar";
-      bar.style.height = `${value}%`;
-      bar.textContent = `${value}%`;
-      chart.appendChild(bar);
-    });
+    const ui = {
+      badge: document.getElementById("liveBadge"),
+      chart: document.getElementById("weekChart"),
+      alerts: document.getElementById("alertsList"),
+      bodyComposition: document.getElementById("bodyComposition"),
+      metricAlimentacion: document.getElementById("metricAlimentacion"),
+      metricHidratacion: document.getElementById("metricHidratacion"),
+      metricSueno: document.getElementById("metricSueno"),
+      metricActividad: document.getElementById("metricActividad"),
+      metricPeso: document.getElementById("metricPeso"),
+      metricPasos: document.getElementById("metricPasos"),
+      progressAlimentacion: document.getElementById("progressAlimentacion"),
+      progressHidratacion: document.getElementById("progressHidratacion"),
+      progressSueno: document.getElementById("progressSueno"),
+      progressActividad: document.getElementById("progressActividad")
+    };
+
+    const formatPercent = (value) => (value === null || value === undefined ? "--" : `${value}% cumplimiento`);
+
+    const formatLiters = (value) =>
+      value === null || value === undefined ? "--" : `${value.toFixed(1)} L / 2.0 L`;
+
+    const formatSleep = (value) =>
+      value === null || value === undefined ? "--" : `${value.toFixed(1)} h promedio`;
+
+    const formatSteps = (value, goal) =>
+      value === null || value === undefined ? "--" : `${value} pasos / ${goal} meta`;
+
+    const formatWeight = (value) =>
+      value === null || value === undefined ? "--" : `${value.toFixed(1)} kg`;
+
+    const applyProgress = (el, value) => {
+      if (!el) return;
+      el.style.width = value === null || value === undefined ? "0%" : `${value}%`;
+    };
+
+    const renderAlerts = (alerts) => {
+      ui.alerts.innerHTML = "";
+      alerts.forEach((alert) => {
+        const item = document.createElement("div");
+        item.className = "list-item";
+        item.innerHTML = `
+          <div>
+            <strong>${alert.title}</strong><br />
+            ${alert.detail}
+          </div>
+          <span class="tag">${alert.tag}</span>
+        `;
+        ui.alerts.appendChild(item);
+      });
+    };
+
+    const renderChart = (week) => {
+      ui.chart.innerHTML = "";
+      week.forEach((day) => {
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${day.score}%`;
+        const label = new Date(day.day).toLocaleDateString("es-MX", {
+          weekday: "short"
+        });
+        bar.textContent = `${day.score}%`;
+        bar.title = label;
+        ui.chart.appendChild(bar);
+      });
+    };
+
+    const renderComposition = (data) => {
+      ui.bodyComposition.innerHTML = "";
+      const grasa = data.biometrics?.grasa || {};
+      const musculo = data.biometrics?.musculo || {};
+      const labels = [
+        ["brazo_izq", "Brazo izq"],
+        ["brazo_der", "Brazo der"],
+        ["pierna_izq", "Pierna izq"],
+        ["pierna_der", "Pierna der"],
+        ["tronco", "Tronco"]
+      ];
+
+      labels.forEach(([key, label]) => {
+        const item = document.createElement("div");
+        item.className = "list-item";
+        const grasaVal = grasa[key];
+        const musculoVal = musculo[key];
+        item.innerHTML = `
+          <div>
+            <strong>${label}</strong><br />
+            Grasa ${grasaVal?.toFixed(1) ?? "--"}% · Músculo ${musculoVal?.toFixed(1) ?? "--"}%
+          </div>
+          <span class="tag">InBody</span>
+        `;
+        ui.bodyComposition.appendChild(item);
+      });
+    };
+
+    const renderPanel = (data) => {
+      ui.badge.textContent = `En vivo · actualizado ${new Date(data.updated_at).toLocaleTimeString("es-MX")}`;
+      ui.metricAlimentacion.textContent = formatPercent(data.metrics.alimentacion_pct);
+      ui.metricHidratacion.textContent = formatLiters(data.detail.hidratacion_litros);
+      ui.metricSueno.textContent = formatSleep(data.detail.sueno_horas);
+      ui.metricActividad.textContent = formatSteps(data.detail.pasos_hoy, data.detail.pasos_meta);
+      ui.metricPeso.textContent = formatWeight(data.detail.peso_kg);
+      ui.metricPasos.textContent = formatSteps(data.detail.pasos_hoy, data.detail.pasos_meta);
+
+      applyProgress(ui.progressAlimentacion, data.metrics.alimentacion_pct);
+      applyProgress(ui.progressHidratacion, data.metrics.hidratacion_pct);
+      applyProgress(ui.progressSueno, data.metrics.sueno_pct);
+      applyProgress(ui.progressActividad, data.metrics.actividad_pct);
+
+      renderChart(data.week || []);
+      renderAlerts(data.alerts || []);
+      renderComposition(data);
+    };
+
+    const fetchSnapshot = async () => {
+      const response = await fetch("/api/panel");
+      if (!response.ok) throw new Error("No se pudo cargar el panel");
+      return response.json();
+    };
+
+    const startStream = () => {
+      if (!window.EventSource) {
+        return;
+      }
+      const source = new EventSource("/api/panel/stream");
+      source.addEventListener("panel", (event) => {
+        renderPanel(JSON.parse(event.data));
+      });
+      source.onerror = () => {
+        source.close();
+        setTimeout(startStream, 5000);
+      };
+    };
+
+    fetchSnapshot()
+      .then(renderPanel)
+      .catch(() => {
+        ui.badge.textContent = "Sin conexión, reintentando...";
+      });
+
+    startStream();
   </script>
 </body>
 </html>

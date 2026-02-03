@@ -1,13 +1,18 @@
 from pathlib import Path
+from datetime import datetime, timedelta, date
 import os
 import base64
 import csv
 import io
+import json
 import secrets
+import random
+import asyncio
+import anyio
 import psycopg2
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
@@ -38,6 +43,287 @@ static_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+ALIMENTACION_SCORES = {
+    "Balanceada (3 comidas + snacks saludables)": 1.0,
+    "Regular (2-3 comidas, pocos snacks)": 0.7,
+    "Irregular (saltas comidas)": 0.4,
+    "Alta en ultraprocesados": 0.2,
+}
+HIDRATACION_SCORES = {
+    "2 litros o más": 1.0,
+    "1.5 a 2 litros": 0.7,
+    "1 a 1.5 litros": 0.5,
+    "Menos de 1 litro": 0.2,
+}
+HIDRATACION_LITROS = {
+    "2 litros o más": 2.0,
+    "1.5 a 2 litros": 1.75,
+    "1 a 1.5 litros": 1.25,
+    "Menos de 1 litro": 0.75,
+}
+SUENO_HORAS_SCORES = {
+    "7-8 horas": 1.0,
+    "6-7 horas": 0.7,
+    "Menos de 6 horas": 0.3,
+    "Más de 8 horas": 0.8,
+}
+SUENO_HORAS_VAL = {
+    "7-8 horas": 7.5,
+    "6-7 horas": 6.5,
+    "Menos de 6 horas": 5.5,
+    "Más de 8 horas": 8.5,
+}
+SUENO_CALIDAD_SCORES = {
+    "Buena (descanso continuo)": 1.0,
+    "Regular (algunos despertares)": 0.7,
+    "Baja (despertares frecuentes)": 0.3,
+}
+ACTIVIDAD_SCORES = {
+    "3+ días (30-60 min)": 1.0,
+    "1-2 días (30-60 min)": 0.7,
+    "Solo caminatas ligeras": 0.4,
+    "No realizo actividad física": 0.1,
+}
+PASOS_META = 7000
+HIDRATACION_META = 2.0
+SUENO_META = 7.0
+
+
+def seeded_random(seed_value: str):
+    seed = abs(hash(seed_value)) % (2**32)
+    rng = random.Random(seed)
+    return rng
+
+
+def simulate_biometrics(now: datetime, total_registrations: int):
+    seed_key = f"{now.date().isoformat()}-{total_registrations}"
+    rng = seeded_random(seed_key)
+
+    peso = rng.uniform(62.0, 88.0)
+    pasos = int(rng.uniform(4200, 8800))
+    grasa_total = rng.uniform(18.0, 32.0)
+    musculo_total = rng.uniform(30.0, 42.0)
+
+    def split_variation(base: float, variance: float):
+        return [
+            round(base + rng.uniform(-variance, variance), 1),
+            round(base + rng.uniform(-variance, variance), 1),
+            round(base + rng.uniform(-variance, variance), 1),
+            round(base + rng.uniform(-variance, variance), 1),
+            round(base + rng.uniform(-variance, variance), 1),
+        ]
+
+    grasa_parts = split_variation(grasa_total, 2.0)
+    musculo_parts = split_variation(musculo_total, 2.5)
+
+    return {
+        "peso_kg": round(peso, 1),
+        "pasos_hoy": pasos,
+        "pasos_meta": PASOS_META,
+        "grasa": {
+            "brazo_izq": grasa_parts[0],
+            "brazo_der": grasa_parts[1],
+            "pierna_izq": grasa_parts[2],
+            "pierna_der": grasa_parts[3],
+            "tronco": grasa_parts[4],
+        },
+        "musculo": {
+            "brazo_izq": musculo_parts[0],
+            "brazo_der": musculo_parts[1],
+            "pierna_izq": musculo_parts[2],
+            "pierna_der": musculo_parts[3],
+            "tronco": musculo_parts[4],
+        },
+    }
+
+
+def safe_avg(values: list[float]):
+    return sum(values) / len(values) if values else None
+
+
+def percent(value: float | None):
+    if value is None:
+        return None
+    return round(value * 100)
+
+
+def build_panel_data():
+    now = datetime.utcnow()
+    since_30 = now - timedelta(days=30)
+    since_7 = now - timedelta(days=7)
+    with get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COUNT(*) FROM habit_registrations;")
+            total_registrations = cur.fetchone()[0]
+            cur.execute(
+                """
+                SELECT alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, created_at
+                FROM habit_registrations
+                WHERE created_at >= %s
+                ORDER BY created_at DESC;
+                """,
+                (since_30,),
+            )
+            rows = cur.fetchall()
+
+    alimentacion_scores = []
+    hidratacion_scores = []
+    sueno_scores = []
+    actividad_scores = []
+    hidratacion_litros = []
+    sueno_horas_vals = []
+    week_rows = []
+
+    for row in rows:
+        alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, created_at = row
+
+        if created_at >= since_7:
+            week_rows.append(row)
+
+        if alimentacion in ALIMENTACION_SCORES:
+            alimentacion_scores.append(ALIMENTACION_SCORES[alimentacion])
+        if hidratacion in HIDRATACION_SCORES:
+            hidratacion_scores.append(HIDRATACION_SCORES[hidratacion])
+            hidratacion_litros.append(HIDRATACION_LITROS[hidratacion])
+        if sueno_horas in SUENO_HORAS_SCORES or sueno_calidad in SUENO_CALIDAD_SCORES:
+            horas_score = SUENO_HORAS_SCORES.get(sueno_horas)
+            calidad_score = SUENO_CALIDAD_SCORES.get(sueno_calidad)
+            scores = [val for val in [horas_score, calidad_score] if val is not None]
+            if scores:
+                sueno_scores.append(sum(scores) / len(scores))
+        if sueno_horas in SUENO_HORAS_VAL:
+            sueno_horas_vals.append(SUENO_HORAS_VAL[sueno_horas])
+        if ejercicio in ACTIVIDAD_SCORES:
+            actividad_scores.append(ACTIVIDAD_SCORES[ejercicio])
+
+    alimentacion_pct = percent(safe_avg(alimentacion_scores))
+    hidratacion_pct = percent(safe_avg(hidratacion_scores))
+    sueno_pct = percent(safe_avg(sueno_scores))
+    actividad_pct = percent(safe_avg(actividad_scores))
+    hidratacion_l_prom = safe_avg(hidratacion_litros)
+    sueno_h_prom = safe_avg(sueno_horas_vals)
+    biometrics = simulate_biometrics(now, total_registrations)
+
+    week_scores = {}
+    hydration_by_day = {}
+    sleep_by_day = {}
+    activity_by_day = {}
+
+    for row in week_rows:
+        alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, created_at = row
+        day_key = created_at.date()
+        week_scores.setdefault(day_key, [])
+        hydration_by_day.setdefault(day_key, [])
+        sleep_by_day.setdefault(day_key, [])
+        activity_by_day.setdefault(day_key, [])
+
+        scores = []
+        if alimentacion in ALIMENTACION_SCORES:
+            scores.append(ALIMENTACION_SCORES[alimentacion])
+        if hidratacion in HIDRATACION_SCORES:
+            scores.append(HIDRATACION_SCORES[hidratacion])
+            hydration_by_day[day_key].append(HIDRATACION_SCORES[hidratacion])
+        if ejercicio in ACTIVIDAD_SCORES:
+            scores.append(ACTIVIDAD_SCORES[ejercicio])
+            activity_by_day[day_key].append(ACTIVIDAD_SCORES[ejercicio])
+
+        horas_score = SUENO_HORAS_SCORES.get(sueno_horas)
+        calidad_score = SUENO_CALIDAD_SCORES.get(sueno_calidad)
+        sleep_scores = [val for val in [horas_score, calidad_score] if val is not None]
+        if sleep_scores:
+            sleep_value = sum(sleep_scores) / len(sleep_scores)
+            scores.append(sleep_value)
+            sleep_by_day[day_key].append(sleep_value)
+
+        if scores:
+            week_scores[day_key].append(sum(scores) / len(scores))
+
+    week_series = []
+    for offset in range(6, -1, -1):
+        day = (now.date() - timedelta(days=offset))
+        day_scores = week_scores.get(day, [])
+        day_avg = safe_avg(day_scores)
+        week_series.append(
+            {
+                "day": day.isoformat(),
+                "score": percent(day_avg) if day_avg is not None else 0,
+            }
+        )
+
+    low_hydration_days = len(
+        [day for day, values in hydration_by_day.items() if safe_avg(values) is not None and safe_avg(values) < 0.7]
+    )
+    low_sleep_days = len(
+        [day for day, values in sleep_by_day.items() if safe_avg(values) is not None and safe_avg(values) < 0.7]
+    )
+    low_activity_days = len(
+        [day for day, values in activity_by_day.items() if safe_avg(values) is not None and safe_avg(values) < 0.7]
+    )
+
+    alerts = []
+    if low_hydration_days >= 2:
+        alerts.append(
+            {
+                "title": "Hidratacion baja",
+                "detail": f"{low_hydration_days} dias por debajo de la meta",
+                "tag": "Prioritario",
+            }
+        )
+    if low_sleep_days >= 2:
+        alerts.append(
+            {
+                "title": "Sueno irregular",
+                "detail": f"{low_sleep_days} dias con sueno bajo",
+                "tag": "Seguimiento",
+            }
+        )
+    if low_activity_days >= 3:
+        alerts.append(
+            {
+                "title": "Actividad limitada",
+                "detail": f"{low_activity_days} dias con poca actividad",
+                "tag": "Seguimiento",
+            }
+        )
+    if not alerts:
+        alerts.append(
+            {
+                "title": "Sin alertas criticas",
+                "detail": "Los habitos se mantienen estables",
+                "tag": "Ok",
+            }
+        )
+
+    pasos_pct = (
+        round(min(100, (biometrics["pasos_hoy"] / PASOS_META) * 100))
+        if PASOS_META
+        else None
+    )
+
+    return {
+        "updated_at": now.isoformat() + "Z",
+        "totals": {"registrations": total_registrations},
+        "metrics": {
+            "alimentacion_pct": alimentacion_pct,
+            "hidratacion_pct": hidratacion_pct,
+            "sueno_pct": sueno_pct,
+            "actividad_pct": pasos_pct if pasos_pct is not None else actividad_pct,
+        },
+        "detail": {
+            "hidratacion_litros": round(hidratacion_l_prom, 1) if hidratacion_l_prom is not None else None,
+            "sueno_horas": round(sueno_h_prom, 1) if sueno_h_prom is not None else None,
+            "pasos_hoy": biometrics["pasos_hoy"],
+            "pasos_meta": PASOS_META,
+            "peso_kg": biometrics["peso_kg"],
+        },
+        "biometrics": {
+            "grasa": biometrics["grasa"],
+            "musculo": biometrics["musculo"],
+        },
+        "week": week_series,
+        "alerts": alerts,
+    }
 
 class HabitRegistration(BaseModel):
     nombre: str
@@ -118,6 +404,24 @@ def admin(_: bool = Depends(require_basic_auth)):
 def panel():
     panel_path = Path(__file__).parent / "panel.html"
     return FileResponse(panel_path)
+
+@app.get("/api/panel")
+def panel_snapshot():
+    try:
+        return build_panel_data()
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/panel/stream")
+async def panel_stream():
+    async def event_generator():
+        while True:
+            data = await anyio.to_thread.run_sync(build_panel_data)
+            yield f"event: panel\ndata: {json.dumps(data)}\n\n"
+            await asyncio.sleep(5)
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 
 @app.post("/api/register")
