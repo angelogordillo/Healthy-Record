@@ -329,6 +329,7 @@ class HabitRegistration(BaseModel):
     sueno_calidad: str
     hidratacion: str
     ejercicio: str
+    password: str
 
 
 class CompanyRegistration(BaseModel):
@@ -422,13 +423,16 @@ async def panel_stream():
 @app.post("/api/register")
 def register(payload: HabitRegistration):
     try:
+        if not payload.password or len(payload.password) < 6:
+            raise HTTPException(status_code=400, detail="Password too short")
+        password_hash = pwd_context.hash(payload.password)
         with get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
                     """
                     INSERT INTO habit_registrations
-                      (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                      (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
                     RETURNING id;
                     """,
                     (
@@ -440,6 +444,7 @@ def register(payload: HabitRegistration):
                         payload.sueno_calidad,
                         payload.hidratacion,
                         payload.ejercicio,
+                        password_hash,
                     ),
                 )
                 new_id = cur.fetchone()[0]
