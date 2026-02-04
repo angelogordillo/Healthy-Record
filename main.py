@@ -654,7 +654,9 @@ def upload_inbody_report(
     auth: dict = Depends(require_panel_auth),
 ):
     try:
-        if file.content_type not in ["application/pdf"] and not (file.filename or "").lower().endswith(".pdf"):
+        allowed_types = ["application/pdf", "image/jpeg", "image/jpg"]
+        filename = (file.filename or "").lower()
+        if file.content_type not in allowed_types and not (filename.endswith(".pdf") or filename.endswith(".jpg") or filename.endswith(".jpeg")):
             raise HTTPException(status_code=400, detail="Invalid file type")
         if month:
             try:
@@ -665,10 +667,17 @@ def upload_inbody_report(
             entry_month = datetime.now(timezone.utc).date().replace(day=1)
 
         contents = file.file.read()
-        filename = f"inbody_{auth['email'].replace('@', '_')}_{entry_month.isoformat()}.pdf"
+        ext = "pdf" if filename.endswith(".pdf") or file.content_type == "application/pdf" else "jpg"
+        filename = f"inbody_{auth['email'].replace('@', '_')}_{entry_month.isoformat()}.{ext}"
         save_path = UPLOAD_DIR / filename
         with open(save_path, "wb") as out_file:
             out_file.write(contents)
+
+        if ext == "jpg":
+            return JSONResponse(
+                status_code=422,
+                content={"detail": "Image upload requires manual entry", "extracted": {}},
+            )
 
         try:
             from PyPDF2 import PdfReader
