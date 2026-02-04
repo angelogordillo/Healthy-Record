@@ -15,7 +15,7 @@ import anyio
 import psycopg2
 from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from passlib.context import CryptContext
@@ -430,6 +430,24 @@ class MonthlyInbodyEntry(BaseModel):
     entry_month: date
 
 
+class ManualInbodyEntry(BaseModel):
+    entry_month: date
+    weight: float
+    bmi: float
+    body_fat_rate: float
+    muscle_total_pct: float | None = None
+    fat_brazo_izq: float | None = None
+    fat_brazo_der: float | None = None
+    fat_pierna_izq: float | None = None
+    fat_pierna_der: float | None = None
+    fat_tronco: float | None = None
+    muscle_brazo_izq: float | None = None
+    muscle_brazo_der: float | None = None
+    muscle_pierna_izq: float | None = None
+    muscle_pierna_der: float | None = None
+    muscle_tronco: float | None = None
+
+
 class CompanyRegistration(BaseModel):
     empresa_nombre: str
     empresa_web: str | None = None
@@ -664,7 +682,10 @@ def upload_inbody_report(
 
         parsed = parse_inbody_text(text)
         if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
-            raise HTTPException(status_code=422, detail="Unable to extract required values")
+            return JSONResponse(
+                status_code=422,
+                content={"detail": "Unable to extract required values", "extracted": parsed},
+            )
 
         with get_conn() as conn:
             with conn.cursor() as cur:
@@ -698,6 +719,54 @@ def upload_inbody_report(
                         parsed["muscle"]["tronco"],
                         str(save_path),
                         json.dumps(parsed),
+                    ),
+                )
+                new_id = cur.fetchone()
+        if not new_id:
+            raise HTTPException(status_code=409, detail="Entry already exists")
+        return {"ok": True, "month": entry_month.isoformat()}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/panel/inbody/manual")
+def create_inbody_manual(payload: ManualInbodyEntry, auth: dict = Depends(require_panel_auth)):
+    try:
+        entry_month = payload.entry_month.replace(day=1)
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO inbody_monthly_entries
+                      (email, entry_month, weight, bmi, body_fat_rate, muscle_total_pct,
+                       fat_brazo_izq, fat_brazo_der, fat_pierna_izq, fat_pierna_der, fat_tronco,
+                       muscle_brazo_izq, muscle_brazo_der, muscle_pierna_izq, muscle_pierna_der, muscle_tronco,
+                       file_path, extracted_json)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (email, entry_month) DO NOTHING
+                    RETURNING id;
+                    """,
+                    (
+                        auth["email"],
+                        entry_month,
+                        payload.weight,
+                        payload.bmi,
+                        payload.body_fat_rate,
+                        payload.muscle_total_pct,
+                        payload.fat_brazo_izq,
+                        payload.fat_brazo_der,
+                        payload.fat_pierna_izq,
+                        payload.fat_pierna_der,
+                        payload.fat_tronco,
+                        payload.muscle_brazo_izq,
+                        payload.muscle_brazo_der,
+                        payload.muscle_pierna_izq,
+                        payload.muscle_pierna_der,
+                        payload.muscle_tronco,
+                        None,
+                        json.dumps(payload.dict()),
                     ),
                 )
                 new_id = cur.fetchone()

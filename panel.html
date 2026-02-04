@@ -537,6 +537,73 @@
           <button class="button primary" type="submit">Cargar reporte</button>
           <span class="login-status" id="inbodyStatus">Un reporte por mes.</span>
         </form>
+        <form class="upload-grid hidden" id="inbodyManualForm">
+          <strong>Completar manualmente</strong>
+          <div class="entry-grid">
+            <label>
+              Mes
+              <input type="month" name="entry_month" required />
+            </label>
+            <label>
+              Peso (kg)
+              <input type="number" step="0.1" name="weight" required />
+            </label>
+            <label>
+              IMC
+              <input type="number" step="0.1" name="bmi" required />
+            </label>
+            <label>
+              % grasa total
+              <input type="number" step="0.1" name="body_fat_rate" required />
+            </label>
+            <label>
+              % músculo total
+              <input type="number" step="0.1" name="muscle_total_pct" />
+            </label>
+            <label>
+              % grasa brazo izq
+              <input type="number" step="0.1" name="fat_brazo_izq" />
+            </label>
+            <label>
+              % grasa brazo der
+              <input type="number" step="0.1" name="fat_brazo_der" />
+            </label>
+            <label>
+              % grasa pierna izq
+              <input type="number" step="0.1" name="fat_pierna_izq" />
+            </label>
+            <label>
+              % grasa pierna der
+              <input type="number" step="0.1" name="fat_pierna_der" />
+            </label>
+            <label>
+              % grasa tronco
+              <input type="number" step="0.1" name="fat_tronco" />
+            </label>
+            <label>
+              % músculo brazo izq
+              <input type="number" step="0.1" name="muscle_brazo_izq" />
+            </label>
+            <label>
+              % músculo brazo der
+              <input type="number" step="0.1" name="muscle_brazo_der" />
+            </label>
+            <label>
+              % músculo pierna izq
+              <input type="number" step="0.1" name="muscle_pierna_izq" />
+            </label>
+            <label>
+              % músculo pierna der
+              <input type="number" step="0.1" name="muscle_pierna_der" />
+            </label>
+            <label>
+              % músculo tronco
+              <input type="number" step="0.1" name="muscle_tronco" />
+            </label>
+          </div>
+          <button class="button secondary" type="submit">Guardar manual</button>
+          <span class="login-status" id="inbodyManualStatus">Completa los campos faltantes.</span>
+        </form>
       </article>
       <article class="card">
         <h3>Tendencia mensual por variable</h3>
@@ -738,6 +805,8 @@
       trendLine: document.getElementById("trendLine"),
       inbodyForm: document.getElementById("inbodyForm"),
       inbodyStatus: document.getElementById("inbodyStatus"),
+      inbodyManualForm: document.getElementById("inbodyManualForm"),
+      inbodyManualStatus: document.getElementById("inbodyManualStatus"),
       monthlySelector: document.getElementById("monthlySelector"),
       monthlyMonths: document.getElementById("monthlyMonths"),
       monthlyRefresh: document.getElementById("monthlyRefresh"),
@@ -1142,6 +1211,28 @@
             ui.inbodyStatus.textContent = "Ya existe reporte ese mes.";
             return;
           }
+          if (response.status === 422) {
+            const data = await response.json();
+            ui.inbodyStatus.textContent = "Extracción incompleta. Completa manualmente.";
+            ui.inbodyManualForm.classList.remove("hidden");
+            ui.inbodyManualForm.entry_month.value = ui.inbodyForm.month.value;
+            const extracted = data.extracted || {};
+            ui.inbodyManualForm.weight.value = extracted.weight ?? "";
+            ui.inbodyManualForm.bmi.value = extracted.bmi ?? "";
+            ui.inbodyManualForm.body_fat_rate.value = extracted.body_fat_rate ?? "";
+            ui.inbodyManualForm.muscle_total_pct.value = extracted.muscle_total_pct ?? "";
+            ui.inbodyManualForm.fat_brazo_izq.value = extracted.fat?.brazo_izq ?? "";
+            ui.inbodyManualForm.fat_brazo_der.value = extracted.fat?.brazo_der ?? "";
+            ui.inbodyManualForm.fat_pierna_izq.value = extracted.fat?.pierna_izq ?? "";
+            ui.inbodyManualForm.fat_pierna_der.value = extracted.fat?.pierna_der ?? "";
+            ui.inbodyManualForm.fat_tronco.value = extracted.fat?.tronco ?? "";
+            ui.inbodyManualForm.muscle_brazo_izq.value = extracted.muscle?.brazo_izq ?? "";
+            ui.inbodyManualForm.muscle_brazo_der.value = extracted.muscle?.brazo_der ?? "";
+            ui.inbodyManualForm.muscle_pierna_izq.value = extracted.muscle?.pierna_izq ?? "";
+            ui.inbodyManualForm.muscle_pierna_der.value = extracted.muscle?.pierna_der ?? "";
+            ui.inbodyManualForm.muscle_tronco.value = extracted.muscle?.tronco ?? "";
+            return;
+          }
           throw new Error("No se pudo cargar");
         }
         ui.inbodyStatus.textContent = "Reporte cargado.";
@@ -1153,6 +1244,59 @@
           });
       } catch (error) {
         ui.inbodyStatus.textContent = "Error al cargar PDF.";
+      }
+    });
+
+    ui.inbodyManualForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      ui.inbodyManualStatus.textContent = "Guardando...";
+      try {
+        const payload = {
+          entry_month: `${ui.inbodyManualForm.entry_month.value}-01`,
+          weight: parseFloat(ui.inbodyManualForm.weight.value),
+          bmi: parseFloat(ui.inbodyManualForm.bmi.value),
+          body_fat_rate: parseFloat(ui.inbodyManualForm.body_fat_rate.value),
+          muscle_total_pct: ui.inbodyManualForm.muscle_total_pct.value
+            ? parseFloat(ui.inbodyManualForm.muscle_total_pct.value)
+            : null,
+          fat_brazo_izq: ui.inbodyManualForm.fat_brazo_izq.value ? parseFloat(ui.inbodyManualForm.fat_brazo_izq.value) : null,
+          fat_brazo_der: ui.inbodyManualForm.fat_brazo_der.value ? parseFloat(ui.inbodyManualForm.fat_brazo_der.value) : null,
+          fat_pierna_izq: ui.inbodyManualForm.fat_pierna_izq.value ? parseFloat(ui.inbodyManualForm.fat_pierna_izq.value) : null,
+          fat_pierna_der: ui.inbodyManualForm.fat_pierna_der.value ? parseFloat(ui.inbodyManualForm.fat_pierna_der.value) : null,
+          fat_tronco: ui.inbodyManualForm.fat_tronco.value ? parseFloat(ui.inbodyManualForm.fat_tronco.value) : null,
+          muscle_brazo_izq: ui.inbodyManualForm.muscle_brazo_izq.value ? parseFloat(ui.inbodyManualForm.muscle_brazo_izq.value) : null,
+          muscle_brazo_der: ui.inbodyManualForm.muscle_brazo_der.value ? parseFloat(ui.inbodyManualForm.muscle_brazo_der.value) : null,
+          muscle_pierna_izq: ui.inbodyManualForm.muscle_pierna_izq.value ? parseFloat(ui.inbodyManualForm.muscle_pierna_izq.value) : null,
+          muscle_pierna_der: ui.inbodyManualForm.muscle_pierna_der.value ? parseFloat(ui.inbodyManualForm.muscle_pierna_der.value) : null,
+          muscle_tronco: ui.inbodyManualForm.muscle_tronco.value ? parseFloat(ui.inbodyManualForm.muscle_tronco.value) : null
+        };
+        const response = await fetch("/api/panel/inbody/manual", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          if (response.status === 409) {
+            ui.inbodyManualStatus.textContent = "Ya existe reporte ese mes.";
+            return;
+          }
+          throw new Error("No se pudo guardar");
+        }
+        ui.inbodyManualStatus.textContent = "Guardado manual correcto.";
+        ui.inbodyManualForm.classList.add("hidden");
+        const months = parseInt(ui.monthlyMonths.value, 10) || 12;
+        fetchMonthlyEntries(token, months)
+          .then((data) => renderMonthlyTrend(data.entries, ui.monthlySelector.value))
+          .catch(() => {
+            ui.monthlyChart.textContent = "Sin datos mensuales.";
+          });
+      } catch (error) {
+        ui.inbodyManualStatus.textContent = "Error al guardar manual.";
       }
     });
 
