@@ -6,6 +6,9 @@ import csv
 import io
 import json
 import secrets
+import hmac
+import hashlib
+import time
 import asyncio
 import anyio
 import psycopg2
@@ -27,6 +30,7 @@ DB_PASSWORD = os.getenv("DB_PASSWORD", "1234567890")
 ADMIN_USER = os.getenv("ADMIN_USER", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
+APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 
 app = FastAPI()
 
@@ -332,6 +336,11 @@ class HabitRegistration(BaseModel):
     password: str
 
 
+class HabitLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class CompanyRegistration(BaseModel):
     empresa_nombre: str
     empresa_web: str | None = None
@@ -386,6 +395,42 @@ def require_basic_auth(request: Request):
     return True
 
 
+def create_token(email: str, expires_in: int = 60 * 60 * 24):
+    payload = {"email": email, "exp": int(time.time()) + expires_in}
+    payload_bytes = json.dumps(payload, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
+    signature = hmac.new(APP_SECRET.encode("utf-8"), payload_bytes, hashlib.sha256).hexdigest()
+    token = base64.urlsafe_b64encode(payload_bytes).decode("utf-8").rstrip("=")
+    return f"{token}.{signature}"
+
+
+def verify_token(token: str):
+    try:
+        encoded_payload, signature = token.split(".", 1)
+        padding = "=" * (-len(encoded_payload) % 4)
+        payload_bytes = base64.urlsafe_b64decode(encoded_payload + padding)
+        expected = hmac.new(APP_SECRET.encode("utf-8"), payload_bytes, hashlib.sha256).hexdigest()
+        if not secrets.compare_digest(signature, expected):
+            return None
+        payload = json.loads(payload_bytes.decode("utf-8"))
+        if payload.get("exp", 0) < int(time.time()):
+            return None
+        return payload
+    except Exception:
+        return None
+
+
+def require_panel_auth(request: Request):
+    auth = request.headers.get("Authorization", "")
+    token = None
+    if auth.startswith("Bearer "):
+        token = auth.split(" ", 1)[1].strip()
+    if not token:
+        token = request.query_params.get("token")
+    if not token or not verify_token(token):
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return True
+
+
 @app.get("/")
 def index():
     index_path = Path(__file__).parent / "index.html"
@@ -402,7 +447,7 @@ def panel():
     return FileResponse(panel_path)
 
 @app.get("/api/panel")
-def panel_snapshot():
+def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:
         return build_panel_data()
     except Exception as exc:
@@ -410,7 +455,7 @@ def panel_snapshot():
 
 
 @app.get("/api/panel/stream")
-async def panel_stream():
+async def panel_stream(_: bool = Depends(require_panel_auth)):
     async def event_generator():
         while True:
             data = await anyio.to_thread.run_sync(build_panel_data)
@@ -449,6 +494,34 @@ def register(payload: HabitRegistration):
                 )
                 new_id = cur.fetchone()[0]
         return {"ok": True, "id": new_id}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/panel-login")
+def panel_login(payload: HabitLogin):
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT password_hash
+                    FROM habit_registrations
+                    WHERE email = %s
+                    ORDER BY created_at DESC
+                    LIMIT 1;
+                    """,
+                    (payload.email,),
+                )
+                row = cur.fetchone()
+        if not row or not row[0]:
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        if not pwd_context.verify(payload.password, row[0]):
+            raise HTTPException(status_code=401, detail="Unauthorized")
+        token = create_token(payload.email)
+        return {"ok": True, "token": token}
+    except HTTPException:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
