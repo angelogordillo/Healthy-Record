@@ -360,6 +360,11 @@
       <span class="badge" id="liveBadge">Conectando...</span>
     </section>
 
+    <section class="headline">
+      <div></div>
+      <button class="button secondary" id="logoutButton" type="button">Cerrar sesión</button>
+    </section>
+
     <section class="grid">
       <article class="card">
         <h3>Alimentación</h3>
@@ -550,6 +555,7 @@
       panelContent: document.getElementById("panelContent"),
       loginForm: document.getElementById("panelLogin"),
       loginStatus: document.getElementById("loginStatus"),
+      logoutButton: document.getElementById("logoutButton"),
       metricAlimentacion: document.getElementById("metricAlimentacion"),
       metricHidratacion: document.getElementById("metricHidratacion"),
       metricSueno: document.getElementById("metricSueno"),
@@ -747,6 +753,13 @@
       } catch (error) {
         ui.loginStatus.textContent = "Credenciales inválidas.";
       }
+    });
+
+    ui.logoutButton.addEventListener("click", () => {
+      localStorage.removeItem("panelToken");
+      ui.panelContent.classList.add("hidden");
+      ui.loginGate.classList.remove("hidden");
+      ui.loginStatus.textContent = "Sesión cerrada.";
     });
   </script>
 </body>

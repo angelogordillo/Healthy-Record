@@ -395,7 +395,7 @@ def require_basic_auth(request: Request):
     return True
 
 
-def create_token(email: str, expires_in: int = 60 * 60 * 24):
+def create_token(email: str, expires_in: int = 60 * 60 * 2):
     payload = {"email": email, "exp": int(time.time()) + expires_in}
     payload_bytes = json.dumps(payload, separators=(",", ":"), ensure_ascii=True).encode("utf-8")
     signature = hmac.new(APP_SECRET.encode("utf-8"), payload_bytes, hashlib.sha256).hexdigest()
