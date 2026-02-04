@@ -546,15 +546,15 @@
             </label>
             <label>
               Peso (kg)
-              <input type="number" step="0.1" name="weight" required />
+              <input type="number" step="0.1" name="weight" />
             </label>
             <label>
               IMC
-              <input type="number" step="0.1" name="bmi" required />
+              <input type="number" step="0.1" name="bmi" />
             </label>
             <label>
               % grasa total
-              <input type="number" step="0.1" name="body_fat_rate" required />
+              <input type="number" step="0.1" name="body_fat_rate" />
             </label>
             <label>
               % músculo total
@@ -1255,9 +1255,9 @@
       try {
         const payload = {
           entry_month: `${ui.inbodyManualForm.entry_month.value}-01`,
-          weight: parseFloat(ui.inbodyManualForm.weight.value),
-          bmi: parseFloat(ui.inbodyManualForm.bmi.value),
-          body_fat_rate: parseFloat(ui.inbodyManualForm.body_fat_rate.value),
+          weight: ui.inbodyManualForm.weight.value ? parseFloat(ui.inbodyManualForm.weight.value) : null,
+          bmi: ui.inbodyManualForm.bmi.value ? parseFloat(ui.inbodyManualForm.bmi.value) : null,
+          body_fat_rate: ui.inbodyManualForm.body_fat_rate.value ? parseFloat(ui.inbodyManualForm.body_fat_rate.value) : null,
           muscle_total_pct: ui.inbodyManualForm.muscle_total_pct.value
             ? parseFloat(ui.inbodyManualForm.muscle_total_pct.value)
             : null,

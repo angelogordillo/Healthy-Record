@@ -432,9 +432,9 @@ class MonthlyInbodyEntry(BaseModel):
 
 class ManualInbodyEntry(BaseModel):
     entry_month: date
-    weight: float
-    bmi: float
-    body_fat_rate: float
+    weight: float | None = None
+    bmi: float | None = None
+    body_fat_rate: float | None = None
     muscle_total_pct: float | None = None
     fat_brazo_izq: float | None = None
     fat_brazo_der: float | None = None
