@@ -1,2 +1,2 @@
 [phases.setup]
-nixPkgs = ["tesseract", "libheif"]
+nixPkgs = ["python311", "tesseract", "libheif"]
