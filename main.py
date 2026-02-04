@@ -13,6 +13,8 @@ import re
 import asyncio
 import anyio
 import psycopg2
+from PIL import Image
+import pytesseract
 from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse
@@ -673,21 +675,19 @@ def upload_inbody_report(
         with open(save_path, "wb") as out_file:
             out_file.write(contents)
 
-        if ext == "jpg":
-            return JSONResponse(
-                status_code=422,
-                content={"detail": "Image upload requires manual entry", "extracted": {}},
-            )
-
         try:
             from PyPDF2 import PdfReader
         except Exception:
             raise HTTPException(status_code=500, detail="PDF parser not available")
 
-        reader = PdfReader(io.BytesIO(contents))
         text = ""
-        for page in reader.pages:
-            text += (page.extract_text() or "") + "\n"
+        if ext == "pdf":
+            reader = PdfReader(io.BytesIO(contents))
+            for page in reader.pages:
+                text += (page.extract_text() or "") + "\n"
+        else:
+            image = Image.open(io.BytesIO(contents))
+            text = pytesseract.image_to_string(image, lang="eng+spa")
 
         parsed = parse_inbody_text(text)
         if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:

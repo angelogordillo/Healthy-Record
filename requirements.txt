@@ -7,3 +7,5 @@ passlib[bcrypt]==1.7.4
 bcrypt==3.2.2
 PyPDF2==3.0.1
 python-multipart==0.0.9
+pytesseract==0.3.10
+pillow==10.4.0
