@@ -673,6 +673,14 @@
           WhatsApp
           <input type="tel" name="whatsapp" placeholder="+52 1 55 1234 5678" required />
         </label>
+        <label>
+          Contraseña
+          <input type="password" name="password" placeholder="Crea una contraseña" required />
+        </label>
+        <label>
+          Repetir contraseña
+          <input type="password" name="password_confirm" placeholder="Repite la contraseña" required />
+        </label>
       </div>
 
       <label>
@@ -822,6 +830,11 @@
     habitForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       formStatus.textContent = "Enviando...";
+
+      if (habitForm.password.value !== habitForm.password_confirm.value) {
+        formStatus.textContent = "Las contraseñas no coinciden.";
+        return;
+      }
 
       const data = {
         nombre: habitForm.nombre.value.trim(),
