@@ -341,6 +341,15 @@ class HabitLogin(BaseModel):
     password: str
 
 
+class DailyEntry(BaseModel):
+    entry_date: date | None = None
+    ejercicio: int
+    agua: int
+    stress: int
+    calidad_sueno: int
+    horas_sueno: float
+
+
 class CompanyRegistration(BaseModel):
     empresa_nombre: str
     empresa_web: str | None = None
@@ -426,9 +435,10 @@ def require_panel_auth(request: Request):
         token = auth.split(" ", 1)[1].strip()
     if not token:
         token = request.query_params.get("token")
-    if not token or not verify_token(token):
+    payload = verify_token(token) if token else None
+    if not payload:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    return True
+    return payload
 
 
 @app.get("/")
@@ -455,7 +465,7 @@ def panel_snapshot(_: bool = Depends(require_panel_auth)):
 
 
 @app.get("/api/panel/stream")
-async def panel_stream(_: bool = Depends(require_panel_auth)):
+async def panel_stream(_: dict = Depends(require_panel_auth)):
     async def event_generator():
         while True:
             data = await anyio.to_thread.run_sync(build_panel_data)
@@ -463,6 +473,80 @@ async def panel_stream(_: bool = Depends(require_panel_auth)):
             await asyncio.sleep(5)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+
+@app.post("/api/panel/entries")
+def create_daily_entry(payload: DailyEntry, auth: dict = Depends(require_panel_auth)):
+    try:
+        entry_date = payload.entry_date or datetime.now(timezone.utc).date()
+        if entry_date > datetime.now(timezone.utc).date():
+            raise HTTPException(status_code=400, detail="Invalid date")
+        if not all(1 <= value <= 7 for value in [payload.ejercicio, payload.agua, payload.stress, payload.calidad_sueno]):
+            raise HTTPException(status_code=400, detail="Values must be between 1 and 7")
+        if payload.horas_sueno <= 0 or payload.horas_sueno > 24:
+            raise HTTPException(status_code=400, detail="Invalid sleep hours")
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO user_daily_entries
+                      (email, entry_date, ejercicio, agua, stress, calidad_sueno, horas_sueno)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (email, entry_date) DO NOTHING
+                    RETURNING id;
+                    """,
+                    (
+                        auth["email"],
+                        entry_date,
+                        payload.ejercicio,
+                        payload.agua,
+                        payload.stress,
+                        payload.calidad_sueno,
+                        payload.horas_sueno,
+                    ),
+                )
+                new_id = cur.fetchone()
+        if not new_id:
+            raise HTTPException(status_code=409, detail="Entry already exists")
+        return {"ok": True, "date": entry_date.isoformat()}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/panel/entries")
+def list_daily_entries(days: int = 90, auth: dict = Depends(require_panel_auth)):
+    try:
+        safe_days = max(7, min(days, 365))
+        since = datetime.now(timezone.utc).date() - timedelta(days=safe_days - 1)
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT entry_date, ejercicio, agua, stress, calidad_sueno, horas_sueno
+                    FROM user_daily_entries
+                    WHERE email = %s AND entry_date >= %s
+                    ORDER BY entry_date ASC;
+                    """,
+                    (auth["email"], since),
+                )
+                rows = cur.fetchall()
+        entries = [
+            {
+                "date": row[0].isoformat(),
+                "ejercicio": row[1],
+                "agua": row[2],
+                "stress": row[3],
+                "calidad_sueno": row[4],
+                "horas_sueno": float(row[5]),
+            }
+            for row in rows
+        ]
+        return {"entries": entries}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
 
 
 @app.post("/api/register")

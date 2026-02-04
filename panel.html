@@ -159,6 +159,43 @@
       gap: 8px;
     }
 
+    .trend-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .trend-controls select,
+    .trend-controls input {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .entry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .entry-grid label {
+      display: grid;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .entry-grid input {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+
     .bar {
       flex: 1;
       border-radius: 8px 8px 0 0;
@@ -401,6 +438,59 @@
 
     <section class="panel-row">
       <article class="card">
+        <h3>Registro diario</h3>
+        <form class="list" id="dailyEntryForm">
+          <div class="entry-grid">
+            <label>
+              Ejercicio (1-7)
+              <input type="number" min="1" max="7" step="1" name="ejercicio" required />
+            </label>
+            <label>
+              Agua (1-7)
+              <input type="number" min="1" max="7" step="1" name="agua" required />
+            </label>
+            <label>
+              Estrés (1-7)
+              <input type="number" min="1" max="7" step="1" name="stress" required />
+            </label>
+            <label>
+              Calidad sueño (1-7)
+              <input type="number" min="1" max="7" step="1" name="calidad_sueno" required />
+            </label>
+            <label>
+              Horas de sueño
+              <input type="number" min="1" max="12" step="0.1" name="horas_sueno" required />
+            </label>
+          </div>
+          <button class="button primary" type="submit">Guardar registro</button>
+          <span class="login-status" id="dailyEntryStatus">Máximo 1 registro por día.</span>
+        </form>
+      </article>
+      <article class="card">
+        <h3>Tendencia diaria histórica</h3>
+        <div class="trend-controls">
+          <label>
+            Indicador
+            <select id="trendSelector">
+              <option value="ejercicio">Ejercicio</option>
+              <option value="agua">Agua</option>
+              <option value="stress">Estrés</option>
+              <option value="calidad_sueno">Calidad de sueño</option>
+              <option value="horas_sueno">Horas de sueño</option>
+            </select>
+          </label>
+          <label>
+            Días
+            <input type="number" min="7" max="365" step="1" value="30" id="trendDays" />
+          </label>
+          <button class="button secondary" type="button" id="trendRefresh">Actualizar</button>
+        </div>
+        <div class="chart" id="trendChart"></div>
+      </article>
+    </section>
+
+    <section class="panel-row">
+      <article class="card">
         <h3>Biometría diaria</h3>
         <div class="list">
           <div class="list-item">
@@ -556,6 +646,12 @@
       loginForm: document.getElementById("panelLogin"),
       loginStatus: document.getElementById("loginStatus"),
       logoutButton: document.getElementById("logoutButton"),
+      dailyEntryForm: document.getElementById("dailyEntryForm"),
+      dailyEntryStatus: document.getElementById("dailyEntryStatus"),
+      trendSelector: document.getElementById("trendSelector"),
+      trendDays: document.getElementById("trendDays"),
+      trendRefresh: document.getElementById("trendRefresh"),
+      trendChart: document.getElementById("trendChart"),
       metricAlimentacion: document.getElementById("metricAlimentacion"),
       metricHidratacion: document.getElementById("metricHidratacion"),
       metricSueno: document.getElementById("metricSueno"),
@@ -635,6 +731,20 @@
       });
     };
 
+    const renderTrend = (entries, indicator) => {
+      ui.trendChart.innerHTML = "";
+      entries.forEach((entry) => {
+        const value = entry[indicator];
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const normalized = indicator === "horas_sueno" ? Math.min(100, (value / 12) * 100) : (value / 7) * 100;
+        bar.style.height = `${Math.max(8, normalized)}%`;
+        bar.textContent = indicator === "horas_sueno" ? value.toFixed(1) : value;
+        bar.title = entry.date;
+        ui.trendChart.appendChild(bar);
+      });
+    };
+
     const renderComposition = (data) => {
       ui.bodyComposition.innerHTML = "";
       const grasa = data.biometrics?.grasa || {};
@@ -701,6 +811,14 @@
       return response.json();
     };
 
+    const fetchEntries = async (token, days) => {
+      const response = await fetch(`/api/panel/entries?days=${days}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error("No se pudo cargar el historial");
+      return response.json();
+    };
+
     const startStream = (token) => {
       if (!window.EventSource) {
         return;
@@ -724,6 +842,12 @@
           ui.badge.textContent = "Sin conexión, reintentando...";
         });
       startStream(token);
+      const days = parseInt(ui.trendDays.value, 10) || 30;
+      fetchEntries(token, days)
+        .then((data) => renderTrend(data.entries, ui.trendSelector.value))
+        .catch(() => {
+          ui.trendChart.textContent = "No hay historial disponible.";
+        });
     };
 
     const storedToken = localStorage.getItem("panelToken");
@@ -752,6 +876,67 @@
         showPanel(data.token);
       } catch (error) {
         ui.loginStatus.textContent = "Credenciales inválidas.";
+      }
+    });
+
+    ui.trendRefresh.addEventListener("click", () => {
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      const days = parseInt(ui.trendDays.value, 10) || 30;
+      fetchEntries(token, days)
+        .then((data) => renderTrend(data.entries, ui.trendSelector.value))
+        .catch(() => {
+          ui.trendChart.textContent = "No hay historial disponible.";
+        });
+    });
+
+    ui.trendSelector.addEventListener("change", () => {
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      const days = parseInt(ui.trendDays.value, 10) || 30;
+      fetchEntries(token, days)
+        .then((data) => renderTrend(data.entries, ui.trendSelector.value))
+        .catch(() => {
+          ui.trendChart.textContent = "No hay historial disponible.";
+        });
+    });
+
+    ui.dailyEntryForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      ui.dailyEntryStatus.textContent = "Guardando...";
+      try {
+        const response = await fetch("/api/panel/entries", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            ejercicio: parseInt(ui.dailyEntryForm.ejercicio.value, 10),
+            agua: parseInt(ui.dailyEntryForm.agua.value, 10),
+            stress: parseInt(ui.dailyEntryForm.stress.value, 10),
+            calidad_sueno: parseInt(ui.dailyEntryForm.calidad_sueno.value, 10),
+            horas_sueno: parseFloat(ui.dailyEntryForm.horas_sueno.value)
+          })
+        });
+        if (!response.ok) {
+          if (response.status === 409) {
+            ui.dailyEntryStatus.textContent = "Ya existe un registro hoy.";
+            return;
+          }
+          throw new Error("No se pudo guardar");
+        }
+        ui.dailyEntryStatus.textContent = "Registro guardado.";
+        const days = parseInt(ui.trendDays.value, 10) || 30;
+        fetchEntries(token, days)
+          .then((data) => renderTrend(data.entries, ui.trendSelector.value))
+          .catch(() => {
+            ui.trendChart.textContent = "No hay historial disponible.";
+          });
+      } catch (error) {
+        ui.dailyEntryStatus.textContent = "Error al guardar.";
       }
     });
 
