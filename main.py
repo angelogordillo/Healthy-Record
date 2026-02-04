@@ -158,6 +158,35 @@ def normalize_ocr_text(text: str):
     return text
 
 
+def normalize_keyword_line(line: str):
+    line = line.replace("B", "8")
+    line = re.sub(r"(\d{2})\s+(\d)", r"\1.\2", line)
+    return line
+
+
+def adjust_ocr_number(value: float):
+    if 300 <= value <= 999:
+        return value / 10
+    return value
+
+
+def extract_number_near_keywords(text: str, keywords: list[str], min_value: float, max_value: float):
+    for line in text.splitlines():
+        lower = line.lower()
+        if any(keyword.lower() in lower for keyword in keywords):
+            normalized = normalize_keyword_line(line)
+            numbers = re.findall(r"([0-9]+(?:\.[0-9]+)?)", normalized)
+            for raw in numbers:
+                try:
+                    value = float(raw)
+                except ValueError:
+                    continue
+                value = adjust_ocr_number(value)
+                if min_value <= value <= max_value:
+                    return value
+    return None
+
+
 def clamp_value(value: float | None, min_value: float, max_value: float):
     if value is None:
         return None
@@ -187,7 +216,7 @@ def extract_percent_by_keywords(text: str, keywords: list[str]):
 
 def parse_inbody_text(text: str):
     text = normalize_ocr_text(text)
-    body_fat_rate = extract_number(
+    body_fat_rate = extract_number_near_keywords(text, ["PGC", "Grasa Corporal"], 5, 80) or extract_number(
         [
             r"Body fat rate\s*([0-9]+(?:\.[0-9]+)?)",
             r"Body fat rate\(\%\)\s*([0-9]+(?:\.[0-9]+)?)",
@@ -196,8 +225,11 @@ def parse_inbody_text(text: str):
         ],
         text,
     )
-    bmi = extract_number([r"\bBMI\b\s*([0-9]+(?:\.[0-9]+)?)", r"\bIMC\b\s*([0-9]+(?:\.[0-9]+)?)"], text)
-    weight = extract_number(
+    bmi = extract_number_near_keywords(text, ["IMC", "BMI"], 10, 80) or extract_number(
+        [r"\bBMI\b\s*([0-9]+(?:\.[0-9]+)?)", r"\bIMC\b\s*([0-9]+(?:\.[0-9]+)?)"],
+        text,
+    )
+    weight = extract_number_near_keywords(text, ["Peso"], 30, 250) or extract_number(
         [
             r"Weight\(kg\)\s*([0-9]+(?:\.[0-9]+)?)",
             r"Weight\s*([0-9]+(?:\.[0-9]+)?)",
