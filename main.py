@@ -13,7 +13,7 @@ import re
 import asyncio
 import anyio
 import psycopg2
-from PIL import Image
+from PIL import Image, ImageOps, ImageFilter
 import pytesseract
 from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -203,6 +203,17 @@ def parse_inbody_text(text: str):
         "fat": fat,
         "muscle": muscle,
     }
+
+
+def preprocess_ocr_image(image: Image.Image):
+    image = ImageOps.exif_transpose(image)
+    image = image.convert("L")
+    image = ImageOps.autocontrast(image)
+    image = image.filter(ImageFilter.MedianFilter(size=3))
+    width, height = image.size
+    image = image.resize((width * 2, height * 2), Image.Resampling.LANCZOS)
+    image = image.point(lambda x: 0 if x < 140 else 255, "1")
+    return image
 
 def safe_avg(values: list[float]):
     return sum(values) / len(values) if values else None
@@ -687,7 +698,8 @@ def upload_inbody_report(
                 text += (page.extract_text() or "") + "\n"
         else:
             image = Image.open(io.BytesIO(contents))
-            text = pytesseract.image_to_string(image, lang="eng+spa")
+            image = preprocess_ocr_image(image)
+            text = pytesseract.image_to_string(image, lang="eng+spa", config="--psm 6")
 
         parsed = parse_inbody_text(text)
         if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
