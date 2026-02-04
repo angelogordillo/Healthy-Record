@@ -936,19 +936,21 @@
 
     const renderMonthlyTrend = (entries, indicator) => {
       ui.monthlyChart.querySelectorAll(".bar").forEach((bar) => bar.remove());
-      const values = entries
-        .map((entry) => entry[indicator])
-        .filter((value) => value !== null && value !== undefined);
-      if (!values.length) {
+      ui.monthlyChart.querySelector(".monthly-empty")?.remove();
+      const filtered = entries.filter((entry) => entry[indicator] !== null && entry[indicator] !== undefined);
+      if (!filtered.length) {
         ui.monthlyLine.innerHTML = "";
-        ui.monthlyChart.textContent = "Sin datos mensuales.";
+        const empty = document.createElement("div");
+        empty.className = "monthly-empty";
+        empty.textContent = "Sin datos mensuales.";
+        ui.monthlyChart.appendChild(empty);
         return;
       }
+      const values = filtered.map((entry) => entry[indicator]);
       const maxValue = Math.max(...values);
       const points = [];
-      entries.forEach((entry, index) => {
+      filtered.forEach((entry, index) => {
         const value = entry[indicator];
-        if (value === null || value === undefined) return;
         const bar = document.createElement("div");
         bar.className = "bar";
         const normalized = maxValue ? (value / maxValue) * 100 : 0;
@@ -956,7 +958,7 @@
         bar.textContent = value.toFixed ? value.toFixed(1) : value;
         bar.title = entry.month;
         ui.monthlyChart.appendChild(bar);
-        const x = entries.length > 1 ? (index / (entries.length - 1)) * 100 : 50;
+        const x = filtered.length > 1 ? (index / (filtered.length - 1)) * 100 : 50;
         const y = 100 - Math.max(0, Math.min(100, normalized));
         points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
       });
