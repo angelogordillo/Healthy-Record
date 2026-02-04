@@ -780,7 +780,11 @@ def upload_inbody_report(
         if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
             return JSONResponse(
                 status_code=422,
-                content={"detail": "Unable to extract required values", "extracted": parsed},
+                content={
+                    "detail": "Unable to extract required values",
+                    "extracted": parsed,
+                    "ocr_text": text[:2000],
+                },
             )
 
         with get_conn() as conn:
