@@ -162,37 +162,73 @@ def extract_percent_by_label(text: str, label: str):
     return None
 
 
+def extract_percent_by_keywords(text: str, keywords: list[str]):
+    for line in text.splitlines():
+        lower = line.lower()
+        if all(keyword.lower() in lower for keyword in keywords):
+            numbers = re.findall(r"([0-9]+(?:\.[0-9]+)?)", line)
+            if numbers:
+                return float(numbers[-1])
+    return None
+
+
 def parse_inbody_text(text: str):
     body_fat_rate = extract_number(
         [
             r"Body fat rate\s*([0-9]+(?:\.[0-9]+)?)",
             r"Body fat rate\(\%\)\s*([0-9]+(?:\.[0-9]+)?)",
+            r"\bPGC\b\s*([0-9]+(?:\.[0-9]+)?)",
+            r"Grasa Corporal\s*\(?%\)?\s*([0-9]+(?:\.[0-9]+)?)",
         ],
         text,
     )
-    bmi = extract_number([r"\bBMI\b\s*([0-9]+(?:\.[0-9]+)?)"], text)
-    weight = extract_number([r"Weight\(kg\)\s*([0-9]+(?:\.[0-9]+)?)", r"Weight\s*([0-9]+(?:\.[0-9]+)?)"], text)
+    bmi = extract_number([r"\bBMI\b\s*([0-9]+(?:\.[0-9]+)?)", r"\bIMC\b\s*([0-9]+(?:\.[0-9]+)?)"], text)
+    weight = extract_number(
+        [
+            r"Weight\(kg\)\s*([0-9]+(?:\.[0-9]+)?)",
+            r"Weight\s*([0-9]+(?:\.[0-9]+)?)",
+            r"\bPeso\b\s*\(kg\)\s*([0-9]+(?:\.[0-9]+)?)",
+            r"\bPeso\b\s*([0-9]+(?:\.[0-9]+)?)",
+        ],
+        text,
+    )
     muscle_total_pct = extract_number(
         [r"\bMuscle\b\s+[0-9]+(?:\.[0-9]+)?\s*\([^\)]+\)\s*([0-9]+(?:\.[0-9]+)?)"],
         text,
     )
 
     fat_section = extract_section(text, "Segmental fat analysis", "Muscle balance")
+    if not fat_section:
+        fat_section = extract_section(text, "Análisis de Grasa Segmental", "Historial")
     muscle_section = extract_section(text, "Muscle balance", "Bioelectrical impedance")
+    if not muscle_section:
+        muscle_section = extract_section(text, "Análisis de Masa Magra Segmental", "Análisis de Grasa Segmental")
 
     fat = {
-        "brazo_izq": extract_percent_by_label(fat_section, "Left Arm"),
-        "brazo_der": extract_percent_by_label(fat_section, "Right Arm"),
-        "pierna_izq": extract_percent_by_label(fat_section, "Left Leg"),
-        "pierna_der": extract_percent_by_label(fat_section, "Right Leg"),
-        "tronco": extract_percent_by_label(fat_section, "Trunk"),
+        "brazo_izq": extract_percent_by_label(fat_section, "Left Arm")
+        or extract_percent_by_keywords(fat_section, ["Brazo", "Izquierdo"])
+        or extract_percent_by_keywords(fat_section, ["Izquierdo"]),
+        "brazo_der": extract_percent_by_label(fat_section, "Right Arm")
+        or extract_percent_by_keywords(fat_section, ["Brazo", "Derecho"])
+        or extract_percent_by_keywords(fat_section, ["Derecho"]),
+        "pierna_izq": extract_percent_by_label(fat_section, "Left Leg")
+        or extract_percent_by_keywords(fat_section, ["Pierna", "Izquierdo"]),
+        "pierna_der": extract_percent_by_label(fat_section, "Right Leg")
+        or extract_percent_by_keywords(fat_section, ["Pierna", "Derecho"]),
+        "tronco": extract_percent_by_label(fat_section, "Trunk") or extract_percent_by_keywords(fat_section, ["Tronco"]),
     }
     muscle = {
-        "brazo_izq": extract_percent_by_label(muscle_section, "Left Arm"),
-        "brazo_der": extract_percent_by_label(muscle_section, "Right Arm"),
-        "pierna_izq": extract_percent_by_label(muscle_section, "Left Leg"),
-        "pierna_der": extract_percent_by_label(muscle_section, "Right Leg"),
-        "tronco": extract_percent_by_label(muscle_section, "Trunk"),
+        "brazo_izq": extract_percent_by_label(muscle_section, "Left Arm")
+        or extract_percent_by_keywords(muscle_section, ["Brazo", "Izquierdo"])
+        or extract_percent_by_keywords(muscle_section, ["Izquierdo"]),
+        "brazo_der": extract_percent_by_label(muscle_section, "Right Arm")
+        or extract_percent_by_keywords(muscle_section, ["Brazo", "Derecho"])
+        or extract_percent_by_keywords(muscle_section, ["Derecho"]),
+        "pierna_izq": extract_percent_by_label(muscle_section, "Left Leg")
+        or extract_percent_by_keywords(muscle_section, ["Pierna", "Izquierdo"]),
+        "pierna_der": extract_percent_by_label(muscle_section, "Right Leg")
+        or extract_percent_by_keywords(muscle_section, ["Pierna", "Derecho"]),
+        "tronco": extract_percent_by_label(muscle_section, "Trunk") or extract_percent_by_keywords(muscle_section, ["Tronco"]),
     }
 
     return {
