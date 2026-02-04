@@ -2,6 +2,8 @@
 
 Landing + formulario conectado a PostgreSQL, backend en FastAPI y panel de administración.
 
+<!-- Deploy trigger: update -->
+
 ## 1) Estructura
 - `index.html` sitio público
 - `admin.html` panel de registros
