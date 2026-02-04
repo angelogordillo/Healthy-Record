@@ -153,6 +153,19 @@ def extract_number(patterns: list[str], text: str):
     return None
 
 
+def normalize_ocr_text(text: str):
+    text = re.sub(r"(\d),(\d)", r"\1.\2", text)
+    return text
+
+
+def clamp_value(value: float | None, min_value: float, max_value: float):
+    if value is None:
+        return None
+    if value < min_value or value > max_value:
+        return None
+    return value
+
+
 def extract_percent_by_label(text: str, label: str):
     for line in text.splitlines():
         if label.lower() in line.lower():
@@ -173,6 +186,7 @@ def extract_percent_by_keywords(text: str, keywords: list[str]):
 
 
 def parse_inbody_text(text: str):
+    text = normalize_ocr_text(text)
     body_fat_rate = extract_number(
         [
             r"Body fat rate\s*([0-9]+(?:\.[0-9]+)?)",
@@ -232,9 +246,9 @@ def parse_inbody_text(text: str):
     }
 
     return {
-        "weight": weight,
-        "bmi": bmi,
-        "body_fat_rate": body_fat_rate,
+        "weight": clamp_value(weight, 30, 250),
+        "bmi": clamp_value(bmi, 10, 80),
+        "body_fat_rate": clamp_value(body_fat_rate, 5, 80),
         "muscle_total_pct": muscle_total_pct,
         "fat": fat,
         "muscle": muscle,
@@ -756,6 +770,11 @@ def upload_inbody_report(
             image = Image.open(io.BytesIO(contents))
             image = preprocess_ocr_image(image)
             text = pytesseract.image_to_string(image, lang="eng+spa", config="--psm 6")
+            parsed = parse_inbody_text(text)
+            if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
+                text_alt = pytesseract.image_to_string(image, lang="eng+spa", config="--psm 4")
+                text = text + "\n" + text_alt
+        parsed = parse_inbody_text(text)
 
         parsed = parse_inbody_text(text)
         if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
