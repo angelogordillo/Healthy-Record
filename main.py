@@ -667,9 +667,9 @@ def upload_inbody_report(
     auth: dict = Depends(require_panel_auth),
 ):
     try:
-        allowed_types = ["application/pdf", "image/jpeg", "image/jpg"]
+        allowed_types = ["application/pdf", "image/jpeg", "image/jpg", "image/heic", "image/heif"]
         filename = (file.filename or "").lower()
-        if file.content_type not in allowed_types and not (filename.endswith(".pdf") or filename.endswith(".jpg") or filename.endswith(".jpeg")):
+        if file.content_type not in allowed_types and not (filename.endswith(".pdf") or filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".heic") or filename.endswith(".heif")):
             raise HTTPException(status_code=400, detail="Invalid file type")
         if month:
             try:
@@ -680,7 +680,12 @@ def upload_inbody_report(
             entry_month = datetime.now(timezone.utc).date().replace(day=1)
 
         contents = file.file.read()
-        ext = "pdf" if filename.endswith(".pdf") or file.content_type == "application/pdf" else "jpg"
+        if filename.endswith(".pdf") or file.content_type == "application/pdf":
+            ext = "pdf"
+        elif filename.endswith(".heic") or filename.endswith(".heif") or file.content_type in ["image/heic", "image/heif"]:
+            ext = "heic"
+        else:
+            ext = "jpg"
         filename = f"inbody_{auth['email'].replace('@', '_')}_{entry_month.isoformat()}.{ext}"
         save_path = UPLOAD_DIR / filename
         with open(save_path, "wb") as out_file:
@@ -697,6 +702,12 @@ def upload_inbody_report(
             for page in reader.pages:
                 text += (page.extract_text() or "") + "\n"
         else:
+            if ext == "heic":
+                try:
+                    import pillow_heif
+                except Exception:
+                    raise HTTPException(status_code=500, detail="HEIC parser not available")
+                pillow_heif.register_heif_opener()
             image = Image.open(io.BytesIO(contents))
             image = preprocess_ocr_image(image)
             text = pytesseract.image_to_string(image, lang="eng+spa", config="--psm 6")
