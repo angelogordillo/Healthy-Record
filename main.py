@@ -667,9 +667,16 @@ def upload_inbody_report(
     auth: dict = Depends(require_panel_auth),
 ):
     try:
-        allowed_types = ["application/pdf", "image/jpeg", "image/jpg", "image/heic", "image/heif"]
+        allowed_types = ["application/pdf", "image/jpeg", "image/jpg", "image/heic", "image/heif", "image/png"]
         filename = (file.filename or "").lower()
-        if file.content_type not in allowed_types and not (filename.endswith(".pdf") or filename.endswith(".jpg") or filename.endswith(".jpeg") or filename.endswith(".heic") or filename.endswith(".heif")):
+        if file.content_type not in allowed_types and not (
+            filename.endswith(".pdf")
+            or filename.endswith(".jpg")
+            or filename.endswith(".jpeg")
+            or filename.endswith(".heic")
+            or filename.endswith(".heif")
+            or filename.endswith(".png")
+        ):
             raise HTTPException(status_code=400, detail="Invalid file type")
         if month:
             try:
@@ -684,6 +691,8 @@ def upload_inbody_report(
             ext = "pdf"
         elif filename.endswith(".heic") or filename.endswith(".heif") or file.content_type in ["image/heic", "image/heif"]:
             ext = "heic"
+        elif filename.endswith(".png") or file.content_type == "image/png":
+            ext = "png"
         else:
             ext = "jpg"
         filename = f"inbody_{auth['email'].replace('@', '_')}_{entry_month.isoformat()}.{ext}"
