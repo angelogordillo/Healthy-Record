@@ -328,11 +328,101 @@
             </div>
             <span class="tag">Meta 7000</span>
           </div>
+          <div class="list-item">
+            <div>
+              <strong>IMC</strong><br />
+              <span id="metricBmi">--</span>
+            </div>
+            <span class="tag">Actual</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Body score</strong><br />
+              <span id="metricBodyScore">--</span>
+            </div>
+            <span class="tag">/100</span>
+          </div>
         </div>
       </article>
       <article class="card">
         <h3>Composición por extremidad</h3>
         <div class="list" id="bodyComposition"></div>
+      </article>
+    </section>
+
+    <section class="panel-row">
+      <article class="card">
+        <h3>Indicadores clave</h3>
+        <div class="list">
+          <div class="list-item">
+            <div>
+              <strong>% Grasa corporal</strong><br />
+              <span id="metricBodyFat">--</span>
+            </div>
+            <span class="tag">Actual</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Grasa visceral</strong><br />
+              <span id="metricVisceral">--</span>
+            </div>
+            <span class="tag">Grado</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Metabolismo basal</strong><br />
+              <span id="metricBmr">--</span>
+            </div>
+            <span class="tag">kcal</span>
+          </div>
+        </div>
+      </article>
+      <article class="card">
+        <h3>Composición corporal</h3>
+        <div class="list">
+          <div class="list-item">
+            <div>
+              <strong>Peso libre de grasa</strong><br />
+              <span id="metricFatFree">--</span>
+            </div>
+            <span class="tag">kg</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Grasa subcutánea</strong><br />
+              <span id="metricSubcut">--</span>
+            </div>
+            <span class="tag">%</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>SMI</strong><br />
+              <span id="metricSmi">--</span>
+            </div>
+            <span class="tag">kg/m²</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Edad corporal</strong><br />
+              <span id="metricBodyAge">--</span>
+            </div>
+            <span class="tag">años</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>WHR</strong><br />
+              <span id="metricWhr">--</span>
+            </div>
+            <span class="tag">Relación</span>
+          </div>
+          <div class="list-item">
+            <div>
+              <strong>Peso objetivo</strong><br />
+              <span id="metricTargetWeight">--</span>
+            </div>
+            <span class="tag">kg</span>
+          </div>
+        </div>
       </article>
     </section>
 
@@ -378,6 +468,17 @@
       metricActividad: document.getElementById("metricActividad"),
       metricPeso: document.getElementById("metricPeso"),
       metricPasos: document.getElementById("metricPasos"),
+      metricBmi: document.getElementById("metricBmi"),
+      metricBodyScore: document.getElementById("metricBodyScore"),
+      metricBodyFat: document.getElementById("metricBodyFat"),
+      metricVisceral: document.getElementById("metricVisceral"),
+      metricBmr: document.getElementById("metricBmr"),
+      metricFatFree: document.getElementById("metricFatFree"),
+      metricSubcut: document.getElementById("metricSubcut"),
+      metricSmi: document.getElementById("metricSmi"),
+      metricBodyAge: document.getElementById("metricBodyAge"),
+      metricWhr: document.getElementById("metricWhr"),
+      metricTargetWeight: document.getElementById("metricTargetWeight"),
       progressAlimentacion: document.getElementById("progressAlimentacion"),
       progressHidratacion: document.getElementById("progressHidratacion"),
       progressSueno: document.getElementById("progressSueno"),
@@ -397,6 +498,12 @@
 
     const formatWeight = (value) =>
       value === null || value === undefined ? "--" : `${value.toFixed(1)} kg`;
+
+    const formatValue = (value, suffix = "") =>
+      value === null || value === undefined ? "--" : `${value}${suffix}`;
+
+    const formatOneDecimal = (value, suffix = "") =>
+      value === null || value === undefined ? "--" : `${value.toFixed(1)}${suffix}`;
 
     const applyProgress = (el, value) => {
       if (!el) return;
@@ -470,6 +577,17 @@
       ui.metricActividad.textContent = formatSteps(data.detail.pasos_hoy, data.detail.pasos_meta);
       ui.metricPeso.textContent = formatWeight(data.detail.peso_kg);
       ui.metricPasos.textContent = formatSteps(data.detail.pasos_hoy, data.detail.pasos_meta);
+      ui.metricBmi.textContent = formatOneDecimal(data.detail.bmi, "");
+      ui.metricBodyScore.textContent = formatValue(data.detail.body_score, "");
+      ui.metricBodyFat.textContent = formatOneDecimal(data.detail.body_fat_rate, "%");
+      ui.metricVisceral.textContent = formatValue(data.detail.visceral_fat_grade, "");
+      ui.metricBmr.textContent = formatValue(data.detail.bmr_kcal, " kcal");
+      ui.metricFatFree.textContent = formatOneDecimal(data.detail.fat_free_weight, " kg");
+      ui.metricSubcut.textContent = formatOneDecimal(data.detail.subcutaneous_fat, "%");
+      ui.metricSmi.textContent = formatOneDecimal(data.detail.smi, "");
+      ui.metricBodyAge.textContent = formatValue(data.detail.body_age, "");
+      ui.metricWhr.textContent = formatValue(data.detail.whr, "");
+      ui.metricTargetWeight.textContent = formatOneDecimal(data.detail.target_weight, " kg");
 
       applyProgress(ui.progressAlimentacion, data.metrics.alimentacion_pct);
       applyProgress(ui.progressHidratacion, data.metrics.hidratacion_pct);
