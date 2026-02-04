@@ -211,8 +211,8 @@ def preprocess_ocr_image(image: Image.Image):
     image = ImageOps.autocontrast(image)
     image = image.filter(ImageFilter.MedianFilter(size=3))
     width, height = image.size
-    image = image.resize((width * 2, height * 2), Image.Resampling.LANCZOS)
-    image = image.point(lambda x: 0 if x < 140 else 255, "1")
+    image = image.resize((width * 3, height * 3), Image.Resampling.LANCZOS)
+    image = image.point(lambda x: 0 if x < 165 else 255, "1")
     return image
 
 def safe_avg(values: list[float]):
