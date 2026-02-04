@@ -215,6 +215,18 @@
       opacity: 0.65;
     }
 
+    .upload-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .upload-grid input[type="file"] {
+      border: 1px dashed var(--line);
+      padding: 12px;
+      border-radius: 12px;
+      background: rgba(0, 195, 137, 0.05);
+    }
+
     .bar {
       flex: 1;
       border-radius: 8px 8px 0 0;
@@ -512,6 +524,56 @@
 
     <section class="panel-row">
       <article class="card">
+        <h3>InBody mensual</h3>
+        <form class="upload-grid" id="inbodyForm">
+          <label>
+            Mes del reporte
+            <input type="month" name="month" />
+          </label>
+          <label>
+            Subir PDF de InBody
+            <input type="file" name="file" accept="application/pdf" required />
+          </label>
+          <button class="button primary" type="submit">Cargar reporte</button>
+          <span class="login-status" id="inbodyStatus">Un reporte por mes.</span>
+        </form>
+      </article>
+      <article class="card">
+        <h3>Tendencia mensual por variable</h3>
+        <div class="trend-controls">
+          <label>
+            Variable
+            <select id="monthlySelector">
+              <option value="weight">Peso</option>
+              <option value="bmi">IMC</option>
+              <option value="body_fat_rate">% grasa total</option>
+              <option value="muscle_total_pct">% músculo total</option>
+              <option value="fat_brazo_izq">% grasa brazo izq</option>
+              <option value="fat_brazo_der">% grasa brazo der</option>
+              <option value="fat_pierna_izq">% grasa pierna izq</option>
+              <option value="fat_pierna_der">% grasa pierna der</option>
+              <option value="fat_tronco">% grasa tronco</option>
+              <option value="muscle_brazo_izq">% músculo brazo izq</option>
+              <option value="muscle_brazo_der">% músculo brazo der</option>
+              <option value="muscle_pierna_izq">% músculo pierna izq</option>
+              <option value="muscle_pierna_der">% músculo pierna der</option>
+              <option value="muscle_tronco">% músculo tronco</option>
+            </select>
+          </label>
+          <label>
+            Meses
+            <input type="number" min="3" max="36" step="1" value="12" id="monthlyMonths" />
+          </label>
+          <button class="button secondary" type="button" id="monthlyRefresh">Actualizar</button>
+        </div>
+        <div class="chart trend-chart" id="monthlyChart">
+          <svg class="trend-line" id="monthlyLine" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel-row">
+      <article class="card">
         <h3>Biometría diaria</h3>
         <div class="list">
           <div class="list-item">
@@ -674,6 +736,13 @@
       trendRefresh: document.getElementById("trendRefresh"),
       trendChart: document.getElementById("trendChart"),
       trendLine: document.getElementById("trendLine"),
+      inbodyForm: document.getElementById("inbodyForm"),
+      inbodyStatus: document.getElementById("inbodyStatus"),
+      monthlySelector: document.getElementById("monthlySelector"),
+      monthlyMonths: document.getElementById("monthlyMonths"),
+      monthlyRefresh: document.getElementById("monthlyRefresh"),
+      monthlyChart: document.getElementById("monthlyChart"),
+      monthlyLine: document.getElementById("monthlyLine"),
       metricAlimentacion: document.getElementById("metricAlimentacion"),
       metricHidratacion: document.getElementById("metricHidratacion"),
       metricSueno: document.getElementById("metricSueno"),
@@ -796,6 +865,40 @@
       }
     };
 
+    const renderMonthlyTrend = (entries, indicator) => {
+      ui.monthlyChart.querySelectorAll(".bar").forEach((bar) => bar.remove());
+      const values = entries
+        .map((entry) => entry[indicator])
+        .filter((value) => value !== null && value !== undefined);
+      if (!values.length) {
+        ui.monthlyLine.innerHTML = "";
+        ui.monthlyChart.textContent = "Sin datos mensuales.";
+        return;
+      }
+      const maxValue = Math.max(...values);
+      const points = [];
+      entries.forEach((entry, index) => {
+        const value = entry[indicator];
+        if (value === null || value === undefined) return;
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const normalized = maxValue ? (value / maxValue) * 100 : 0;
+        bar.style.height = `${Math.max(8, normalized)}%`;
+        bar.textContent = value.toFixed ? value.toFixed(1) : value;
+        bar.title = entry.month;
+        ui.monthlyChart.appendChild(bar);
+        const x = entries.length > 1 ? (index / (entries.length - 1)) * 100 : 50;
+        const y = 100 - Math.max(0, Math.min(100, normalized));
+        points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+      });
+      ui.monthlyLine.innerHTML = "";
+      if (points.length >= 2) {
+        const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+        polyline.setAttribute("points", points.join(" "));
+        ui.monthlyLine.appendChild(polyline);
+      }
+    };
+
     const renderComposition = (data) => {
       ui.bodyComposition.innerHTML = "";
       const grasa = data.biometrics?.grasa || {};
@@ -870,6 +973,14 @@
       return response.json();
     };
 
+    const fetchMonthlyEntries = async (token, months) => {
+      const response = await fetch(`/api/panel/inbody?months=${months}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error("No se pudo cargar datos mensuales");
+      return response.json();
+    };
+
     const startStream = (token) => {
       if (!window.EventSource) {
         return;
@@ -898,6 +1009,13 @@
         .then((data) => renderTrend(data.entries, ui.trendSelector.value))
         .catch(() => {
           ui.trendChart.textContent = "No hay historial disponible.";
+        });
+
+      const months = parseInt(ui.monthlyMonths.value, 10) || 12;
+      fetchMonthlyEntries(token, months)
+        .then((data) => renderMonthlyTrend(data.entries, ui.monthlySelector.value))
+        .catch(() => {
+          ui.monthlyChart.textContent = "Sin datos mensuales.";
         });
     };
 
@@ -996,6 +1114,68 @@
       ui.panelContent.classList.add("hidden");
       ui.loginGate.classList.remove("hidden");
       ui.loginStatus.textContent = "Sesión cerrada.";
+    });
+
+    ui.inbodyForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      ui.inbodyStatus.textContent = "Subiendo...";
+      try {
+        const formData = new FormData();
+        const file = ui.inbodyForm.file.files[0];
+        if (!file) {
+          ui.inbodyStatus.textContent = "Selecciona un PDF.";
+          return;
+        }
+        formData.append("file", file);
+        if (ui.inbodyForm.month.value) {
+          formData.append("month", ui.inbodyForm.month.value);
+        }
+        const response = await fetch("/api/panel/inbody", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+          body: formData
+        });
+        if (!response.ok) {
+          if (response.status === 409) {
+            ui.inbodyStatus.textContent = "Ya existe reporte ese mes.";
+            return;
+          }
+          throw new Error("No se pudo cargar");
+        }
+        ui.inbodyStatus.textContent = "Reporte cargado.";
+        const months = parseInt(ui.monthlyMonths.value, 10) || 12;
+        fetchMonthlyEntries(token, months)
+          .then((data) => renderMonthlyTrend(data.entries, ui.monthlySelector.value))
+          .catch(() => {
+            ui.monthlyChart.textContent = "Sin datos mensuales.";
+          });
+      } catch (error) {
+        ui.inbodyStatus.textContent = "Error al cargar PDF.";
+      }
+    });
+
+    ui.monthlyRefresh.addEventListener("click", () => {
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      const months = parseInt(ui.monthlyMonths.value, 10) || 12;
+      fetchMonthlyEntries(token, months)
+        .then((data) => renderMonthlyTrend(data.entries, ui.monthlySelector.value))
+        .catch(() => {
+          ui.monthlyChart.textContent = "Sin datos mensuales.";
+        });
+    });
+
+    ui.monthlySelector.addEventListener("change", () => {
+      const token = localStorage.getItem("panelToken");
+      if (!token) return;
+      const months = parseInt(ui.monthlyMonths.value, 10) || 12;
+      fetchMonthlyEntries(token, months)
+        .then((data) => renderMonthlyTrend(data.entries, ui.monthlySelector.value))
+        .catch(() => {
+          ui.monthlyChart.textContent = "Sin datos mensuales.";
+        });
     });
   </script>
 </body>

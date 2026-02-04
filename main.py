@@ -9,10 +9,11 @@ import secrets
 import hmac
 import hashlib
 import time
+import re
 import asyncio
 import anyio
 import psycopg2
-from fastapi import FastAPI, HTTPException, Request, Depends
+from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, StreamingResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,6 +32,7 @@ ADMIN_USER = os.getenv("ADMIN_USER", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
+UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
 
 app = FastAPI()
 
@@ -46,6 +48,7 @@ static_dir = Path(__file__).parent
 app.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 ALIMENTACION_SCORES = {
     "Balanceada (3 comidas + snacks saludables)": 1.0,
@@ -125,6 +128,79 @@ def simulate_biometrics():
         },
     }
 
+
+def extract_section(text: str, start_label: str, end_label: str | None = None):
+    lower = text.lower()
+    start = lower.find(start_label.lower())
+    if start == -1:
+        return ""
+    end = lower.find(end_label.lower(), start) if end_label else -1
+    if end == -1:
+        return text[start:]
+    return text[start:end]
+
+
+def extract_number(patterns: list[str], text: str):
+    for pattern in patterns:
+        match = re.search(pattern, text, re.IGNORECASE)
+        if match:
+            try:
+                return float(match.group(1))
+            except ValueError:
+                continue
+    return None
+
+
+def extract_percent_by_label(text: str, label: str):
+    for line in text.splitlines():
+        if label.lower() in line.lower():
+            numbers = re.findall(r"([0-9]+(?:\.[0-9]+)?)", line)
+            if numbers:
+                return float(numbers[-1])
+    return None
+
+
+def parse_inbody_text(text: str):
+    body_fat_rate = extract_number(
+        [
+            r"Body fat rate\s*([0-9]+(?:\.[0-9]+)?)",
+            r"Body fat rate\(\%\)\s*([0-9]+(?:\.[0-9]+)?)",
+        ],
+        text,
+    )
+    bmi = extract_number([r"\bBMI\b\s*([0-9]+(?:\.[0-9]+)?)"], text)
+    weight = extract_number([r"Weight\(kg\)\s*([0-9]+(?:\.[0-9]+)?)", r"Weight\s*([0-9]+(?:\.[0-9]+)?)"], text)
+    muscle_total_pct = extract_number(
+        [r"\bMuscle\b\s+[0-9]+(?:\.[0-9]+)?\s*\([^\)]+\)\s*([0-9]+(?:\.[0-9]+)?)"],
+        text,
+    )
+
+    fat_section = extract_section(text, "Segmental fat analysis", "Muscle balance")
+    muscle_section = extract_section(text, "Muscle balance", "Bioelectrical impedance")
+
+    fat = {
+        "brazo_izq": extract_percent_by_label(fat_section, "Left Arm"),
+        "brazo_der": extract_percent_by_label(fat_section, "Right Arm"),
+        "pierna_izq": extract_percent_by_label(fat_section, "Left Leg"),
+        "pierna_der": extract_percent_by_label(fat_section, "Right Leg"),
+        "tronco": extract_percent_by_label(fat_section, "Trunk"),
+    }
+    muscle = {
+        "brazo_izq": extract_percent_by_label(muscle_section, "Left Arm"),
+        "brazo_der": extract_percent_by_label(muscle_section, "Right Arm"),
+        "pierna_izq": extract_percent_by_label(muscle_section, "Left Leg"),
+        "pierna_der": extract_percent_by_label(muscle_section, "Right Leg"),
+        "tronco": extract_percent_by_label(muscle_section, "Trunk"),
+    }
+
+    return {
+        "weight": weight,
+        "bmi": bmi,
+        "body_fat_rate": body_fat_rate,
+        "muscle_total_pct": muscle_total_pct,
+        "fat": fat,
+        "muscle": muscle,
+    }
 
 def safe_avg(values: list[float]):
     return sum(values) / len(values) if values else None
@@ -350,6 +426,10 @@ class DailyEntry(BaseModel):
     horas_sueno: float
 
 
+class MonthlyInbodyEntry(BaseModel):
+    entry_month: date
+
+
 class CompanyRegistration(BaseModel):
     empresa_nombre: str
     empresa_web: str | None = None
@@ -541,6 +621,131 @@ def list_daily_entries(days: int = 90, auth: dict = Depends(require_panel_auth))
                 "stress": row[3],
                 "calidad_sueno": row[4],
                 "horas_sueno": float(row[5]),
+            }
+            for row in rows
+        ]
+        return {"entries": entries}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/panel/inbody")
+def upload_inbody_report(
+    month: str | None = None,
+    file: UploadFile = File(...),
+    auth: dict = Depends(require_panel_auth),
+):
+    try:
+        if file.content_type not in ["application/pdf"] and not (file.filename or "").lower().endswith(".pdf"):
+            raise HTTPException(status_code=400, detail="Invalid file type")
+        if month:
+            try:
+                entry_month = datetime.strptime(month, "%Y-%m").date().replace(day=1)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Invalid month format")
+        else:
+            entry_month = datetime.now(timezone.utc).date().replace(day=1)
+
+        contents = file.file.read()
+        filename = f"inbody_{auth['email'].replace('@', '_')}_{entry_month.isoformat()}.pdf"
+        save_path = UPLOAD_DIR / filename
+        with open(save_path, "wb") as out_file:
+            out_file.write(contents)
+
+        try:
+            from PyPDF2 import PdfReader
+        except Exception:
+            raise HTTPException(status_code=500, detail="PDF parser not available")
+
+        reader = PdfReader(io.BytesIO(contents))
+        text = ""
+        for page in reader.pages:
+            text += (page.extract_text() or "") + "\n"
+
+        parsed = parse_inbody_text(text)
+        if parsed["weight"] is None or parsed["bmi"] is None or parsed["body_fat_rate"] is None:
+            raise HTTPException(status_code=422, detail="Unable to extract required values")
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO inbody_monthly_entries
+                      (email, entry_month, weight, bmi, body_fat_rate, muscle_total_pct,
+                       fat_brazo_izq, fat_brazo_der, fat_pierna_izq, fat_pierna_der, fat_tronco,
+                       muscle_brazo_izq, muscle_brazo_der, muscle_pierna_izq, muscle_pierna_der, muscle_tronco,
+                       file_path, extracted_json)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (email, entry_month) DO NOTHING
+                    RETURNING id;
+                    """,
+                    (
+                        auth["email"],
+                        entry_month,
+                        parsed["weight"],
+                        parsed["bmi"],
+                        parsed["body_fat_rate"],
+                        parsed["muscle_total_pct"],
+                        parsed["fat"]["brazo_izq"],
+                        parsed["fat"]["brazo_der"],
+                        parsed["fat"]["pierna_izq"],
+                        parsed["fat"]["pierna_der"],
+                        parsed["fat"]["tronco"],
+                        parsed["muscle"]["brazo_izq"],
+                        parsed["muscle"]["brazo_der"],
+                        parsed["muscle"]["pierna_izq"],
+                        parsed["muscle"]["pierna_der"],
+                        parsed["muscle"]["tronco"],
+                        str(save_path),
+                        json.dumps(parsed),
+                    ),
+                )
+                new_id = cur.fetchone()
+        if not new_id:
+            raise HTTPException(status_code=409, detail="Entry already exists")
+        return {"ok": True, "month": entry_month.isoformat()}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/panel/inbody")
+def list_inbody_reports(months: int = 12, auth: dict = Depends(require_panel_auth)):
+    try:
+        safe_months = max(1, min(months, 36))
+        since = (datetime.now(timezone.utc).date().replace(day=1) - timedelta(days=31 * (safe_months - 1)))
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT entry_month, weight, bmi, body_fat_rate, muscle_total_pct,
+                           fat_brazo_izq, fat_brazo_der, fat_pierna_izq, fat_pierna_der, fat_tronco,
+                           muscle_brazo_izq, muscle_brazo_der, muscle_pierna_izq, muscle_pierna_der, muscle_tronco
+                    FROM inbody_monthly_entries
+                    WHERE email = %s AND entry_month >= %s
+                    ORDER BY entry_month ASC;
+                    """,
+                    (auth["email"], since),
+                )
+                rows = cur.fetchall()
+        entries = [
+            {
+                "month": row[0].isoformat(),
+                "weight": row[1],
+                "bmi": row[2],
+                "body_fat_rate": row[3],
+                "muscle_total_pct": row[4],
+                "fat_brazo_izq": row[5],
+                "fat_brazo_der": row[6],
+                "fat_pierna_izq": row[7],
+                "fat_pierna_der": row[8],
+                "fat_tronco": row[9],
+                "muscle_brazo_izq": row[10],
+                "muscle_brazo_der": row[11],
+                "muscle_pierna_izq": row[12],
+                "muscle_pierna_der": row[13],
+                "muscle_tronco": row[14],
             }
             for row in rows
         ]
