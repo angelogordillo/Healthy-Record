@@ -644,6 +644,11 @@ def admin(_: bool = Depends(require_basic_auth)):
     admin_path = Path(__file__).parent / "admin.html"
     return FileResponse(admin_path)
 
+@app.get("/accesogeneral")
+def acceso_general(_: bool = Depends(require_basic_auth)):
+    admin_path = Path(__file__).parent / "admin.html"
+    return FileResponse(admin_path)
+
 @app.get("/panel")
 def panel():
     panel_path = Path(__file__).parent / "panel.html"
