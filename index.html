@@ -425,12 +425,12 @@
         <a href="#visitas">Visitas mensuales</a>
         <a href="#seguimiento">Seguimiento</a>
         <a href="#impacto">Impacto</a>
-        <a href="#registro">Registro</a>
-        <a href="#empresa">Empresas</a>
+        <a href="#inscribirse">Inscribirse</a>
+        <a href="#acceso">Acceso</a>
       </nav>
       <div class="nav-cta">
-        <a class="button secondary" href="/panel">Panel</a>
-        <a class="button primary" href="#empresa">Agendar demo</a>
+        <a class="button secondary" href="#acceso">Acceso</a>
+        <a class="button primary" href="#inscribirse">Inscribirse</a>
       </div>
     </div>
   </header>
@@ -441,7 +441,7 @@
       <h1>Bienestar corporativo con métricas reales, acompañamiento humano y ajustes semanales.</h1>
       <p>Healthy Record integra visitas mensuales con InBody y nutricionista, seguimiento semanal individual y reportes accionables para maximizar el avance de cada colaborador según sus objetivos personales.</p>
       <div class="hero-actions">
-        <a class="button primary" href="#empresa">Quiero el programa</a>
+        <a class="button primary" href="#inscribirse">Quiero el programa</a>
         <a class="button secondary" href="#programa">Conocer la metodología</a>
       </div>
       <div class="stats">
@@ -572,94 +572,25 @@
     </div>
   </section>
 
-  <section class="section" id="registro">
+  <section class="section" id="inscribirse">
     <div class="section-header reveal">
       <div>
-        <h2 class="section-title">Registro individual de hábitos</h2>
-        <p class="section-subtitle">Cuéntanos tu situación actual para darte un plan personalizado.</p>
+        <h2 class="section-title">Inscribirse al programa</h2>
+        <p class="section-subtitle">Elige tu perfil para iniciar el proceso de inscripción.</p>
       </div>
     </div>
-    <form class="form-section reveal" id="habitForm">
-      <div class="form-grid">
-        <label>
-          Nombre completo
-          <input type="text" name="nombre" placeholder="Tu nombre" required />
-        </label>
-        <label>
-          Correo electrónico
-          <input type="email" name="email" placeholder="tu@email.com" required />
-        </label>
-        <label>
-          WhatsApp
-          <input type="tel" name="whatsapp" placeholder="+52 1 55 1234 5678" required />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" name="password" placeholder="Crea una contraseña" required />
-        </label>
-        <label>
-          Repetir contraseña
-          <input type="password" name="password_confirm" placeholder="Repite la contraseña" required />
-        </label>
+    <div class="grid reveal">
+      <div class="card">
+        <h3>Persona</h3>
+        <p>El cuestionario individual estará disponible próximamente.</p>
+        <button class="button secondary" type="button">Próximamente</button>
       </div>
-
-      <label>
-        Alimentación diaria
-        <select name="alimentacion" required>
-          <option value="" disabled selected>Selecciona una opción</option>
-          <option>Balanceada (3 comidas + snacks saludables)</option>
-          <option>Regular (2-3 comidas, pocos snacks)</option>
-          <option>Irregular (saltas comidas)</option>
-          <option>Alta en ultraprocesados</option>
-        </select>
-      </label>
-
-      <label>
-        Sueño (horas por noche)
-        <select name="sueno" required>
-          <option value="" disabled selected>Selecciona una opción</option>
-          <option>7-8 horas</option>
-          <option>6-7 horas</option>
-          <option>Menos de 6 horas</option>
-          <option>Más de 8 horas</option>
-        </select>
-      </label>
-
-      <label>
-        Calidad del sueño
-        <select name="calidad_sueno" required>
-          <option value="" disabled selected>Selecciona una opción</option>
-          <option>Buena (descanso continuo)</option>
-          <option>Regular (algunos despertares)</option>
-          <option>Baja (despertares frecuentes)</option>
-        </select>
-      </label>
-
-      <label>
-        Hidratación diaria
-        <select name="hidratacion" required>
-          <option value="" disabled selected>Selecciona una opción</option>
-          <option>2 litros o más</option>
-          <option>1.5 a 2 litros</option>
-          <option>1 a 1.5 litros</option>
-          <option>Menos de 1 litro</option>
-        </select>
-      </label>
-
-      <label>
-        Actividad física semanal
-        <select name="ejercicio" required>
-          <option value="" disabled selected>Selecciona una opción</option>
-          <option>3+ días (30-60 min)</option>
-          <option>1-2 días (30-60 min)</option>
-          <option>Solo caminatas ligeras</option>
-          <option>No realizo actividad física</option>
-        </select>
-      </label>
-
-      <button class="button primary" type="submit">Enviar registro</button>
-      <div class="form-status" id="formStatus" aria-live="polite"></div>
-    </form>
+      <div class="card">
+        <h3>Empresa</h3>
+        <p>Inscribe a tu organización y activa el programa con nutricionista e InBody.</p>
+        <a class="button primary" href="#empresa">Inscribir empresa</a>
+      </div>
+    </div>
   </section>
 
   <section class="section" id="empresa">
@@ -718,13 +649,35 @@
     </form>
   </section>
 
+  <section class="section" id="acceso">
+    <div class="section-header reveal">
+      <div>
+        <h2 class="section-title">Acceso</h2>
+        <p class="section-subtitle">Acceso para equipos de RRHH y coordinadores del programa.</p>
+      </div>
+    </div>
+    <div class="grid reveal">
+      <div class="card">
+        <h3>Acceso empresas</h3>
+        <p>Ingresa para consultar la base de datos completa y los reportes ejecutivos.</p>
+        <a class="button primary" href="/admin">Entrar a la base completa</a>
+        <div class="form-status">Credenciales proporcionadas al registrar la empresa.</div>
+      </div>
+      <div class="card">
+        <h3>Acceso colaboradores</h3>
+        <p>Acceso individual al panel de seguimiento personal.</p>
+        <a class="button secondary" href="/panel">Entrar al panel</a>
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="cta reveal">
       <h3>¿Listos para transformar el bienestar de su equipo?</h3>
       <p>Implementamos el programa completo con nutricionista, InBody y seguimiento semanal para maximizar resultados individuales y corporativos.</p>
       <div class="hero-actions">
-        <a class="button primary" href="#empresa">Agendar demo</a>
-        <a class="button secondary" href="/panel">Ver panel</a>
+        <a class="button primary" href="#inscribirse">Inscribirse</a>
+        <a class="button secondary" href="#acceso">Acceso</a>
       </div>
     </div>
   </section>
