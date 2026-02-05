@@ -512,6 +512,11 @@ class HabitLogin(BaseModel):
     password: str
 
 
+class PersonAccessRegistration(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class DailyEntry(BaseModel):
     entry_date: date | None = None
     ejercicio: int
@@ -989,6 +994,44 @@ def register(payload: HabitRegistration):
                 )
                 new_id = cur.fetchone()[0]
         return {"ok": True, "id": new_id}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/person-register")
+def person_register(payload: PersonAccessRegistration):
+    try:
+        if not payload.password or len(payload.password) < 6:
+            raise HTTPException(status_code=400, detail="Password too short")
+
+        password_hash = pwd_context.hash(payload.password)
+        alias = payload.email.split("@", 1)[0]
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO habit_registrations
+                      (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    RETURNING id;
+                    """,
+                    (
+                        alias,
+                        payload.email,
+                        "N/A",
+                        "Regular (2-3 comidas, pocos snacks)",
+                        "6-7 horas",
+                        "Regular (algunos despertares)",
+                        "1.5 a 2 litros",
+                        "1-2 días (30-60 min)",
+                        password_hash,
+                    ),
+                )
+                new_id = cur.fetchone()[0]
+        return {"ok": True, "id": new_id}
+    except HTTPException:
+        raise
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 

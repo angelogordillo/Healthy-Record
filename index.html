@@ -219,11 +219,6 @@
 </head>
 <body>
   <main class="wrap">
-    <div class="top">
-      <a href="#inscribirse">Inscribirse</a>
-      <a href="#acceso">Acceso</a>
-    </div>
-
     <section class="hero" id="inicio">
       <div>
         <span class="eyebrow">Programa de bienestar integral</span>
@@ -262,9 +257,21 @@
         <article class="card">
           <h3>Registro persona</h3>
           <p>Quiero registrarme para presentarlo a mi área de personal en la empresa.</p>
-          <div class="cta-row">
-            <a class="btn soft" href="#empresa">Ir a inscripción empresa</a>
-          </div>
+          <form id="personForm">
+            <div class="form-grid">
+              <label>Correo electrónico (usuario)
+                <input type="email" name="email" required />
+              </label>
+              <label>Contraseña
+                <input type="password" name="password" required />
+              </label>
+              <label>Repetir contraseña
+                <input type="password" name="password_confirm" required />
+              </label>
+            </div>
+            <button class="btn primary" type="submit">Crear acceso personal</button>
+            <div class="form-status" id="personStatus" aria-live="polite"></div>
+          </form>
         </article>
         <article class="card" id="empresa">
           <h3>Registro empresa</h3>
@@ -326,8 +333,38 @@
   </main>
 
   <script>
+    const personForm = document.getElementById("personForm");
+    const personStatus = document.getElementById("personStatus");
     const companyForm = document.getElementById("companyForm");
     const companyStatus = document.getElementById("companyStatus");
+
+    personForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      personStatus.textContent = "Enviando...";
+
+      if (personForm.password.value !== personForm.password_confirm.value) {
+        personStatus.textContent = "Las contraseñas no coinciden.";
+        return;
+      }
+
+      const data = {
+        email: personForm.email.value.trim(),
+        password: personForm.password.value
+      };
+
+      try {
+        const response = await fetch("/api/person-register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error("No se pudo enviar el registro");
+        personForm.reset();
+        personStatus.textContent = "Acceso creado. Ya puedes entrar al panel de salud.";
+      } catch (error) {
+        personStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
+      }
+    });
 
     companyForm.addEventListener("submit", async (event) => {
       event.preventDefault();
