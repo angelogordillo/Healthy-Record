@@ -1041,25 +1041,49 @@ def register(payload: HabitRegistration):
         password_hash = pwd_context.hash(raw_password)
         with get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO habit_registrations
-                      (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id;
-                    """,
-                    (
-                        payload.nombre,
-                        safe_email,
-                        safe_whatsapp,
-                        payload.alimentacion,
-                        payload.sueno_horas,
-                        payload.sueno_calidad,
-                        payload.hidratacion,
-                        payload.ejercicio,
-                        password_hash,
-                    ),
-                )
+                cur.execute("SAVEPOINT register_insert")
+                try:
+                    cur.execute(
+                        """
+                        INSERT INTO habit_registrations
+                          (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING id;
+                        """,
+                        (
+                            payload.nombre,
+                            safe_email,
+                            safe_whatsapp,
+                            payload.alimentacion,
+                            payload.sueno_horas,
+                            payload.sueno_calidad,
+                            payload.hidratacion,
+                            payload.ejercicio,
+                            password_hash,
+                        ),
+                    )
+                except Exception as exc:
+                    if "password_hash" not in str(exc):
+                        raise
+                    cur.execute("ROLLBACK TO SAVEPOINT register_insert")
+                    cur.execute(
+                        """
+                        INSERT INTO habit_registrations
+                          (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING id;
+                        """,
+                        (
+                            payload.nombre,
+                            safe_email,
+                            safe_whatsapp,
+                            payload.alimentacion,
+                            payload.sueno_horas,
+                            payload.sueno_calidad,
+                            payload.hidratacion,
+                            payload.ejercicio,
+                        ),
+                    )
                 new_id = cur.fetchone()[0]
         return {"ok": True, "id": new_id}
     except Exception as exc:
@@ -1077,25 +1101,49 @@ def person_register(payload: PersonAccessRegistration):
 
         with get_conn() as conn:
             with conn.cursor() as cur:
-                cur.execute(
-                    """
-                    INSERT INTO habit_registrations
-                      (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    RETURNING id;
-                    """,
-                    (
-                        alias,
-                        payload.email,
-                        "N/A",
-                        "Regular (2-3 comidas, pocos snacks)",
-                        "6-7 horas",
-                        "Regular (algunos despertares)",
-                        "1.5 a 2 litros",
-                        "1-2 días (30-60 min)",
-                        password_hash,
-                    ),
-                )
+                cur.execute("SAVEPOINT person_register_insert")
+                try:
+                    cur.execute(
+                        """
+                        INSERT INTO habit_registrations
+                          (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, password_hash)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING id;
+                        """,
+                        (
+                            alias,
+                            payload.email,
+                            "N/A",
+                            "Regular (2-3 comidas, pocos snacks)",
+                            "6-7 horas",
+                            "Regular (algunos despertares)",
+                            "1.5 a 2 litros",
+                            "1-2 días (30-60 min)",
+                            password_hash,
+                        ),
+                    )
+                except Exception as exc:
+                    if "password_hash" not in str(exc):
+                        raise
+                    cur.execute("ROLLBACK TO SAVEPOINT person_register_insert")
+                    cur.execute(
+                        """
+                        INSERT INTO habit_registrations
+                          (nombre, email, whatsapp, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING id;
+                        """,
+                        (
+                            alias,
+                            payload.email,
+                            "N/A",
+                            "Regular (2-3 comidas, pocos snacks)",
+                            "6-7 horas",
+                            "Regular (algunos despertares)",
+                            "1.5 a 2 litros",
+                            "1-2 días (30-60 min)",
+                        ),
+                    )
                 new_id = cur.fetchone()[0]
         return {"ok": True, "id": new_id}
     except HTTPException:
