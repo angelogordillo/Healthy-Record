@@ -1301,6 +1301,71 @@ def list_registrations(
         raise HTTPException(status_code=500, detail=str(exc))
 
 
+@app.get("/api/admin/data")
+def admin_data(
+    registrations_limit: int = 200,
+    companies_limit: int = 200,
+    _: bool = Depends(require_basic_auth),
+):
+    try:
+        safe_registrations_limit = max(1, min(registrations_limit, 1000))
+        safe_companies_limit = max(1, min(companies_limit, 1000))
+
+        registration_rows = fetch_registrations("", [], safe_registrations_limit)
+        registrations = [
+            {
+                "nombre": row[0],
+                "email": row[1],
+                "whatsapp": row[2],
+                "alimentacion": row[3],
+                "sueno_horas": row[4],
+                "sueno_calidad": row[5],
+                "hidratacion": row[6],
+                "ejercicio": row[7],
+                "created_at": row[8].isoformat(),
+            }
+            for row in registration_rows
+        ]
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT empresa_nombre, empresa_web, colaboradores_rango, contacto_nombre, telefono_movil,
+                           email_corporativo, created_at
+                    FROM company_registrations
+                    ORDER BY created_at DESC
+                    LIMIT %s;
+                    """,
+                    (safe_companies_limit,),
+                )
+                company_rows = cur.fetchall()
+        companies = [
+            {
+                "empresa_nombre": row[0],
+                "empresa_web": row[1],
+                "colaboradores_rango": row[2],
+                "contacto_nombre": row[3],
+                "telefono_movil": row[4],
+                "email_corporativo": row[5],
+                "created_at": row[6].isoformat(),
+            }
+            for row in company_rows
+        ]
+
+        return {
+            "ok": True,
+            "counts": {
+                "registrations": len(registrations),
+                "companies": len(companies),
+            },
+            "registrations": registrations,
+            "companies": companies,
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
 @app.get("/api/registrations.csv")
 def export_registrations_csv(
     nombre: str | None = None,
