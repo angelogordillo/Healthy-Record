@@ -506,8 +506,8 @@ def build_panel_data():
 
 class HabitRegistration(BaseModel):
     nombre: str
-    email: EmailStr
-    whatsapp: str
+    email: EmailStr | None = None
+    whatsapp: str | None = None
     alimentacion: str
     sueno_horas: str
     sueno_calidad: str
@@ -1033,6 +1033,8 @@ def list_inbody_reports(months: int = 12, auth: dict = Depends(require_panel_aut
 @app.post("/api/register")
 def register(payload: HabitRegistration):
     try:
+        safe_email = str(payload.email) if payload.email else f"registro-{int(time.time() * 1000)}@healthyrecord.org"
+        safe_whatsapp = payload.whatsapp or "N/A"
         raw_password = payload.password or secrets.token_urlsafe(12)
         if len(raw_password) < 6:
             raise HTTPException(status_code=400, detail="Password too short")
@@ -1048,8 +1050,8 @@ def register(payload: HabitRegistration):
                     """,
                     (
                         payload.nombre,
-                        payload.email,
-                        payload.whatsapp,
+                        safe_email,
+                        safe_whatsapp,
                         payload.alimentacion,
                         payload.sueno_horas,
                         payload.sueno_calidad,
