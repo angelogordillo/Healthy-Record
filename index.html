@@ -12,6 +12,7 @@
       --bg-soft: #ecf7f2;
       --ink: #11211b;
       --muted: #3f5c50;
+      --logo-blue: #06038d;
       --brand: #00c78c;
       --brand-dark: #008b63;
       --line: rgba(17, 33, 27, 0.1);
@@ -49,21 +50,21 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
+      grid-template-columns: 0.95fr 1.05fr;
       gap: 26px;
       align-items: center;
       padding: 14px 0 30px;
     }
 
     .hero-brand {
-      background: linear-gradient(160deg, #ffffff, #eef7f2);
-      border: 1px solid var(--line);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(246, 249, 246, 0.95));
+      border: 1px solid rgba(17, 33, 27, 0.06);
       border-radius: 30px;
-      padding: 22px;
+      padding: 16px;
     }
 
     .hero-brand img {
-      width: min(100%, 700px);
+      width: min(100%, 620px);
       margin: 0 auto;
       filter: saturate(0.94);
     }
@@ -82,9 +83,12 @@
     }
 
     h1 {
-      font-family: "DM Serif Display", serif;
-      font-size: clamp(34px, 5vw, 54px);
-      line-height: 1.03;
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--logo-blue);
+      font-size: clamp(34px, 4.6vw, 52px);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
       margin-bottom: 14px;
     }
 
@@ -220,14 +224,14 @@
 <body>
   <main class="wrap">
     <section class="hero" id="inicio">
+      <div class="hero-brand">
+        <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
+      </div>
       <div>
-        <span class="eyebrow">Programa de bienestar integral</span>
+        <span class="eyebrow">Programa de bienestar integral para empresas</span>
         <h1>Visita mensual con nutricionista e InBody, seguimiento semanal y ajustes personalizados.</h1>
         <p>Healthy Record acompaña a cada colaborador para sostener avances mensuales según objetivos individuales, con intervención continua cuando surgen dificultades.</p>
         <p class="note">Para empresas solo mostramos indicadores agregados de avance y áreas de oportunidad generales. Los datos personales son estrictamente confidenciales.</p>
-      </div>
-      <div class="hero-brand">
-        <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
       </div>
     </section>
 
