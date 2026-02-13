@@ -11,11 +11,13 @@ import hashlib
 import time
 import re
 import asyncio
+import smtplib
 import anyio
 import psycopg2
+from email.message import EmailMessage
 from PIL import Image, ImageOps, ImageFilter
 import pytesseract
-from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File
+from fastapi import FastAPI, HTTPException, Request, Depends, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, StreamingResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -35,6 +37,13 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
+OWL_LEAD_TO = os.getenv("OWL_LEAD_TO", "angelo@theowl.solutions")
+SMTP_HOST = os.getenv("SMTP_HOST", "")
+SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
+SMTP_USER = os.getenv("SMTP_USER", "")
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
+SMTP_FROM = os.getenv("SMTP_FROM", SMTP_USER or "no-reply@theowl.solutions")
+SMTP_STARTTLS = os.getenv("SMTP_STARTTLS", "true").lower() in {"1", "true", "yes", "on"}
 
 app = FastAPI()
 
@@ -626,6 +635,52 @@ def verify_token(token: str):
         return None
 
 
+def send_owl_lead_email(
+    nombre: str,
+    apellido: str,
+    empresa: str,
+    pagina_web: str | None,
+    correo_corporativo: str,
+    telefono: str,
+    whatsapp: str,
+):
+    if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
+        raise RuntimeError("SMTP is not configured")
+
+    msg = EmailMessage()
+    msg["Subject"] = f"Nuevo lead OWL LATAM: {nombre} {apellido} - {empresa}"
+    msg["From"] = SMTP_FROM
+    msg["To"] = OWL_LEAD_TO
+    msg["Reply-To"] = correo_corporativo
+
+    body = (
+        "Nuevo registro desde formulario OWL LATAM\n\n"
+        f"Nombre: {nombre}\n"
+        f"Apellido: {apellido}\n"
+        f"Empresa: {empresa}\n"
+        f"Pagina web: {pagina_web or '-'}\n"
+        f"Correo corporativo: {correo_corporativo}\n"
+        f"Telefono: {telefono}\n"
+        f"WhatsApp: {whatsapp}\n"
+        f"Fecha UTC: {datetime.now(timezone.utc).isoformat()}\n"
+    )
+    msg.set_content(body)
+
+    if SMTP_PORT == 465 and not SMTP_STARTTLS:
+        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
+            smtp.login(SMTP_USER, SMTP_PASSWORD)
+            smtp.send_message(msg)
+        return
+
+    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
+        smtp.ehlo()
+        if SMTP_STARTTLS:
+            smtp.starttls()
+            smtp.ehlo()
+        smtp.login(SMTP_USER, SMTP_PASSWORD)
+        smtp.send_message(msg)
+
+
 def require_panel_auth(request: Request):
     auth = request.headers.get("Authorization", "")
     token = None
@@ -644,6 +699,11 @@ def index():
     index_path = Path(__file__).parent / "index.html"
     return FileResponse(index_path)
 
+@app.get("/owl-latam")
+def owl_latam():
+    owl_path = Path(__file__).parent / "owl-latam.html"
+    return FileResponse(owl_path)
+
 @app.get("/admin")
 def admin(_: bool = Depends(require_basic_auth)):
     admin_path = Path(__file__).parent / "admin.html"
@@ -658,6 +718,11 @@ def acceso_general(_: bool = Depends(require_basic_auth)):
 def panel():
     panel_path = Path(__file__).parent / "panel.html"
     return FileResponse(panel_path)
+
+@app.get("/cuestionario")
+def cuestionario():
+    cuestionario_path = Path(__file__).parent / "cuestionario.html"
+    return FileResponse(cuestionario_path)
 
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
@@ -1091,6 +1156,34 @@ def company_register(payload: CompanyRegistration):
         return {"ok": True, "id": new_id}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/owl-latam/lead")
+def submit_owl_latam_lead(
+    nombre: str = Form(...),
+    apellido: str = Form(...),
+    empresa: str = Form(...),
+    web: str = Form(""),
+    correo: EmailStr = Form(...),
+    telefono: str = Form(...),
+    whatsapp: str = Form(...),
+):
+    try:
+        send_owl_lead_email(
+            nombre=nombre.strip(),
+            apellido=apellido.strip(),
+            empresa=empresa.strip(),
+            pagina_web=web.strip() or None,
+            correo_corporativo=str(correo).strip(),
+            telefono=telefono.strip(),
+            whatsapp=whatsapp.strip(),
+        )
+        return {"ok": True, "message": "Registro enviado correctamente."}
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Email send failed: {exc}")
+
 
 def build_filters(
     nombre: str | None,

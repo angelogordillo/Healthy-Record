@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Cuestionario</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap");
+
+    :root {
+      --bg: #f4f8f5;
+      --card: #ffffff;
+      --ink: #102019;
+      --muted: #4a665a;
+      --line: rgba(16, 32, 25, 0.12);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --danger: #b42318;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at top right, #ffffff 0%, var(--bg) 58%);
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .card {
+      width: min(760px, 100%);
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 14px 36px rgba(16, 32, 25, 0.08);
+      padding: 28px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-size: clamp(22px, 3.4vw, 32px);
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .step {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #0e6c4f;
+      background: rgba(0, 199, 140, 0.15);
+      border-radius: 999px;
+      padding: 7px 11px;
+      white-space: nowrap;
+    }
+
+    .bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: #e4eee8;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .bar > span {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(100deg, var(--brand), var(--brand-dark));
+      transition: width 200ms ease;
+    }
+
+    .question {
+      font-size: clamp(20px, 2.8vw, 30px);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 15px;
+      border-radius: 13px;
+      padding: 12px 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 130ms ease, background-color 130ms ease;
+    }
+
+    .option:hover { border-color: rgba(0, 199, 140, 0.6); }
+    .option.active {
+      border-color: var(--brand-dark);
+      background: rgba(0, 199, 140, 0.1);
+    }
+
+    .field {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      padding: 12px 14px;
+      font-size: 15px;
+      margin-bottom: 16px;
+      font-family: inherit;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 17px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn.primary {
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+      color: #fff;
+    }
+
+    .btn.secondary {
+      background: #fff;
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .status {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .status.error { color: var(--danger); }
+    .status.success { color: #0a6a4d; }
+
+    @media (max-width: 580px) {
+      .card { padding: 20px; }
+      .actions .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header class="top">
+      <div>
+        <h1 class="title">Cuestionario de habitos</h1>
+        <p class="muted">Una pregunta por vez para un registro rapido.</p>
+      </div>
+      <span class="step" id="stepLabel">Pregunta 1 de 10</span>
+    </header>
+
+    <div class="bar"><span id="progressBar"></span></div>
+
+    <section id="questionContainer">
+      <h2 class="question" id="questionText"></h2>
+      <div id="optionsContainer" class="options"></div>
+      <input id="textInput" class="field" />
+    </section>
+
+    <div class="actions">
+      <button type="button" class="btn secondary" id="backBtn">Anterior</button>
+      <button type="button" class="btn primary" id="nextBtn">Siguiente</button>
+    </div>
+
+    <p class="status" id="status" aria-live="polite"></p>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        key: "sueno_horas",
+        label: "1. Cuantas horas duermes en promedio cada dia?",
+        type: "options",
+        options: ["7-8 horas", "6-7 horas", "Menos de 6 horas", "Mas de 8 horas"]
+      },
+      {
+        key: "sueno_calidad",
+        label: "2. Como describirias la calidad de tu sueno?",
+        type: "options",
+        options: [
+          "Buena (descanso continuo)",
+          "Regular (algunos despertares)",
+          "Baja (despertares frecuentes)"
+        ]
+      },
+      {
+        key: "hidratacion",
+        label: "3. Cuanta agua sueles tomar al dia?",
+        type: "options",
+        options: ["2 litros o mas", "1.5 a 2 litros", "1 a 1.5 litros", "Menos de 1 litro"]
+      },
+      {
+        key: "alimentacion",
+        label: "4. Como calificas tu alimentacion diaria?",
+        type: "options",
+        options: [
+          "Balanceada (3 comidas + snacks saludables)",
+          "Regular (2-3 comidas, pocos snacks)",
+          "Irregular (saltas comidas)",
+          "Alta en ultraprocesados"
+        ]
+      },
+      {
+        key: "ejercicio",
+        label: "5. Con que frecuencia haces actividad fisica?",
+        type: "options",
+        options: [
+          "3+ dias (30-60 min)",
+          "1-2 dias (30-60 min)",
+          "Solo caminatas ligeras",
+          "No realizo actividad fisica"
+        ]
+      },
+      {
+        key: "nombre",
+        label: "6. Cual es tu nombre?",
+        type: "text",
+        placeholder: "Nombre y apellido"
+      },
+      {
+        key: "whatsapp",
+        label: "7. Cual es tu numero de WhatsApp?",
+        type: "text",
+        placeholder: "+52 55 0000 0000"
+      },
+      {
+        key: "email",
+        label: "8. Cual es tu correo electronico?",
+        type: "email",
+        placeholder: "correo@empresa.com"
+      },
+      {
+        key: "password",
+        label: "9. Crea una contrasena de al menos 6 caracteres",
+        type: "password",
+        placeholder: "********"
+      },
+      {
+        key: "password_confirm",
+        label: "10. Repite tu contrasena",
+        type: "password",
+        placeholder: "********"
+      }
+    ];
+
+    const answers = {};
+    let currentIndex = 0;
+    let sending = false;
+
+    const stepLabel = document.getElementById("stepLabel");
+    const progressBar = document.getElementById("progressBar");
+    const questionText = document.getElementById("questionText");
+    const optionsContainer = document.getElementById("optionsContainer");
+    const textInput = document.getElementById("textInput");
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const statusEl = document.getElementById("status");
+
+    function setStatus(message, kind = "") {
+      statusEl.textContent = message;
+      statusEl.className = `status${kind ? ` ${kind}` : ""}`;
+    }
+
+    function getCurrentQuestion() {
+      return questions[currentIndex];
+    }
+
+    function isEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+    }
+
+    function renderQuestion() {
+      const q = getCurrentQuestion();
+      const total = questions.length;
+      const step = currentIndex + 1;
+
+      stepLabel.textContent = `Pregunta ${step} de ${total}`;
+      progressBar.style.width = `${Math.round((step / total) * 100)}%`;
+      questionText.textContent = q.label;
+      optionsContainer.innerHTML = "";
+      textInput.style.display = "none";
+      textInput.value = answers[q.key] || "";
+      setStatus("");
+
+      if (q.type === "options") {
+        q.options.forEach((option) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "option";
+          button.textContent = option;
+          if (answers[q.key] === option) {
+            button.classList.add("active");
+          }
+          button.addEventListener("click", () => {
+            answers[q.key] = option;
+            [...optionsContainer.children].forEach((child) => child.classList.remove("active"));
+            button.classList.add("active");
+          });
+          optionsContainer.appendChild(button);
+        });
+      } else {
+        textInput.type = q.type === "password" ? "password" : q.type === "email" ? "email" : "text";
+        textInput.placeholder = q.placeholder || "";
+        textInput.style.display = "block";
+        textInput.focus();
+      }
+
+      backBtn.disabled = currentIndex === 0 || sending;
+      nextBtn.disabled = sending;
+      nextBtn.textContent = currentIndex === total - 1 ? "Enviar cuestionario" : "Siguiente";
+    }
+
+    function validateCurrent() {
+      const q = getCurrentQuestion();
+      const value = q.type === "options" ? answers[q.key] : textInput.value.trim();
+
+      if (!value) {
+        setStatus("Completa esta pregunta para continuar.", "error");
+        return false;
+      }
+
+      if (q.type !== "options") {
+        answers[q.key] = value;
+      }
+
+      if (q.key === "email" && !isEmail(value)) {
+        setStatus("Ingresa un correo valido.", "error");
+        return false;
+      }
+
+      if (q.key === "password" && value.length < 6) {
+        setStatus("La contrasena debe tener al menos 6 caracteres.", "error");
+        return false;
+      }
+
+      if (q.key === "password_confirm" && value !== answers.password) {
+        setStatus("Las contrasenas no coinciden.", "error");
+        return false;
+      }
+
+      return true;
+    }
+
+    async function submitQuestionnaire() {
+      sending = true;
+      backBtn.disabled = true;
+      nextBtn.disabled = true;
+      setStatus("Enviando respuestas...");
+
+      const payload = {
+        nombre: answers.nombre,
+        email: answers.email,
+        whatsapp: answers.whatsapp,
+        alimentacion: answers.alimentacion,
+        sueno_horas: answers.sueno_horas,
+        sueno_calidad: answers.sueno_calidad,
+        hidratacion: answers.hidratacion,
+        ejercicio: answers.ejercicio,
+        password: answers.password
+      };
+
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo enviar el cuestionario");
+        }
+
+        setStatus("Registro completado correctamente.", "success");
+        nextBtn.textContent = "Completado";
+      } catch (error) {
+        setStatus("Hubo un error al guardar. Intenta nuevamente.", "error");
+        sending = false;
+        backBtn.disabled = false;
+        nextBtn.disabled = false;
+        nextBtn.textContent = "Enviar cuestionario";
+      }
+    }
+
+    backBtn.addEventListener("click", () => {
+      if (sending || currentIndex === 0) return;
+      currentIndex -= 1;
+      renderQuestion();
+    });
+
+    nextBtn.addEventListener("click", async () => {
+      if (sending) return;
+      if (!validateCurrent()) return;
+      if (currentIndex < questions.length - 1) {
+        currentIndex += 1;
+        renderQuestion();
+        return;
+      }
+      await submitQuestionnaire();
+    });
+
+    textInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        nextBtn.click();
+      }
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
