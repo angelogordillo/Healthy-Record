@@ -191,9 +191,9 @@
   <main class="card">
     <header class="top">
       <div>
-        <h1 class="title">Cuestionario de habitos</h1>
+        <h1 class="title">Cuentanos como fue tu semana pasada en estas actividades</h1>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 8</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 6</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -264,18 +264,6 @@
         label: "6. Cual es tu nombre?",
         type: "text",
         placeholder: "Nombre y apellido"
-      },
-      {
-        key: "whatsapp",
-        label: "7. Cual es tu numero de WhatsApp?",
-        type: "text",
-        placeholder: "+52 55 0000 0000"
-      },
-      {
-        key: "email",
-        label: "8. Cual es tu correo electronico?",
-        type: "email",
-        placeholder: "correo@empresa.com"
       }
     ];
 
@@ -341,17 +329,6 @@
       }
       if (key === "nombre") {
         return value.length >= 3 ? `Gracias, ${value.split(" ")[0]}.` : "Escribe tu nombre completo para personalizar mejor el seguimiento.";
-      }
-      if (key === "whatsapp") {
-        const digits = value.replace(/\D/g, "");
-        return digits.length >= 8
-          ? "Perfecto, este numero sirve para seguimiento."
-          : "Incluye lada y numero para contacto correcto.";
-      }
-      if (key === "email") {
-        return isEmail(value)
-          ? "Correo valido para enviarte recomendaciones."
-          : "Revisa el formato del correo (ejemplo: nombre@empresa.com).";
       }
       return "";
     }
@@ -420,11 +397,6 @@
         answers[q.key] = value;
       }
 
-      if (q.key === "email" && !isEmail(value)) {
-        setStatus("Ingresa un correo valido.", "error");
-        return false;
-      }
-
       return true;
     }
 
@@ -453,11 +425,12 @@
       backBtn.disabled = true;
       nextBtn.disabled = true;
       setStatus("Enviando respuestas...");
+      const syntheticEmail = `registro-${Date.now()}@healthyrecord.local`;
 
       const payload = {
         nombre: answers.nombre,
-        email: answers.email,
-        whatsapp: answers.whatsapp,
+        email: syntheticEmail,
+        whatsapp: "N/A",
         alimentacion: answers.alimentacion,
         sueno_horas: answers.sueno_horas,
         sueno_calidad: answers.sueno_calidad,
