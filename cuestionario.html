@@ -171,11 +171,59 @@
       min-height: 20px;
     }
 
+    .feedback-card {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-radius: 14px;
+      border: 1px solid rgba(0, 199, 140, 0.3);
+      background: linear-gradient(135deg, rgba(0, 199, 140, 0.14), rgba(0, 199, 140, 0.04));
+      padding: 10px 12px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 180ms ease, transform 180ms ease, border-color 180ms ease, background 180ms ease;
+      pointer-events: none;
+      min-height: 0;
+    }
+
+    .feedback-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .feedback-card.attention {
+      border-color: rgba(245, 158, 11, 0.45);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(245, 158, 11, 0.04));
+    }
+
+    .feedback-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(0, 199, 140, 0.22);
+      color: #0b6f51;
+      font-size: 13px;
+      line-height: 1;
+      flex: 0 0 auto;
+      font-weight: 700;
+    }
+
+    .feedback-card.attention .feedback-icon {
+      background: rgba(245, 158, 11, 0.25);
+      color: #9a5b03;
+    }
+
     .feedback {
-      margin-top: 10px;
-      color: #215646;
+      color: #134536;
       font-size: 14px;
-      min-height: 20px;
+      margin: 0;
+      line-height: 1.35;
+      min-height: 0;
+      font-weight: 600;
     }
 
     .status.error { color: var(--danger); }
@@ -202,7 +250,10 @@
       <h2 class="question" id="questionText"></h2>
       <div id="optionsContainer" class="options"></div>
       <input id="textInput" class="field" />
-      <p class="feedback" id="feedback" aria-live="polite"></p>
+      <div class="feedback-card" id="feedbackCard" aria-live="polite">
+        <span class="feedback-icon" id="feedbackIcon">i</span>
+        <p class="feedback" id="feedback"></p>
+      </div>
     </section>
 
     <div class="actions">
@@ -278,6 +329,8 @@
     const textInput = document.getElementById("textInput");
     const backBtn = document.getElementById("backBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const feedbackCardEl = document.getElementById("feedbackCard");
+    const feedbackIconEl = document.getElementById("feedbackIcon");
     const feedbackEl = document.getElementById("feedback");
     const statusEl = document.getElementById("status");
 
@@ -319,7 +372,18 @@
     }
 
     function setFeedback(message) {
-      feedbackEl.textContent = message || "";
+      const safeMessage = message || "";
+      feedbackEl.textContent = safeMessage;
+      if (!safeMessage) {
+        feedbackCardEl.classList.remove("visible", "attention");
+        feedbackIconEl.textContent = "i";
+        return;
+      }
+
+      const lowSignal = /(conviene|senal|bajo|mejorar|subir|priorizar)/i.test(safeMessage);
+      feedbackCardEl.classList.add("visible");
+      feedbackCardEl.classList.toggle("attention", lowSignal);
+      feedbackIconEl.textContent = lowSignal ? "!" : "✓";
     }
 
     function getInstantFeedback(key, value) {
