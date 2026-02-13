@@ -226,6 +226,98 @@
       font-weight: 600;
     }
 
+    .result {
+      display: none;
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 15% 10%, rgba(0, 199, 140, 0.22), transparent 34%),
+        radial-gradient(circle at 90% 0%, rgba(10, 143, 104, 0.18), transparent 45%),
+        #f7fcf9;
+      animation: popIn 360ms ease both;
+    }
+
+    .result.visible {
+      display: block;
+    }
+
+    .result-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .result-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, var(--brand), var(--brand-dark));
+      color: #fff;
+      display: inline-grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba(0, 199, 140, 0.25);
+    }
+
+    .result-title {
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.15;
+      margin: 0;
+    }
+
+    .result-highlight {
+      margin-top: 10px;
+      font-size: clamp(18px, 2.5vw, 24px);
+      line-height: 1.25;
+      font-weight: 700;
+      color: #0b3a2d;
+    }
+
+    .result-sub {
+      margin-top: 8px;
+      color: #245547;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .result-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .result-chip {
+      border: 1px solid rgba(0, 199, 140, 0.3);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .result-chip b {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #4a665a;
+      margin-bottom: 4px;
+      letter-spacing: 0.04em;
+    }
+
+    .result-chip span {
+      font-weight: 700;
+      color: #153f32;
+      font-size: 14px;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
     .status.error { color: var(--danger); }
     .status.success { color: #0a6a4d; }
 
@@ -262,6 +354,37 @@
     </div>
 
     <p class="status" id="status" aria-live="polite"></p>
+
+    <section class="result" id="finalResult" aria-live="polite">
+      <div class="result-head">
+        <span class="result-badge">✓</span>
+        <h3 class="result-title">Resumen personalizado</h3>
+      </div>
+      <p class="result-highlight" id="finalHeadline"></p>
+      <p class="result-sub" id="finalMessage"></p>
+      <div class="result-grid">
+        <article class="result-chip">
+          <b>Sueño</b>
+          <span id="summarySueno"></span>
+        </article>
+        <article class="result-chip">
+          <b>Hidratación</b>
+          <span id="summaryHidratacion"></span>
+        </article>
+        <article class="result-chip">
+          <b>Alimentación</b>
+          <span id="summaryAlimentacion"></span>
+        </article>
+        <article class="result-chip">
+          <b>Ejercicio</b>
+          <span id="summaryEjercicio"></span>
+        </article>
+        <article class="result-chip">
+          <b>Valoración general</b>
+          <span id="summaryValoracion"></span>
+        </article>
+      </div>
+    </section>
   </main>
 
   <script>
@@ -344,6 +467,14 @@
     const feedbackIconEl = document.getElementById("feedbackIcon");
     const feedbackEl = document.getElementById("feedback");
     const statusEl = document.getElementById("status");
+    const finalResultEl = document.getElementById("finalResult");
+    const finalHeadlineEl = document.getElementById("finalHeadline");
+    const finalMessageEl = document.getElementById("finalMessage");
+    const summarySuenoEl = document.getElementById("summarySueno");
+    const summaryHidratacionEl = document.getElementById("summaryHidratacion");
+    const summaryAlimentacionEl = document.getElementById("summaryAlimentacion");
+    const summaryEjercicioEl = document.getElementById("summaryEjercicio");
+    const summaryValoracionEl = document.getElementById("summaryValoracion");
 
     const feedbackByQuestion = {
       sueno_horas: {
@@ -504,6 +635,24 @@
       return `Feedback inicial: conviene enfocarte en ${notes.join(", ")}.`;
     }
 
+    function renderFinalSection() {
+      const firstName = (answers.nombre || "").trim().split(" ")[0] || "Gracias";
+      finalHeadlineEl.textContent = `${firstName}, este es tu feedback de cierre.`;
+      finalMessageEl.textContent = buildOverallFeedback();
+      summarySuenoEl.textContent = `${answers.sueno_horas || "-"} · ${answers.sueno_calidad || "-"}`;
+      summaryHidratacionEl.textContent = answers.hidratacion || "-";
+      summaryAlimentacionEl.textContent = answers.alimentacion || "-";
+      summaryEjercicioEl.textContent = answers.ejercicio || "-";
+      summaryValoracionEl.textContent = answers.valoracion_general || "-";
+
+      document.getElementById("questionContainer").style.display = "none";
+      document.querySelector(".actions").style.display = "none";
+      document.querySelector(".bar").style.display = "none";
+      stepLabel.style.display = "none";
+      statusEl.style.display = "none";
+      finalResultEl.classList.add("visible");
+    }
+
     async function submitQuestionnaire() {
       sending = true;
       backBtn.disabled = true;
@@ -533,7 +682,8 @@
           throw new Error("No se pudo enviar el cuestionario");
         }
 
-        setStatus(`Registro completado correctamente. ${buildOverallFeedback()}`, "success");
+        setStatus("", "");
+        renderFinalSection();
         nextBtn.textContent = "Completado";
       } catch (error) {
         setStatus("Hubo un error al guardar. Intenta nuevamente.", "error");
