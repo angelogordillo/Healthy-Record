@@ -241,7 +241,7 @@
       <div>
         <h1 class="title">Cuentanos como fue tu semana pasada en estas actividades</h1>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 6</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 7</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -315,6 +315,17 @@
         label: "6. Cual es tu nombre?",
         type: "text",
         placeholder: "Nombre y apellido"
+      },
+      {
+        key: "valoracion_general",
+        label: "7. Como valorarias en general el programa hasta este momento?",
+        type: "options",
+        options: [
+          "Excelente",
+          "Buena",
+          "Regular",
+          "Necesita mejorar"
+        ]
       }
     ];
 
@@ -363,6 +374,12 @@
         "1-2 días (30-60 min)": "Buen inicio. Subir a 3 dias semanales mejoraria resultados.",
         "Solo caminatas ligeras": "Caminar ayuda; sumar algo de fuerza potenciaria el avance.",
         "No realizo actividad fisica": "Un inicio gradual (10-15 min al dia) puede hacer gran diferencia."
+      },
+      valoracion_general: {
+        "Excelente": "Gracias por tu valoracion. Vamos por muy buen camino.",
+        "Buena": "Muy buen avance. Seguimos afinando para mantener resultados.",
+        "Regular": "Gracias por la honestidad. Podemos ajustar el programa para mejorar tu experiencia.",
+        "Necesita mejorar": "Gracias por compartirlo. Tomamos esto como prioridad para corregir rapido."
       }
     };
 
@@ -477,6 +494,9 @@
       }
       if (answers.ejercicio === "No realizo actividad fisica" || answers.ejercicio === "Solo caminatas ligeras") {
         notes.push("aumentar actividad fisica progresivamente");
+      }
+      if (answers.valoracion_general === "Regular" || answers.valoracion_general === "Necesita mejorar") {
+        notes.push("revisar ajustes del programa para mejorar la experiencia");
       }
       if (!notes.length) {
         return "Perfil inicial favorable. Recomendacion: mantener constancia en habitos clave.";
