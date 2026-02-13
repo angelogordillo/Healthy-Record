@@ -716,8 +716,8 @@ def acceso_general(_: bool = Depends(require_basic_auth)):
 
 @app.get("/panel")
 def panel():
-    panel_path = Path(__file__).parent / "panel.html"
-    return FileResponse(panel_path)
+    cuestionario_path = Path(__file__).parent / "cuestionario.html"
+    return FileResponse(cuestionario_path)
 
 @app.get("/cuestionario")
 def cuestionario():
