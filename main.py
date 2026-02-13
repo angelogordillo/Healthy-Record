@@ -513,7 +513,7 @@ class HabitRegistration(BaseModel):
     sueno_calidad: str
     hidratacion: str
     ejercicio: str
-    password: str
+    password: str | None = None
 
 
 class HabitLogin(BaseModel):
@@ -1033,9 +1033,10 @@ def list_inbody_reports(months: int = 12, auth: dict = Depends(require_panel_aut
 @app.post("/api/register")
 def register(payload: HabitRegistration):
     try:
-        if not payload.password or len(payload.password) < 6:
+        raw_password = payload.password or secrets.token_urlsafe(12)
+        if len(raw_password) < 6:
             raise HTTPException(status_code=400, detail="Password too short")
-        password_hash = pwd_context.hash(payload.password)
+        password_hash = pwd_context.hash(raw_password)
         with get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(

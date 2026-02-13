@@ -171,6 +171,13 @@
       min-height: 20px;
     }
 
+    .feedback {
+      margin-top: 10px;
+      color: #215646;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
     .status.error { color: var(--danger); }
     .status.success { color: #0a6a4d; }
 
@@ -185,9 +192,8 @@
     <header class="top">
       <div>
         <h1 class="title">Cuestionario de habitos</h1>
-        <p class="muted">Una pregunta por vez para un registro rapido.</p>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 10</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 8</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -196,6 +202,7 @@
       <h2 class="question" id="questionText"></h2>
       <div id="optionsContainer" class="options"></div>
       <input id="textInput" class="field" />
+      <p class="feedback" id="feedback" aria-live="polite"></p>
     </section>
 
     <div class="actions">
@@ -212,11 +219,11 @@
         key: "sueno_horas",
         label: "1. Cuantas horas duermes en promedio cada dia?",
         type: "options",
-        options: ["7-8 horas", "6-7 horas", "Menos de 6 horas", "Mas de 8 horas"]
+        options: ["7-8 horas", "6-7 horas", "Menos de 6 horas", "Más de 8 horas"]
       },
       {
         key: "sueno_calidad",
-        label: "2. Como describirias la calidad de tu sueno?",
+        label: "2. Como describirias la calidad de tu sueño?",
         type: "options",
         options: [
           "Buena (descanso continuo)",
@@ -228,7 +235,7 @@
         key: "hidratacion",
         label: "3. Cuanta agua sueles tomar al dia?",
         type: "options",
-        options: ["2 litros o mas", "1.5 a 2 litros", "1 a 1.5 litros", "Menos de 1 litro"]
+        options: ["2 litros o más", "1.5 a 2 litros", "1 a 1.5 litros", "Menos de 1 litro"]
       },
       {
         key: "alimentacion",
@@ -246,8 +253,8 @@
         label: "5. Con que frecuencia haces actividad fisica?",
         type: "options",
         options: [
-          "3+ dias (30-60 min)",
-          "1-2 dias (30-60 min)",
+          "3+ días (30-60 min)",
+          "1-2 días (30-60 min)",
           "Solo caminatas ligeras",
           "No realizo actividad fisica"
         ]
@@ -269,18 +276,6 @@
         label: "8. Cual es tu correo electronico?",
         type: "email",
         placeholder: "correo@empresa.com"
-      },
-      {
-        key: "password",
-        label: "9. Crea una contrasena de al menos 6 caracteres",
-        type: "password",
-        placeholder: "********"
-      },
-      {
-        key: "password_confirm",
-        label: "10. Repite tu contrasena",
-        type: "password",
-        placeholder: "********"
       }
     ];
 
@@ -295,11 +290,70 @@
     const textInput = document.getElementById("textInput");
     const backBtn = document.getElementById("backBtn");
     const nextBtn = document.getElementById("nextBtn");
+    const feedbackEl = document.getElementById("feedback");
     const statusEl = document.getElementById("status");
+
+    const feedbackByQuestion = {
+      sueno_horas: {
+        "7-8 horas": "Excelente base para recuperacion y energia diaria.",
+        "6-7 horas": "Buena base; subir un poco podria mejorar enfoque y recuperacion.",
+        "Menos de 6 horas": "Conviene priorizar descanso: dormir poco impacta energia, apetito y estres.",
+        "Más de 8 horas": "Puede ser positivo si despiertas con energia; revisa calidad y horarios regulares."
+      },
+      sueno_calidad: {
+        "Buena (descanso continuo)": "Buen indicador: sueles alcanzar sueño reparador.",
+        "Regular (algunos despertares)": "Hay margen de mejora ajustando rutina nocturna y horario de descanso.",
+        "Baja (despertares frecuentes)": "Senal de atencion: vale la pena reforzar higiene de sueño."
+      },
+      hidratacion: {
+        "2 litros o más": "Muy bien, mantienes una hidratacion protectora para rendimiento y enfoque.",
+        "1.5 a 2 litros": "Buen rango. Un poco mas puede apoyar energia y control del hambre.",
+        "1 a 1.5 litros": "Conviene subir progresivamente la hidratacion diaria.",
+        "Menos de 1 litro": "Nivel bajo: priorizar agua puede darte mejora rapida de bienestar."
+      },
+      alimentacion: {
+        "Balanceada (3 comidas + snacks saludables)": "Muy buena estructura de alimentacion diaria.",
+        "Regular (2-3 comidas, pocos snacks)": "Base aceptable; pequenos ajustes pueden dar resultados estables.",
+        "Irregular (saltas comidas)": "Saltarte comidas suele aumentar fatiga y antojos.",
+        "Alta en ultraprocesados": "Conviene reducir ultraprocesados gradualmente y priorizar comida real."
+      },
+      ejercicio: {
+        "3+ días (30-60 min)": "Excelente frecuencia. Mantener constancia es clave.",
+        "1-2 días (30-60 min)": "Buen inicio. Subir a 3 dias semanales mejoraria resultados.",
+        "Solo caminatas ligeras": "Caminar ayuda; sumar algo de fuerza potenciaria el avance.",
+        "No realizo actividad fisica": "Un inicio gradual (10-15 min al dia) puede hacer gran diferencia."
+      }
+    };
 
     function setStatus(message, kind = "") {
       statusEl.textContent = message;
       statusEl.className = `status${kind ? ` ${kind}` : ""}`;
+    }
+
+    function setFeedback(message) {
+      feedbackEl.textContent = message || "";
+    }
+
+    function getInstantFeedback(key, value) {
+      if (!value) return "";
+      if (feedbackByQuestion[key]) {
+        return feedbackByQuestion[key][value] || "";
+      }
+      if (key === "nombre") {
+        return value.length >= 3 ? `Gracias, ${value.split(" ")[0]}.` : "Escribe tu nombre completo para personalizar mejor el seguimiento.";
+      }
+      if (key === "whatsapp") {
+        const digits = value.replace(/\D/g, "");
+        return digits.length >= 8
+          ? "Perfecto, este numero sirve para seguimiento."
+          : "Incluye lada y numero para contacto correcto.";
+      }
+      if (key === "email") {
+        return isEmail(value)
+          ? "Correo valido para enviarte recomendaciones."
+          : "Revisa el formato del correo (ejemplo: nombre@empresa.com).";
+      }
+      return "";
     }
 
     function getCurrentQuestion() {
@@ -322,6 +376,7 @@
       textInput.style.display = "none";
       textInput.value = answers[q.key] || "";
       setStatus("");
+      setFeedback(getInstantFeedback(q.key, answers[q.key]));
 
       if (q.type === "options") {
         q.options.forEach((option) => {
@@ -336,11 +391,12 @@
             answers[q.key] = option;
             [...optionsContainer.children].forEach((child) => child.classList.remove("active"));
             button.classList.add("active");
+            setFeedback(getInstantFeedback(q.key, option));
           });
           optionsContainer.appendChild(button);
         });
       } else {
-        textInput.type = q.type === "password" ? "password" : q.type === "email" ? "email" : "text";
+        textInput.type = q.type === "email" ? "email" : "text";
         textInput.placeholder = q.placeholder || "";
         textInput.style.display = "block";
         textInput.focus();
@@ -369,17 +425,27 @@
         return false;
       }
 
-      if (q.key === "password" && value.length < 6) {
-        setStatus("La contrasena debe tener al menos 6 caracteres.", "error");
-        return false;
-      }
-
-      if (q.key === "password_confirm" && value !== answers.password) {
-        setStatus("Las contrasenas no coinciden.", "error");
-        return false;
-      }
-
       return true;
+    }
+
+    function buildOverallFeedback() {
+      const notes = [];
+      if (answers.sueno_horas === "Menos de 6 horas" || answers.sueno_calidad === "Baja (despertares frecuentes)") {
+        notes.push("priorizar higiene y regularidad del sueño");
+      }
+      if (answers.hidratacion === "Menos de 1 litro" || answers.hidratacion === "1 a 1.5 litros") {
+        notes.push("subir hidratacion diaria");
+      }
+      if (answers.alimentacion === "Irregular (saltas comidas)" || answers.alimentacion === "Alta en ultraprocesados") {
+        notes.push("mejorar estructura y calidad de alimentacion");
+      }
+      if (answers.ejercicio === "No realizo actividad fisica" || answers.ejercicio === "Solo caminatas ligeras") {
+        notes.push("aumentar actividad fisica progresivamente");
+      }
+      if (!notes.length) {
+        return "Perfil inicial favorable. Recomendacion: mantener constancia en habitos clave.";
+      }
+      return `Feedback inicial: conviene enfocarte en ${notes.join(", ")}.`;
     }
 
     async function submitQuestionnaire() {
@@ -396,8 +462,7 @@
         sueno_horas: answers.sueno_horas,
         sueno_calidad: answers.sueno_calidad,
         hidratacion: answers.hidratacion,
-        ejercicio: answers.ejercicio,
-        password: answers.password
+        ejercicio: answers.ejercicio
       };
 
       try {
@@ -411,7 +476,7 @@
           throw new Error("No se pudo enviar el cuestionario");
         }
 
-        setStatus("Registro completado correctamente.", "success");
+        setStatus(`Registro completado correctamente. ${buildOverallFeedback()}`, "success");
         nextBtn.textContent = "Completado";
       } catch (error) {
         setStatus("Hubo un error al guardar. Intenta nuevamente.", "error");
@@ -444,6 +509,14 @@
         event.preventDefault();
         nextBtn.click();
       }
+    });
+
+    textInput.addEventListener("input", () => {
+      const q = getCurrentQuestion();
+      if (q.type === "options") return;
+      const value = textInput.value.trim();
+      answers[q.key] = value;
+      setFeedback(getInstantFeedback(q.key, value));
     });
 
     renderQuestion();
