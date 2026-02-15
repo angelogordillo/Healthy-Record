@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Modulo de Sueno</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap");
+
+    :root {
+      --bg: #f3f7fb;
+      --ink: #0f1e34;
+      --muted: #42546f;
+      --line: rgba(15, 30, 52, 0.15);
+      --card: #ffffff;
+      --blue: #06038d;
+      --cyan: #17a8ff;
+      --green: #00a76f;
+      --green-soft: #e7fbf2;
+      --warn: #d65353;
+      --warn-soft: #fff1f1;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      background:
+        radial-gradient(900px 480px at 15% -10%, #e6f4ff, transparent 65%),
+        radial-gradient(760px 420px at 85% -20%, #e8eeff, transparent 60%),
+        var(--bg);
+    }
+
+    .wrap {
+      width: min(1100px, 94vw);
+      margin: 0 auto;
+      padding: 28px 0 56px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .crumb {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 700;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 10px 14px;
+    }
+
+    .hero {
+      background: linear-gradient(140deg, #ffffff, #f8fbff 62%, #eef6ff);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: clamp(20px, 3.5vw, 34px);
+      box-shadow: 0 10px 30px rgba(6, 3, 141, 0.08);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #0e5f94;
+      background: #e6f3ff;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(31px, 5vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 68ch;
+    }
+
+    .summary {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .summary-card strong {
+      display: block;
+      font-size: 13px;
+      color: #2b4f7c;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .section { margin-top: 28px; }
+
+    .section h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(25px, 4vw, 36px);
+      line-height: 1.15;
+      color: var(--blue);
+      margin-bottom: 10px;
+    }
+
+    .section p {
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .card h3 {
+      color: var(--blue);
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .list li {
+      list-style: none;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .duo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .benefits {
+      border: 1px solid rgba(0, 167, 111, 0.3);
+      background: var(--green-soft);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .risks {
+      border: 1px solid rgba(214, 83, 83, 0.33);
+      background: var(--warn-soft);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .benefits h3 { color: #0b6e4b; margin-bottom: 8px; }
+    .risks h3 { color: #9a2222; margin-bottom: 8px; }
+
+    .benefits li, .risks li {
+      margin-left: 18px;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .benefits li:last-child, .risks li:last-child { margin-bottom: 0; }
+
+    .cta {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      background: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .cta a {
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .cta a.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(120deg, var(--blue), var(--cyan));
+    }
+
+    footer {
+      margin-top: 26px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 640px) {
+      .top { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="crumb" href="/">Volver a Healthy Record</a>
+      <a class="crumb" href="/panel">Ir al panel personal</a>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Modulo de sueno</span>
+      <h1>Dormir mejor mejora tu salud fisica, mental y rendimiento diario.</h1>
+      <p>Una buena higiene de sueño no depende solo de la cantidad de horas. Este modulo te ayuda a crear rutinas sostenibles para aumentar calidad de descanso, mejorar energia y reducir riesgos metabolicos y emocionales.</p>
+      <div class="summary">
+        <article class="summary-card">
+          <strong>Cantidad sugerida</strong>
+          7 a 9 horas por noche para adultos, con horario regular.
+        </article>
+        <article class="summary-card">
+          <strong>Meta de calidad</strong>
+          Menos despertares nocturnos y sensacion de recuperacion al despertar.
+        </article>
+        <article class="summary-card">
+          <strong>Enfoque practico</strong>
+          Ajustes pequeños, constantes y medibles durante toda la semana.
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Tips y mejores practicas</h2>
+      <p>Aplica estas acciones en orden de prioridad. Si puedes sostener 4 o mas de forma diaria, suele mejorar el descanso en pocas semanas.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Horario consistente</h3>
+          <p>Acuestate y levantate a la misma hora, incluso fines de semana. Reduce la variacion a menos de 60 minutos.</p>
+        </article>
+        <article class="card">
+          <h3>Rutina pre-sueño</h3>
+          <p>Dedica 30-45 minutos a bajar estimulos: luz tenue, respiracion lenta, lectura ligera o estiramiento suave.</p>
+        </article>
+        <article class="card">
+          <h3>Pantallas y cafeina</h3>
+          <p>Evita pantallas brillantes 60 minutos antes de dormir y cafeina 6-8 horas antes de acostarte.</p>
+        </article>
+        <article class="card">
+          <h3>Ambiente del dormitorio</h3>
+          <p>Mantener cuarto oscuro, silencioso y fresco (ideal 18-20 C) favorece continuidad del sueño profundo.</p>
+        </article>
+        <article class="card">
+          <h3>Cena ligera y temprano</h3>
+          <p>Cena 2-3 horas antes de acostarte. Evita comidas muy pesadas o alcohol en la noche.</p>
+        </article>
+        <article class="card">
+          <h3>Luz solar y actividad fisica</h3>
+          <p>Exponte a luz natural al inicio del dia y realiza ejercicio regular, preferentemente antes de la noche.</p>
+        </article>
+      </div>
+      <ul class="list">
+        <li><strong>Micro-habito 1:</strong> define una alarma para "inicio de rutina nocturna", no solo para despertar.</li>
+        <li><strong>Micro-habito 2:</strong> registra durante 14 dias horas de cama, despertares y nivel de energia al levantarte.</li>
+        <li><strong>Micro-habito 3:</strong> si no puedes dormir en 20-30 min, sal de la cama y vuelve cuando tengas sueño.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Impacto en salud: beneficios y riesgos</h2>
+      <p>La diferencia entre una higiene de sueño adecuada y una deficiente es clinicamente relevante. Aqui esta el contraste de forma clara:</p>
+      <div class="duo">
+        <article class="benefits">
+          <h3>Beneficios de una buena higiene de sueño</h3>
+          <ul>
+            <li>Mejor regulacion de apetito y menor tendencia a antojos altos en azucar.</li>
+            <li>Mayor rendimiento cognitivo: concentracion, memoria y toma de decisiones.</li>
+            <li>Mejor recuperacion muscular, equilibrio hormonal e inmunidad.</li>
+            <li>Menor irritabilidad y mejor manejo del estres diario.</li>
+            <li>Apoyo al control de peso, glucosa y presion arterial.</li>
+          </ul>
+        </article>
+        <article class="risks">
+          <h3>Riesgos de baja higiene de sueño</h3>
+          <ul>
+            <li>Fatiga cronica, baja productividad y errores operativos frecuentes.</li>
+            <li>Aumento de riesgo de ansiedad, sintomas depresivos y burnout.</li>
+            <li>Mayor riesgo cardiometabolico: hipertension, resistencia a la insulina y aumento de peso.</li>
+            <li>Peor recuperacion fisica, mas dolor y menor tolerancia al ejercicio.</li>
+            <li>Alteraciones del sistema inmune y mayor susceptibilidad a enfermedad.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Checklist semanal rapido</h2>
+      <p>Marca progreso con este objetivo base: al menos 5 de 7 noches con rutina completa.</p>
+      <ul class="list">
+        <li>Me dormi y desperte en horario planificado.</li>
+        <li>No use pantallas en la ultima hora del dia.</li>
+        <li>Evite cafeina tarde y alcohol nocturno.</li>
+        <li>Dormi 7 horas o mas con sensacion de descanso.</li>
+      </ul>
+    </section>
+
+    <section class="cta">
+      <p>Si mantienes somnolencia diurna intensa, ronquidos fuertes o despertares con ahogo, busca evaluacion medica para descartar trastornos de sueño.</p>
+      <a class="primary" href="/panel">Registrar habitos en panel</a>
+    </section>
+
+    <footer>
+      Healthy Record · Modulo educativo de sueno para promover salud preventiva y rendimiento sostenible.
+    </footer>
+  </main>
+</body>
+</html>

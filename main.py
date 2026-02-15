@@ -724,6 +724,12 @@ def cuestionario():
     cuestionario_path = Path(__file__).parent / "cuestionario.html"
     return FileResponse(cuestionario_path)
 
+@app.get("/sueno")
+@app.get("/sueño")
+def modulo_sueno():
+    sueno_path = Path(__file__).parent / "sueno.html"
+    return FileResponse(sueno_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:
