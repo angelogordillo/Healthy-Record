@@ -522,6 +522,8 @@ class HabitLogin(BaseModel):
 
 
 class PersonAccessRegistration(BaseModel):
+    nombre: str
+    apellido: str
     email: EmailStr
     password: str
 
@@ -565,6 +567,23 @@ class CompanyRegistration(BaseModel):
     telefono_movil: str
     email_corporativo: EmailStr
     password: str
+
+
+class SleepHabitEntry(BaseModel):
+    entry_date: date | None = None
+    horas_cama: float
+    despertares: int
+    energia_despertar: int
+
+
+class QuestionnaireEntry(BaseModel):
+    entry_date: date | None = None
+    alimentacion: str
+    sueno_horas: str
+    sueno_calidad: str
+    hidratacion: str
+    ejercicio: str
+    valoracion_general: str
 
 
 def get_conn():
@@ -1103,7 +1122,11 @@ def person_register(payload: PersonAccessRegistration):
             raise HTTPException(status_code=400, detail="Password too short")
 
         password_hash = pwd_context.hash(payload.password)
-        alias = payload.email.split("@", 1)[0]
+        nombre = payload.nombre.strip()
+        apellido = payload.apellido.strip()
+        if not nombre or not apellido:
+            raise HTTPException(status_code=400, detail="Nombre y apellido son requeridos")
+        full_name = f"{nombre} {apellido}".strip()
 
         with get_conn() as conn:
             with conn.cursor() as cur:
@@ -1117,7 +1140,7 @@ def person_register(payload: PersonAccessRegistration):
                         RETURNING id;
                         """,
                         (
-                            alias,
+                            full_name,
                             payload.email,
                             "N/A",
                             "Regular (2-3 comidas, pocos snacks)",
@@ -1140,7 +1163,7 @@ def person_register(payload: PersonAccessRegistration):
                         RETURNING id;
                         """,
                         (
-                            alias,
+                            full_name,
                             payload.email,
                             "N/A",
                             "Regular (2-3 comidas, pocos snacks)",
@@ -1151,7 +1174,7 @@ def person_register(payload: PersonAccessRegistration):
                         ),
                     )
                 new_id = cur.fetchone()[0]
-        return {"ok": True, "id": new_id}
+        return {"ok": True, "id": new_id, "nombre": full_name}
     except HTTPException:
         raise
     except Exception as exc:
@@ -1182,6 +1205,177 @@ def panel_login(payload: HabitLogin):
         return {"ok": True, "token": token}
     except HTTPException:
         raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/panel/me")
+def panel_me(auth: dict = Depends(require_panel_auth)):
+    try:
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT nombre
+                    FROM habit_registrations
+                    WHERE email = %s
+                    ORDER BY created_at DESC
+                    LIMIT 1;
+                    """,
+                    (auth["email"],),
+                )
+                row = cur.fetchone()
+        nombre = row[0] if row and row[0] else auth["email"].split("@", 1)[0]
+        return {"email": auth["email"], "nombre": nombre}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/sueno/micro-habito")
+def create_sleep_habit_entry(payload: SleepHabitEntry, auth: dict = Depends(require_panel_auth)):
+    try:
+        entry_date = payload.entry_date or datetime.now(timezone.utc).date()
+        if entry_date > datetime.now(timezone.utc).date():
+            raise HTTPException(status_code=400, detail="Invalid date")
+        if payload.horas_cama <= 0 or payload.horas_cama > 24:
+            raise HTTPException(status_code=400, detail="Horas de cama fuera de rango")
+        if payload.despertares < 0 or payload.despertares > 20:
+            raise HTTPException(status_code=400, detail="Despertares fuera de rango")
+        if payload.energia_despertar < 1 or payload.energia_despertar > 10:
+            raise HTTPException(status_code=400, detail="Energia fuera de rango")
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO user_sleep_habit_entries
+                      (email, entry_date, horas_cama, despertares, energia_despertar)
+                    VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (email, entry_date) DO UPDATE
+                    SET horas_cama = EXCLUDED.horas_cama,
+                        despertares = EXCLUDED.despertares,
+                        energia_despertar = EXCLUDED.energia_despertar
+                    RETURNING id;
+                    """,
+                    (
+                        auth["email"],
+                        entry_date,
+                        payload.horas_cama,
+                        payload.despertares,
+                        payload.energia_despertar,
+                    ),
+                )
+                cur.fetchone()
+        return {"ok": True, "date": entry_date.isoformat()}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/sueno/micro-habito")
+def list_sleep_habit_entries(days: int = 14, auth: dict = Depends(require_panel_auth)):
+    try:
+        safe_days = max(7, min(days, 60))
+        since = datetime.now(timezone.utc).date() - timedelta(days=safe_days - 1)
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT entry_date, horas_cama, despertares, energia_despertar
+                    FROM user_sleep_habit_entries
+                    WHERE email = %s AND entry_date >= %s
+                    ORDER BY entry_date ASC;
+                    """,
+                    (auth["email"], since),
+                )
+                rows = cur.fetchall()
+        entries = [
+            {
+                "date": row[0].isoformat(),
+                "horas_cama": float(row[1]),
+                "despertares": row[2],
+                "energia_despertar": row[3],
+            }
+            for row in rows
+        ]
+        return {"entries": entries}
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.post("/api/questionnaire/entries")
+def create_questionnaire_entry(payload: QuestionnaireEntry, auth: dict = Depends(require_panel_auth)):
+    try:
+        entry_date = payload.entry_date or datetime.now(timezone.utc).date()
+        if entry_date > datetime.now(timezone.utc).date():
+            raise HTTPException(status_code=400, detail="Invalid date")
+
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO user_questionnaire_entries
+                      (email, entry_date, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, valoracion_general)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                    ON CONFLICT (email, entry_date) DO UPDATE
+                    SET alimentacion = EXCLUDED.alimentacion,
+                        sueno_horas = EXCLUDED.sueno_horas,
+                        sueno_calidad = EXCLUDED.sueno_calidad,
+                        hidratacion = EXCLUDED.hidratacion,
+                        ejercicio = EXCLUDED.ejercicio,
+                        valoracion_general = EXCLUDED.valoracion_general
+                    RETURNING id;
+                    """,
+                    (
+                        auth["email"],
+                        entry_date,
+                        payload.alimentacion,
+                        payload.sueno_horas,
+                        payload.sueno_calidad,
+                        payload.hidratacion,
+                        payload.ejercicio,
+                        payload.valoracion_general,
+                    ),
+                )
+                cur.fetchone()
+        return {"ok": True, "date": entry_date.isoformat()}
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=str(exc))
+
+
+@app.get("/api/questionnaire/entries")
+def list_questionnaire_entries(days: int = 90, auth: dict = Depends(require_panel_auth)):
+    try:
+        safe_days = max(7, min(days, 365))
+        since = datetime.now(timezone.utc).date() - timedelta(days=safe_days - 1)
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    SELECT entry_date, alimentacion, sueno_horas, sueno_calidad, hidratacion, ejercicio, valoracion_general
+                    FROM user_questionnaire_entries
+                    WHERE email = %s AND entry_date >= %s
+                    ORDER BY entry_date ASC;
+                    """,
+                    (auth["email"], since),
+                )
+                rows = cur.fetchall()
+        entries = [
+            {
+                "date": row[0].isoformat(),
+                "alimentacion": row[1],
+                "sueno_horas": row[2],
+                "sueno_calidad": row[3],
+                "hidratacion": row[4],
+                "ejercicio": row[5],
+                "valoracion_general": row[6],
+            }
+            for row in rows
+        ]
+        return {"entries": entries}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 

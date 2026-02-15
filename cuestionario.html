@@ -333,7 +333,7 @@
       <div>
         <h1 class="title">Cuentanos como fue tu semana pasada en estas actividades</h1>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 7</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 6</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -362,6 +362,7 @@
       </div>
       <p class="result-highlight" id="finalHeadline"></p>
       <p class="result-sub" id="finalMessage"></p>
+      <p class="result-sub" id="trendSummary"></p>
       <div class="result-grid">
         <article class="result-chip">
           <b>Sueño</b>
@@ -434,14 +435,8 @@
         ]
       },
       {
-        key: "nombre",
-        label: "6. Cual es tu nombre?",
-        type: "text",
-        placeholder: "Nombre y apellido"
-      },
-      {
         key: "valoracion_general",
-        label: "7. Como valorarias en general el programa hasta este momento?",
+        label: "6. Como valorarias en general el programa hasta este momento?",
         type: "options",
         options: [
           "Excelente",
@@ -470,6 +465,7 @@
     const finalResultEl = document.getElementById("finalResult");
     const finalHeadlineEl = document.getElementById("finalHeadline");
     const finalMessageEl = document.getElementById("finalMessage");
+    const trendSummaryEl = document.getElementById("trendSummary");
     const summarySuenoEl = document.getElementById("summarySueno");
     const summaryHidratacionEl = document.getElementById("summaryHidratacion");
     const summaryAlimentacionEl = document.getElementById("summaryAlimentacion");
@@ -538,9 +534,6 @@
       if (!value) return "";
       if (feedbackByQuestion[key]) {
         return feedbackByQuestion[key][value] || "";
-      }
-      if (key === "nombre") {
-        return value.length >= 3 ? `Gracias, ${value.split(" ")[0]}.` : "Escribe tu nombre completo para personalizar mejor el seguimiento.";
       }
       return "";
     }
@@ -635,10 +628,39 @@
       return `Feedback inicial: conviene enfocarte en ${notes.join(", ")}.`;
     }
 
-    function renderFinalSection() {
-      const firstName = (answers.nombre || "").trim().split(" ")[0] || "Gracias";
+    async function buildTrendSummary(token) {
+      try {
+        const response = await fetch("/api/questionnaire/entries?days=90", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) return "No se pudo calcular tendencia histórica.";
+        const data = await response.json();
+        const entries = data.entries || [];
+        if (entries.length < 2) {
+          return "Aún no hay suficientes respuestas para tendencia. Sigue registrando tus semanas.";
+        }
+
+        const badSleepCount = entries.filter(
+          (entry) =>
+            entry.sueno_horas === "Menos de 6 horas" ||
+            entry.sueno_calidad === "Baja (despertares frecuentes)"
+        ).length;
+        const sleepRate = Math.round((badSleepCount / entries.length) * 100);
+        const goodHydrationCount = entries.filter(
+          (entry) => entry.hidratacion === "2 litros o más" || entry.hidratacion === "1.5 a 2 litros"
+        ).length;
+        const hydrationRate = Math.round((goodHydrationCount / entries.length) * 100);
+        return `Tendencia (${entries.length} registros): sueño en riesgo ${sleepRate}% · hidratación adecuada ${hydrationRate}%.`;
+      } catch (error) {
+        return "No se pudo calcular tendencia histórica.";
+      }
+    }
+
+    function renderFinalSection(userName, trendSummary) {
+      const firstName = (userName || "").trim().split(" ")[0] || "Gracias";
       finalHeadlineEl.textContent = `${firstName}, este es tu feedback de cierre.`;
       finalMessageEl.textContent = buildOverallFeedback();
+      trendSummaryEl.textContent = trendSummary || "";
       summarySuenoEl.textContent = `${answers.sueno_horas || "-"} · ${answers.sueno_calidad || "-"}`;
       summaryHidratacionEl.textContent = answers.hidratacion || "-";
       summaryAlimentacionEl.textContent = answers.alimentacion || "-";
@@ -658,23 +680,31 @@
       backBtn.disabled = true;
       nextBtn.disabled = true;
       setStatus("Enviando respuestas...");
-      const syntheticEmail = `registro-${Date.now()}@healthyrecord.org`;
+      const token = localStorage.getItem("panelToken");
+      if (!token) {
+        setStatus("Inicia sesión en Acceso personas para vincular respuestas a tu usuario.", "error");
+        sending = false;
+        backBtn.disabled = false;
+        nextBtn.disabled = false;
+        return;
+      }
 
       const payload = {
-        nombre: answers.nombre,
-        email: syntheticEmail,
-        whatsapp: "N/A",
         alimentacion: answers.alimentacion,
         sueno_horas: answers.sueno_horas,
         sueno_calidad: answers.sueno_calidad,
         hidratacion: answers.hidratacion,
-        ejercicio: answers.ejercicio
+        ejercicio: answers.ejercicio,
+        valoracion_general: answers.valoracion_general
       };
 
       try {
-        const response = await fetch("/api/register", {
+        const response = await fetch("/api/questionnaire/entries", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
           body: JSON.stringify(payload)
         });
 
@@ -682,8 +712,22 @@
           throw new Error("No se pudo enviar el cuestionario");
         }
 
+        let userName = localStorage.getItem("panelUserName") || "";
+        if (!userName) {
+          const meResponse = await fetch("/api/panel/me", {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (meResponse.ok) {
+            const meData = await meResponse.json();
+            userName = meData.nombre || "";
+            if (userName) {
+              localStorage.setItem("panelUserName", userName);
+            }
+          }
+        }
+        const trendSummary = await buildTrendSummary(token);
         setStatus("", "");
-        renderFinalSection();
+        renderFinalSection(userName, trendSummary);
         nextBtn.textContent = "Completado";
       } catch (error) {
         setStatus("Hubo un error al guardar. Intenta nuevamente.", "error");
@@ -725,6 +769,10 @@
       answers[q.key] = value;
       setFeedback(getInstantFeedback(q.key, value));
     });
+
+    if (!localStorage.getItem("panelToken")) {
+      setStatus("Debes iniciar sesión en Acceso personas para guardar respuestas vinculadas a tu usuario.", "error");
+    }
 
     renderQuestion();
   </script>

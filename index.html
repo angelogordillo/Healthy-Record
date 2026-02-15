@@ -295,6 +295,12 @@
           <p>Quiero registrarme para presentarlo a mi área de personal en la empresa.</p>
           <form id="personForm">
             <div class="form-grid">
+              <label>Nombre
+                <input type="text" name="nombre" required />
+              </label>
+              <label>Apellido
+                <input type="text" name="apellido" required />
+              </label>
               <label>Correo electrónico (usuario)
                 <input type="email" name="email" required />
               </label>
@@ -385,6 +391,8 @@
       }
 
       const data = {
+        nombre: personForm.nombre.value.trim(),
+        apellido: personForm.apellido.value.trim(),
         email: personForm.email.value.trim(),
         password: personForm.password.value
       };
@@ -396,6 +404,21 @@
           body: JSON.stringify(data)
         });
         if (!response.ok) throw new Error("No se pudo enviar el registro");
+
+        const loginResponse = await fetch("/api/panel-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: data.email,
+            password: data.password
+          })
+        });
+        if (loginResponse.ok) {
+          const loginData = await loginResponse.json();
+          localStorage.setItem("panelToken", loginData.token);
+          localStorage.setItem("panelUserName", `${data.nombre} ${data.apellido}`.trim());
+        }
+
         personForm.reset();
         personStatus.textContent = "Acceso creado. Ya puedes entrar al panel de salud.";
       } catch (error) {

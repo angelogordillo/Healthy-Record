@@ -229,6 +229,70 @@
       background: linear-gradient(120deg, var(--blue), var(--cyan));
     }
 
+    .tracker {
+      margin-top: 26px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .tracker-form {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      margin-top: 12px;
+    }
+
+    .tracker label {
+      display: grid;
+      gap: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tracker input {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .tracker button {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(120deg, var(--blue), var(--cyan));
+      cursor: pointer;
+      align-self: end;
+    }
+
+    .tracker-status {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      min-height: 20px;
+    }
+
+    .tracker-list {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .tracker-row {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 9px 11px;
+      font-size: 13px;
+      background: #f9fbff;
+      color: var(--ink);
+    }
+
     footer {
       margin-top: 26px;
       color: var(--muted);
@@ -244,7 +308,7 @@
   <main class="wrap">
     <header class="top">
       <a class="crumb" href="/">Volver a Healthy Record</a>
-      <a class="crumb" href="/panel">Ir al panel personal</a>
+      <a class="crumb" href="#micro-habito-2">Registrar Micro-hábito 2</a>
     </header>
 
     <section class="hero">
@@ -341,6 +405,28 @@
       </ul>
     </section>
 
+    <section class="section tracker" id="micro-habito-2">
+      <h2>Micro-hábito 2: Registro de 14 días</h2>
+      <p>Esta sección crea y alimenta una base de datos asociada a tu usuario para registrar horas en cama, despertares y energía al despertar.</p>
+      <form class="tracker-form" id="sleepHabitForm">
+        <label>Fecha
+          <input type="date" name="entry_date" required />
+        </label>
+        <label>Horas en cama
+          <input type="number" name="horas_cama" min="1" max="24" step="0.1" required />
+        </label>
+        <label>Despertares nocturnos
+          <input type="number" name="despertares" min="0" max="20" step="1" required />
+        </label>
+        <label>Energía al despertar (1-10)
+          <input type="number" name="energia_despertar" min="1" max="10" step="1" required />
+        </label>
+        <button type="submit">Guardar día</button>
+      </form>
+      <p class="tracker-status" id="sleepHabitStatus" aria-live="polite"></p>
+      <div class="tracker-list" id="sleepHabitList"></div>
+    </section>
+
     <section class="cta">
       <p>Si mantienes somnolencia diurna intensa, ronquidos fuertes o despertares con ahogo, busca evaluación médica para descartar trastornos de sueño.</p>
       <a class="primary" href="/panel">Registrar habitos en panel</a>
@@ -350,5 +436,87 @@
       Healthy Record · Módulo educativo de sueño para promover salud preventiva y rendimiento sostenible.
     </footer>
   </main>
+  <script>
+    const form = document.getElementById("sleepHabitForm");
+    const statusEl = document.getElementById("sleepHabitStatus");
+    const listEl = document.getElementById("sleepHabitList");
+
+    const today = new Date().toISOString().slice(0, 10);
+    form.entry_date.value = today;
+
+    function getToken() {
+      return localStorage.getItem("panelToken");
+    }
+
+    function setStatus(message, isError = false) {
+      statusEl.textContent = message;
+      statusEl.style.color = isError ? "#b12727" : "var(--muted)";
+    }
+
+    function renderEntries(entries) {
+      listEl.innerHTML = "";
+      if (!entries.length) {
+        listEl.innerHTML = "<p class=\"tracker-row\">Aún no hay registros. Completa hoy para iniciar tu tendencia de 14 días.</p>";
+        return;
+      }
+      entries.slice().reverse().forEach((entry) => {
+        const row = document.createElement("div");
+        row.className = "tracker-row";
+        row.textContent = `${entry.date}: ${entry.horas_cama.toFixed(1)} h en cama · ${entry.despertares} despertares · energía ${entry.energia_despertar}/10`;
+        listEl.appendChild(row);
+      });
+    }
+
+    async function loadEntries() {
+      const token = getToken();
+      if (!token) {
+        setStatus("Inicia sesión desde acceso personas para vincular los registros a tu usuario.", true);
+        renderEntries([]);
+        return;
+      }
+      try {
+        const response = await fetch("/api/sueno/micro-habito?days=14", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error("No se pudo cargar el historial");
+        const data = await response.json();
+        renderEntries(data.entries || []);
+      } catch (error) {
+        setStatus("No se pudo cargar el historial de 14 días.", true);
+      }
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const token = getToken();
+      if (!token) {
+        setStatus("Necesitas sesión activa para guardar el micro-hábito.", true);
+        return;
+      }
+      setStatus("Guardando...");
+      try {
+        const response = await fetch("/api/sueno/micro-habito", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            entry_date: form.entry_date.value,
+            horas_cama: parseFloat(form.horas_cama.value),
+            despertares: parseInt(form.despertares.value, 10),
+            energia_despertar: parseInt(form.energia_despertar.value, 10)
+          })
+        });
+        if (!response.ok) throw new Error("Error al guardar");
+        setStatus("Registro guardado y vinculado a tu usuario.");
+        await loadEntries();
+      } catch (error) {
+        setStatus("No se pudo guardar. Revisa los campos e intenta nuevamente.", true);
+      }
+    });
+
+    loadEntries();
+  </script>
 </body>
 </html>
