@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Caso empresarial anonimizado</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #eef5fb;
+      --ink: #0d1d33;
+      --muted: #435a78;
+      --line: rgba(13, 29, 51, 0.14);
+      --brand: #06038d;
+      --blue: #1c84d6;
+      --good: #0e9f6e;
+      --warn: #dc7f00;
+      --risk: #cb3e3e;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(850px 420px at 5% -10%, #dceeff, transparent 65%),
+        radial-gradient(740px 420px at 90% -20%, #e7e8ff, transparent 65%),
+        var(--bg);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      width: min(1140px, 94vw);
+      margin: 0 auto;
+      padding: 26px 0 58px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .crumb {
+      text-decoration: none;
+      color: var(--muted);
+      font-weight: 700;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 10px 14px;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(135deg, #ffffff, #f6fbff);
+      padding: clamp(18px, 3vw, 30px);
+      box-shadow: 0 16px 30px rgba(6, 3, 141, 0.08);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border-radius: 999px;
+      background: #e7f1ff;
+      color: #0c5f96;
+      padding: 6px 11px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: var(--brand);
+      font-size: clamp(30px, 4.8vw, 50px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .hero p { color: var(--muted); max-width: 78ch; }
+
+    .meta {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #35506f;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed var(--line);
+      background: #fbfdff;
+    }
+
+    .section { margin-top: 24px; }
+
+    .section h2 {
+      color: var(--brand);
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(24px, 4vw, 36px);
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 10px;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 12px;
+    }
+
+    .kpi h3 {
+      color: #496486;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 26px;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 4px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .tag.good { background: #e7faf2; color: var(--good); }
+    .tag.warn { background: #fff5e6; color: var(--warn); }
+    .tag.risk { background: #ffefef; color: var(--risk); }
+
+    .chart {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 62px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 9px;
+      font-size: 13px;
+      color: #2e4764;
+    }
+
+    .bar-row:last-child { margin-bottom: 0; }
+
+    .track {
+      height: 10px;
+      border-radius: 999px;
+      background: #eaf0f6;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), #5ca8e8);
+    }
+
+    .fill.warn { background: linear-gradient(90deg, #f3a727, #e88a02); }
+    .fill.risk { background: linear-gradient(90deg, #d95959, #bb2929); }
+
+    .findings,
+    .reco {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .findings li,
+    .reco li {
+      margin-left: 18px;
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .findings li:last-child,
+    .reco li:last-child { margin-bottom: 0; }
+
+    .roadmap {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .phase {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 12px;
+    }
+
+    .phase h3 {
+      color: var(--brand);
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .phase p {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 640px) {
+      .bar-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="crumb" href="/">Volver a Healthy Record</a>
+      <a class="crumb" href="/sueño">Ir al módulo de sueño</a>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Caso · Empresa anonimizada</span>
+      <h1>Análisis agregado gráfico de hallazgos anonimizados</h1>
+      <p>Este tablero consolida los principales riesgos detectados en el corte inicial de evaluación y los combina con recomendaciones accionables del diagnóstico organizacional para mejorar salud, energía y productividad.</p>
+      <p class="meta"><strong>Fuentes:</strong> Diagnóstico organizacional y lote de pruebas InBody del grupo (febrero 2026). Identidad de personas no mostrada. Los datos visibles en este corte reflejan una muestra disponible para agregación rápida y seguimiento.</p>
+    </section>
+
+    <section class="section">
+      <h2>Indicadores clave del corte</h2>
+      <div class="grid">
+        <article class="kpi">
+          <h3>Puntuación InBody</h3>
+          <strong>68/100</strong>
+          <span class="tag warn">Mejora requerida</span>
+        </article>
+        <article class="kpi">
+          <h3>IMC</h3>
+          <strong>29.4</strong>
+          <span class="tag risk">Riesgo</span>
+        </article>
+        <article class="kpi">
+          <h3>PGC (grasa corporal)</h3>
+          <strong>31.5%</strong>
+          <span class="tag risk">Riesgo</span>
+        </article>
+        <article class="kpi">
+          <h3>Grasa visceral</h3>
+          <strong>11</strong>
+          <span class="tag warn">Elevada</span>
+        </article>
+        <article class="kpi">
+          <h3>Relación cintura-cadera</h3>
+          <strong>0.96</strong>
+          <span class="tag risk">Por encima de objetivo</span>
+        </article>
+      </div>
+
+      <article class="chart">
+        <div class="bar-row">
+          <span>IMC (objetivo 18.5-24.9)</span>
+          <div class="track"><div class="fill risk" style="width:78%"></div></div>
+          <b>29.4</b>
+        </div>
+        <div class="bar-row">
+          <span>PGC % (objetivo < 25)</span>
+          <div class="track"><div class="fill risk" style="width:84%"></div></div>
+          <b>31.5%</b>
+        </div>
+        <div class="bar-row">
+          <span>Grasa visceral (objetivo < 10)</span>
+          <div class="track"><div class="fill warn" style="width:73%"></div></div>
+          <b>11</b>
+        </div>
+        <div class="bar-row">
+          <span>Cintura-cadera (objetivo < 0.90)</span>
+          <div class="track"><div class="fill risk" style="width:80%"></div></div>
+          <b>0.96</b>
+        </div>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>Principales hallazgos anonimizados</h2>
+      <ul class="findings">
+        <li><strong>Riesgo cardiometabólico basal:</strong> combinación de IMC alto, porcentaje de grasa corporal elevado y relación cintura-cadera por arriba del rango recomendado.</li>
+        <li><strong>Adiposidad central prioritaria:</strong> la grasa visceral aparece como variable crítica para intervenir en el corto plazo.</li>
+        <li><strong>Brecha de recomposición corporal:</strong> el control de peso y control de grasa muestran margen amplio de mejora para el siguiente corte.</li>
+        <li><strong>Oportunidad organizacional:</strong> los hallazgos son consistentes con la necesidad de reforzar activación física diaria, hidratación y disponibilidad de colaciones saludables.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Recomendaciones combinadas</h2>
+      <ul class="reco">
+        <li><strong>Política de pausas activas:</strong> institucionalizar al menos un Health Break al mediodía (5-10 min caminando + movilidad ligera).</li>
+        <li><strong>Sistema de incentivos saludables:</strong> recompensar avances medibles en indicadores como peso, % grasa corporal y grasa visceral.</li>
+        <li><strong>Snacks e hidratación:</strong> implementar opción diaria de colación saludable y acceso continuo a agua potable.</li>
+        <li><strong>Seguimiento mensual:</strong> mantener medición periódica de composición corporal con retroalimentación personalizada por colaborador.</li>
+      </ul>
+
+      <div class="roadmap">
+        <article class="phase">
+          <h3>0-30 días</h3>
+          <p>Implementar pausas activas, meta diaria de hidratación y comunicación interna de bienestar.</p>
+        </article>
+        <article class="phase">
+          <h3>31-60 días</h3>
+          <p>Activar incentivos por adherencia y primeros avances, con reporte agregado semanal por equipo.</p>
+        </article>
+        <article class="phase">
+          <h3>61-90 días</h3>
+          <p>Reevaluar InBody, comparar tendencia y ajustar estrategia según variables de mayor riesgo.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Análisis agregado anonimizado para uso organizacional. No sustituye evaluación clínica individual.
+    </footer>
+  </main>
+</body>
+</html>

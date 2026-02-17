@@ -749,6 +749,11 @@ def modulo_sueno():
     sueno_path = Path(__file__).parent / "sueno.html"
     return FileResponse(sueno_path)
 
+@app.get("/caso")
+def caso():
+    caso_path = Path(__file__).parent / "caso.html"
+    return FileResponse(caso_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:
