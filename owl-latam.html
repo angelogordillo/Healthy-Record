@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OWL LATAM | Supply Chain Unveiled</title>
+  <meta name="description" content="OWL LATAM: consultoría estratégica para cadena de suministro, compras y operaciones en Latinoamérica." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --owl-navy: #101c4b;
+      --owl-deep: #091233;
+      --owl-ice: #eff4ff;
+      --owl-cyan: #3fd3ff;
+      --owl-white: #ffffff;
+      --owl-gray: #8ea0c8;
+      --shadow: 0 20px 50px rgba(7, 13, 37, 0.22);
+      --radius: 20px;
+      --max: 1140px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      color: var(--owl-white);
+      background:
+        radial-gradient(circle at 10% -10%, rgba(63, 211, 255, 0.24), transparent 35%),
+        radial-gradient(circle at 95% 10%, rgba(59, 130, 246, 0.16), transparent 42%),
+        linear-gradient(155deg, #070d25 0%, #0e1944 55%, #0a1231 100%);
+      min-height: 100vh;
+    }
+
+    .section,
+    .footer-inner,
+    .hero {
+      width: min(var(--max), calc(100% - 2.25rem));
+      margin-inline: auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 2rem;
+      align-items: center;
+      padding: 5.5rem 0 4rem;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.8rem;
+      padding: 0.35rem 0.7rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 999px;
+      color: var(--owl-cyan);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      margin: 0;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+    }
+
+    h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(2rem, 4vw, 4.2rem);
+      max-width: 18ch;
+    }
+
+    .lead {
+      color: var(--owl-ice);
+      opacity: 0.9;
+      margin: 1rem 0 1.8rem;
+      max-width: 56ch;
+    }
+
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 0.8rem 1.2rem;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+    }
+
+    .btn-primary {
+      color: var(--owl-deep);
+      background: var(--owl-cyan);
+      box-shadow: 0 12px 30px rgba(63, 211, 255, 0.35);
+    }
+
+    .btn-secondary {
+      color: var(--owl-white);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-card {
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      box-shadow: var(--shadow);
+      animation: rise 900ms ease-out both;
+    }
+
+    .hero-card h3 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .hero-card ul {
+      list-style: none;
+      margin: 0.9rem 0 0;
+      padding: 0;
+      display: grid;
+      gap: 0.65rem;
+    }
+
+    .hero-card li {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      font-size: 0.92rem;
+      color: #dce7ff;
+    }
+
+    .hero-card li::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--owl-cyan);
+      flex: 0 0 auto;
+    }
+
+    .hero-logo {
+      width: min(100%, 430px);
+      background: rgba(255, 255, 255, 0.98);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      padding: 0.8rem;
+      margin-bottom: 0.95rem;
+    }
+
+    .hero-logo img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .section {
+      padding: 3.2rem 0;
+    }
+
+    .section h2 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.6rem);
+      margin-bottom: 1.2rem;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius);
+      padding: 1rem;
+      animation: rise 800ms ease both;
+    }
+
+    .card h3 { margin: 0 0 0.45rem; font-size: 1.05rem; }
+    .card p { margin: 0; color: var(--owl-ice); opacity: 0.9; font-size: 0.92rem; }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .step {
+      background: rgba(7, 13, 37, 0.56);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+      padding: 0.95rem;
+    }
+
+    .step b {
+      display: inline-block;
+      margin-bottom: 0.35rem;
+      color: var(--owl-cyan);
+    }
+
+    .fva-highlight {
+      display: grid;
+      grid-template-columns: 1.2fr auto;
+      gap: 1rem;
+      align-items: center;
+      background: linear-gradient(145deg, rgba(63, 211, 255, 0.2), rgba(255, 255, 255, 0.06));
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 22px;
+      padding: 1.15rem;
+      box-shadow: var(--shadow);
+    }
+
+    .fva-highlight p {
+      margin: 0.55rem 0 0;
+      color: var(--owl-ice);
+      opacity: 0.94;
+      max-width: 62ch;
+    }
+
+    .contact {
+      background: linear-gradient(140deg, rgba(63, 211, 255, 0.2), rgba(255, 255, 255, 0.08));
+      border-radius: 24px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1.25rem;
+    }
+
+    .contact p {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .contact-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    .contact-form .full {
+      grid-column: 1 / -1;
+    }
+
+    .contact-form label {
+      font-size: 0.82rem;
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--owl-ice);
+    }
+
+    .contact-form input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(9, 18, 51, 0.62);
+      color: var(--owl-white);
+      border-radius: 10px;
+      padding: 0.72rem 0.75rem;
+      font-family: inherit;
+      font-size: 0.92rem;
+    }
+
+    .contact-form input::placeholder {
+      color: rgba(239, 244, 255, 0.68);
+    }
+
+    .contact-form button {
+      margin-top: 0.2rem;
+      border: 0;
+      cursor: pointer;
+    }
+
+    .form-status {
+      margin-top: 0.6rem;
+      font-size: 0.88rem;
+      color: var(--owl-ice);
+      opacity: 0.92;
+      min-height: 1.2em;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      margin-top: 1.2rem;
+    }
+
+    .footer-inner {
+      padding: 1rem 0 1.4rem;
+      color: var(--owl-gray);
+      font-size: 0.84rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .hero { grid-template-columns: 1fr; padding-top: 4.2rem; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .process { grid-template-columns: 1fr 1fr; }
+      .fva-highlight { grid-template-columns: 1fr; }
+      .contact-form { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .grid,
+      .process { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="hero" id="inicio">
+      <div>
+        <span class="eyebrow">Supply Chain Unveiled</span>
+        <h1>Estrategia, eficiencia y control para tu cadena de suministro en LATAM</h1>
+        <p class="lead">
+          OWL LATAM acompaña a empresas en compras, planeación, inventarios y operaciones para transformar la cadena de suministro en una ventaja competitiva real.
+        </p>
+        <div class="cta">
+          <a class="btn btn-primary" href="#contacto">Agendar diagnóstico</a>
+        </div>
+      </div>
+
+      <aside class="hero-card" aria-label="Diferenciales OWL LATAM">
+        <div class="hero-logo">
+          <img src="./owl-logo.png" alt="Logotipo OWL Supply Chain Unveiled" />
+        </div>
+        <h3>Nuestro enfoque</h3>
+        <ul>
+          <li>Diagnóstico operativo y financiero integral</li>
+          <li>Roadmap de mejora con hitos medibles</li>
+          <li>Ejecución acompañada con equipos internos</li>
+          <li>Modelo adaptable por país y sector</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="section" id="servicios">
+      <h2>Servicios clave</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Planeación de demanda y S&amp;OP</h3>
+          <p>Diseño y mejora de procesos de pronóstico, plan maestro y gobierno operativo para decisiones más rápidas y confiables.</p>
+        </article>
+        <article class="card">
+          <h3>Compras estratégicas</h3>
+          <p>Evaluación de categorías, negociación con proveedores y estructuración de abastecimiento con foco en costo total y continuidad.</p>
+        </article>
+        <article class="card">
+          <h3>Inventarios y servicio</h3>
+          <p>Políticas de stock, niveles de seguridad y segmentación para elevar disponibilidad y reducir capital inmovilizado.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="metodologia">
+      <h2>Metodología de trabajo</h2>
+      <div class="process">
+        <article class="step"><b>01 Descubrir</b><div>Levantamiento de procesos, datos y objetivos de negocio.</div></article>
+        <article class="step"><b>02 Priorizar</b><div>Backlog de iniciativas por impacto, esfuerzo y urgencia.</div></article>
+        <article class="step"><b>03 Ejecutar</b><div>Implementación iterativa con acompañamiento operativo.</div></article>
+        <article class="step"><b>04 Escalar</b><div>Estandarización, indicadores y mejora continua.</div></article>
+      </div>
+    </section>
+
+    <section class="section" id="impacto">
+      <h2>Impacto esperado</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Mejor nivel de servicio</h3>
+          <p>Mayor disponibilidad, menor quiebre de stock y tiempos de respuesta más consistentes.</p>
+        </article>
+        <article class="card">
+          <h3>Costos controlados</h3>
+          <p>Reducción de sobrecostos por urgencias, compras no planificadas y reprocesos.</p>
+        </article>
+        <article class="card">
+          <h3>Decisiones con datos</h3>
+          <p>KPIs accionables y tableros para gestionar de forma preventiva y no reactiva.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="fva">
+      <div class="fva-highlight">
+        <div>
+          <span class="eyebrow">Nuevo contenido</span>
+          <h2>Forecast Value Added (FVA)</h2>
+          <p>Revisa el resumen ejecutivo del whitepaper y cómo OWL automatiza el proceso para elevar la precisión del pronóstico con trazabilidad por etapa.</p>
+        </div>
+        <a class="btn btn-primary" href="/fva">Ver resumen FVA</a>
+      </div>
+    </section>
+
+    <section class="section" id="contacto">
+      <div class="contact">
+        <div>
+          <h2>Conversemos sobre tu cadena de suministro</h2>
+          <p>Registra tus datos y te contactaremos para coordinar una sesión de diagnóstico inicial para tu operación en LATAM.</p>
+        </div>
+        <form class="contact-form" id="owlLeadForm" action="/api/owl-latam/lead" method="post">
+          <div>
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" autocomplete="given-name" required />
+          </div>
+          <div>
+            <label for="apellido">Apellido</label>
+            <input id="apellido" name="apellido" type="text" autocomplete="family-name" required />
+          </div>
+          <div>
+            <label for="empresa">Empresa</label>
+            <input id="empresa" name="empresa" type="text" autocomplete="organization" required />
+          </div>
+          <div>
+            <label for="web">Página web</label>
+            <input id="web" name="web" type="url" placeholder="https://empresa.com" />
+          </div>
+          <div>
+            <label for="correo">Correo corporativo</label>
+            <input id="correo" name="correo" type="email" autocomplete="email" required />
+          </div>
+          <div>
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" name="telefono" type="tel" autocomplete="tel" required />
+          </div>
+          <div class="full">
+            <label for="whatsapp">WhatsApp</label>
+            <input id="whatsapp" name="whatsapp" type="tel" autocomplete="tel-national" required />
+          </div>
+          <button class="btn btn-primary full" id="owlLeadSubmit" type="submit">Agendar diagnóstico</button>
+          <p class="form-status full" id="owlLeadStatus" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <span>OWL LATAM</span>
+      <span>Supply Chain Unveiled</span>
+    </div>
+  </footer>
+  <script>
+    (function () {
+      const form = document.getElementById("owlLeadForm");
+      const status = document.getElementById("owlLeadStatus");
+      const submitBtn = document.getElementById("owlLeadSubmit");
+      if (!form || !status || !submitBtn) return;
+
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        status.textContent = "Enviando registro...";
+        submitBtn.disabled = true;
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            body: new FormData(form),
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "No se pudo enviar el registro.");
+          }
+          form.reset();
+          status.textContent = "Registro enviado. Te contactaremos pronto.";
+        } catch (error) {
+          status.textContent = String(error.message || error);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
