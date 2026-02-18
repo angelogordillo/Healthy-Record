@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>OWL LATAM | FVA</title>
+  <meta name="description" content="Resumen ejecutivo del whitepaper de Forecast Value Added (FVA) de OWL para mejorar la precision del pronostico." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --owl-navy: #0d1a48;
+      --owl-deep: #091233;
+      --owl-cyan: #39d8ff;
+      --owl-amber: #ffb649;
+      --owl-ice: #eef4ff;
+      --owl-white: #ffffff;
+      --shadow: 0 18px 45px rgba(7, 13, 37, 0.3);
+      --radius: 20px;
+      --max: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Sora", sans-serif;
+      color: var(--owl-white);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(57, 216, 255, 0.22), transparent 32%),
+        radial-gradient(circle at 95% 15%, rgba(255, 182, 73, 0.16), transparent 36%),
+        linear-gradient(160deg, #060c24 0%, #0c1740 58%, #09112f 100%);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      width: min(var(--max), calc(100% - 2rem));
+      margin-inline: auto;
+    }
+
+    .hero {
+      padding: 4.7rem 0 2.5rem;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 1.2rem;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 0.7rem;
+      padding: 0.3rem 0.66rem;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--owl-cyan);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.9rem, 4vw, 3.8rem);
+      max-width: 19ch;
+    }
+
+    .lead {
+      color: var(--owl-ice);
+      opacity: 0.94;
+      margin: 1rem 0 0;
+      max-width: 62ch;
+    }
+
+    .byline {
+      margin-top: 0.9rem;
+      font-size: 0.86rem;
+      color: #c9d6f4;
+      line-height: 1.5;
+    }
+
+    .badge-card {
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow);
+    }
+
+    .badge-card p {
+      margin: 0.45rem 0 0;
+      color: var(--owl-ice);
+      font-size: 0.92rem;
+    }
+
+    .section {
+      padding: 1.6rem 0 3.2rem;
+    }
+
+    h2 {
+      font-family: "Fraunces", serif;
+      font-size: clamp(1.4rem, 2.8vw, 2.4rem);
+      margin-bottom: 1rem;
+    }
+
+    .executive-box {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 22px;
+      padding: 1.2rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1rem;
+    }
+
+    .executive-box p {
+      margin: 0;
+      color: var(--owl-ice);
+      line-height: 1.62;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .card {
+      border-radius: 16px;
+      padding: 1rem;
+      background: rgba(7, 14, 39, 0.66);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .card h3 {
+      font-size: 1.02rem;
+      margin-bottom: 0.48rem;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--owl-ice);
+      opacity: 0.95;
+      font-size: 0.9rem;
+    }
+
+    .pill {
+      color: var(--owl-deep);
+      background: var(--owl-amber);
+      border-radius: 999px;
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 800;
+      padding: 0.27rem 0.64rem;
+      margin-bottom: 0.55rem;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 1rem 0 1.4rem;
+      color: #b8c7ea;
+      font-size: 0.84rem;
+    }
+
+    .contact-block {
+      margin-top: 1rem;
+      border-radius: 16px;
+      padding: 1rem;
+      background: rgba(7, 14, 39, 0.64);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .contact-block p {
+      margin: 0 0 0.7rem;
+      color: var(--owl-ice);
+      font-size: 0.92rem;
+    }
+
+    .contact-block p a {
+      color: var(--owl-white);
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .contact-item {
+      border-radius: 12px;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 0.86rem;
+    }
+
+    .contact-item b {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--owl-cyan);
+    }
+
+    .contact-item a {
+      color: #d9eeff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(217, 238, 255, 0.45);
+    }
+
+    @media (max-width: 920px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr 1fr; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="eyebrow">Forecast Value Added (FVA)</span>
+        <h1>Resumen ejecutivo para mejorar la precision del pronostico</h1>
+        <p class="lead">
+          Esta seccion resume el documento "Utilizando las Metricas de Forecast Value Added (FVA) para Mejorar la Precision del Pronostico" y traduce sus hallazgos en decisiones accionables para equipos de demanda, planeacion y S&amp;OP.
+        </p>
+        <p class="byline">
+          Por Miguel Gallardo, Certified Professional Forecaster<br />
+          Chief Product Officer, The Owl Solutions
+        </p>
+      </div>
+      <aside class="badge-card" aria-label="Contexto FVA">
+        <span class="pill">Mensaje clave</span>
+        <h3>Medir valor real, no actividad</h3>
+        <p>
+          El FVA permite identificar que intervenciones humanas o de proceso realmente mejoran el pronostico frente a una linea base y cuales agregan ruido, sesgo o sobreajuste.
+        </p>
+      </aside>
+    </section>
+
+    <section class="section" id="resumen-ejecutivo">
+      <h2>Resumen ejecutivo</h2>
+      <article class="executive-box">
+        <p>
+          El documento plantea que muchas organizaciones dedican tiempo y recursos a ajustes de pronostico que no necesariamente mejoran la exactitud. El enfoque de Forecast Value Added (FVA) propone evaluar cada paso del proceso contra una linea base objetiva (naive o estadistica) para responder una pregunta simple: "esta intervencion mejora o empeora el resultado?". Con esta disciplina, las empresas pueden eliminar actividades de bajo valor, enfocar el esfuerzo en los aportes que si elevan la precision, y fortalecer su proceso de planeacion con decisiones sustentadas en evidencia y no en percepciones.
+        </p>
+      </article>
+
+      <article class="executive-box">
+        <p>
+          OWL ayuda a automatizar este proceso conectando datos historicos, ejecucion comercial y reglas de negocio para calcular FVA por etapa de forma continua. El equipo obtiene alertas sobre ajustes que deterioran la precision, tableros con trazabilidad de impacto por categoria y recomendaciones para estandarizar solo practicas con FVA positivo. Esto reduce trabajo manual, acelera ciclos de S&amp;OP y convierte la mejora del pronostico en una capacidad sistematica y escalable.
+        </p>
+      </article>
+
+      <div class="grid" aria-label="Puntos clave del documento FVA">
+        <article class="card">
+          <h3>1. Objetivo estrategico</h3>
+          <p>Construir un proceso de pronostico medible, donde cada ajuste tenga trazabilidad de impacto y aporte verificable al nivel de servicio y al inventario.</p>
+        </article>
+        <article class="card">
+          <h3>2. Metrica central</h3>
+          <p>Comparar errores entre etapas (baseline, ajuste comercial, ajuste de supply, consenso final) para cuantificar el valor agregado o destruido en cada intervencion.</p>
+        </article>
+        <article class="card">
+          <h3>3. Hallazgo recurrente</h3>
+          <p>Los procesos colaborativos sin reglas claras pueden degradar la precision. FVA evidencia donde ocurre y permite corregir sin friccion politica.</p>
+        </article>
+        <article class="card">
+          <h3>4. Beneficio operativo</h3>
+          <p>Mejor pronostico implica menos quiebres y menos sobreinventario, con impacto directo en capital de trabajo, margen y cumplimiento al cliente.</p>
+        </article>
+        <article class="card">
+          <h3>5. Gobierno recomendado</h3>
+          <p>Institucionalizar revisiones periodicas de FVA por categoria, canal y horizonte, con responsables definidos para sostener mejora continua.</p>
+        </article>
+        <article class="card">
+          <h3>6. Ruta de implementacion</h3>
+          <p>Iniciar con un piloto acotado, establecer baseline, medir 8-12 ciclos y escalar solo practicas con FVA positivo y consistente.</p>
+        </article>
+      </div>
+
+      <div class="contact-block">
+        <p>Para solicitar el documento original, escribe a: <a href="mailto:angelo@theowl.solutions">angelo@theowl.solutions</a></p>
+        <p>Contacto regional:</p>
+        <div class="contact-grid" aria-label="Contactos regionales OWL">
+          <article class="contact-item">
+            <b>Chile</b>
+            <div>Consultoria: <a href="mailto:ricardo@theowl.solutions">ricardo@theowl.solutions</a></div>
+            <div>Comercial: <a href="mailto:mpaz@theowl.solutions">mpaz@theowl.solutions</a></div>
+          </article>
+          <article class="contact-item">
+            <b>Peru</b>
+            <div><a href="mailto:fernando@theowl.solutions">fernando@theowl.solutions</a></div>
+          </article>
+          <article class="contact-item">
+            <b>Mexico</b>
+            <div><a href="mailto:angelo@theowl.solutions">angelo@theowl.solutions</a></div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer wrap">
+    <span>OWL LATAM · Supply Chain Unveiled</span>
+  </footer>
+</body>
+</html>

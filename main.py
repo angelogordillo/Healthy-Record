@@ -723,6 +723,11 @@ def owl_latam():
     owl_path = Path(__file__).parent / "owl-latam.html"
     return FileResponse(owl_path)
 
+@app.get("/fva")
+def fva_page():
+    fva_path = Path(__file__).parent / "fva.html"
+    return FileResponse(fva_path)
+
 @app.get("/admin")
 def admin(_: bool = Depends(require_basic_auth)):
     admin_path = Path(__file__).parent / "admin.html"
