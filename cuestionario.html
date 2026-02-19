@@ -490,6 +490,7 @@
     const answers = {};
     let currentIndex = 0;
     let sending = false;
+    let sessionValidated = false;
 
     const stepLabel = document.getElementById("stepLabel");
     const progressBar = document.getElementById("progressBar");
@@ -567,6 +568,43 @@
     function setStatus(message, kind = "") {
       statusEl.textContent = message;
       statusEl.className = `status${kind ? ` ${kind}` : ""}`;
+    }
+
+    function invalidateSession(message) {
+      localStorage.removeItem("panelToken");
+      localStorage.removeItem("panelUserName");
+      sessionValidated = false;
+      setStatus(message, "error");
+      nextBtn.disabled = true;
+      backBtn.disabled = true;
+    }
+
+    async function ensureActiveSession() {
+      const token = localStorage.getItem("panelToken");
+      if (!token) {
+        invalidateSession("Debes iniciar sesión en Acceso personas para responder este cuestionario.");
+        return false;
+      }
+
+      try {
+        const response = await fetch("/api/panel/me", {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!response.ok) {
+          invalidateSession("Tu sesión no está activa. Vuelve a iniciar sesión en Acceso personas.");
+          return false;
+        }
+
+        const meData = await response.json();
+        if (meData?.nombre) {
+          localStorage.setItem("panelUserName", meData.nombre);
+        }
+        sessionValidated = true;
+        return true;
+      } catch (error) {
+        invalidateSession("No pudimos validar tu sesión. Intenta recargar e iniciar sesión nuevamente.");
+        return false;
+      }
     }
 
     function setFeedback(message) {
@@ -838,6 +876,12 @@
 
     nextBtn.addEventListener("click", async () => {
       if (sending) return;
+      if (currentIndex === 0 && !sessionValidated) {
+        const active = await ensureActiveSession();
+        if (!active) return;
+        backBtn.disabled = true;
+        nextBtn.disabled = false;
+      }
       if (!validateCurrent()) return;
       if (currentIndex < questions.length - 1) {
         currentIndex += 1;
@@ -862,11 +906,16 @@
       setFeedback(getInstantFeedback(q.key, value));
     });
 
-    if (!localStorage.getItem("panelToken")) {
-      setStatus("Debes iniciar sesión en Acceso personas para guardar respuestas vinculadas a tu usuario.", "error");
+    async function initQuestionnaire() {
+      renderQuestion();
+      const active = await ensureActiveSession();
+      if (active) {
+        setStatus("");
+        renderQuestion();
+      }
     }
 
-    renderQuestion();
+    initQuestionnaire();
   </script>
 </body>
 </html>
