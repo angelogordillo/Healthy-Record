@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Caso individual anonimizado</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f2f7ff;
+      --ink: #12213a;
+      --muted: #4c6286;
+      --line: rgba(18, 33, 58, 0.14);
+      --brand: #06038d;
+      --accent: #1f86d8;
+      --good: #0e9f6e;
+      --warn: #dc7f00;
+      --risk: #c63f3f;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(900px 420px at 8% -20%, #dbe9ff, transparent 64%),
+        radial-gradient(680px 380px at 92% -10%, #eaf6ff, transparent 62%),
+        var(--bg);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      width: min(1120px, 94vw);
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 999px;
+      text-decoration: none;
+      padding: 10px 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(125deg, #00c78c, #0a8f68);
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(140deg, #ffffff, #f7fbff);
+      box-shadow: 0 14px 34px rgba(6, 3, 141, 0.08);
+      padding: clamp(18px, 3vw, 30px);
+    }
+
+    .eyebrow {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 6px 11px;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #0d5f97;
+      background: #e7f2ff;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      color: var(--brand);
+      font-size: clamp(30px, 4.6vw, 48px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+
+    .hero p { color: var(--muted); max-width: 76ch; }
+
+    .meta {
+      margin-top: 12px;
+      border: 1px dashed var(--line);
+      background: #fbfdff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: #375179;
+      font-size: 13px;
+    }
+
+    .section { margin-top: 22px; }
+
+    .section h2 {
+      color: var(--brand);
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(24px, 3.6vw, 34px);
+      margin-bottom: 10px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--card);
+      padding: 12px;
+    }
+
+    .kpi h3 {
+      color: #4b6184;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .kpi strong {
+      font-size: 26px;
+      line-height: 1;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    .tag.good { background: #e7faf2; color: var(--good); }
+    .tag.warn { background: #fff4e5; color: var(--warn); }
+    .tag.risk { background: #ffefef; color: var(--risk); }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+      margin-top: 10px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 170px 1fr 64px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 9px;
+      color: #304969;
+      font-size: 13px;
+    }
+
+    .bar-row:last-child { margin-bottom: 0; }
+
+    .track {
+      height: 10px;
+      border-radius: 999px;
+      background: #ebf1f9;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), #66afe8);
+    }
+
+    .fill.warn { background: linear-gradient(90deg, #f0a026, #e28700); }
+    .fill.risk { background: linear-gradient(90deg, #d95a5a, #b92f2f); }
+
+    .info-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+    }
+
+    .info {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+    }
+
+    .info b {
+      display: block;
+      color: #4d6487;
+      font-size: 12px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .history {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 9px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    th {
+      color: #4a6083;
+      background: #f7faff;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .reco {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px;
+      color: #17314e;
+    }
+
+    .reco h3 {
+      color: var(--brand);
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .reco ul { margin-left: 18px; }
+    .reco li { margin-bottom: 7px; }
+    .reco li:last-child { margin-bottom: 0; }
+
+    footer {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    @media (max-width: 680px) {
+      .bar-row { grid-template-columns: 1fr; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Volver a Healthy Record</a>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a class="btn" href="/caso">Caso empresarial</a>
+        <button class="btn primary" id="generateBtn" type="button">Generar nuevo caso anonimizado</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <span class="eyebrow">Caso individual anonimizado</span>
+      <h1>Ejemplo de data individual sin identidad personal</h1>
+      <p>Este módulo genera un caso de ejemplo para mostrar cómo se vería un seguimiento por persona con métricas corporales y hábitos. El perfil es ficticio, con identificador anonimizado y valores simulados para demostración.</p>
+      <p class="meta" id="metaLine"></p>
+    </section>
+
+    <section class="section">
+      <h2>Indicadores de evaluación</h2>
+      <div class="grid" id="kpiGrid"></div>
+
+      <article class="panel">
+        <div class="bar-row">
+          <span>IMC</span>
+          <div class="track"><div class="fill" id="barImc"></div></div>
+          <b id="barImcValue"></b>
+        </div>
+        <div class="bar-row">
+          <span>PGC (%)</span>
+          <div class="track"><div class="fill" id="barPgc"></div></div>
+          <b id="barPgcValue"></b>
+        </div>
+        <div class="bar-row">
+          <span>Grasa visceral</span>
+          <div class="track"><div class="fill" id="barVisceral"></div></div>
+          <b id="barVisceralValue"></b>
+        </div>
+        <div class="bar-row">
+          <span>Puntaje InBody</span>
+          <div class="track"><div class="fill" id="barScore"></div></div>
+          <b id="barScoreValue"></b>
+        </div>
+      </article>
+
+      <div class="info-grid">
+        <article class="info"><b>ID anónimo</b><span id="anonId"></span></article>
+        <article class="info"><b>Edad (rango)</b><span id="ageRange"></span></article>
+        <article class="info"><b>Sexo</b><span id="sex"></span></article>
+        <article class="info"><b>Estatura</b><span id="height"></span></article>
+        <article class="info"><b>Peso</b><span id="weight"></span></article>
+        <article class="info"><b>RCC</b><span id="rcc"></span></article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Historial de ejemplo (6 meses)</h2>
+      <div class="history">
+        <table>
+          <thead>
+            <tr>
+              <th>Mes</th>
+              <th>Peso (kg)</th>
+              <th>MME (kg)</th>
+              <th>PGC (%)</th>
+              <th>Horas sueño</th>
+              <th>Actividad (días/sem)</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+      <article class="reco">
+        <h3>Feedback y plan sugerido</h3>
+        <ul id="recommendations"></ul>
+      </article>
+    </section>
+
+    <footer>
+      Healthy Record · Caso de demostración anonimizado para uso de referencia.
+    </footer>
+  </main>
+
+  <script>
+    const kpiGrid = document.getElementById("kpiGrid");
+    const historyBody = document.getElementById("historyBody");
+    const recommendations = document.getElementById("recommendations");
+    const metaLine = document.getElementById("metaLine");
+
+    function rand(min, max, decimals = 0) {
+      const value = Math.random() * (max - min) + min;
+      return Number(value.toFixed(decimals));
+    }
+
+    function pick(list) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function riskTag(type) {
+      if (type === "good") return "Estable";
+      if (type === "warn") return "Seguimiento";
+      return "Prioritario";
+    }
+
+    function metricState(metric, value) {
+      if (metric === "imc") {
+        if (value < 25) return "good";
+        if (value < 30) return "warn";
+        return "risk";
+      }
+      if (metric === "pgc") {
+        if (value < 25) return "good";
+        if (value < 30) return "warn";
+        return "risk";
+      }
+      if (metric === "visceral") {
+        if (value <= 9) return "good";
+        if (value <= 12) return "warn";
+        return "risk";
+      }
+      if (metric === "score") {
+        if (value >= 75) return "good";
+        if (value >= 65) return "warn";
+        return "risk";
+      }
+      return "warn";
+    }
+
+    function fillClass(state) {
+      if (state === "good") return "fill";
+      if (state === "warn") return "fill warn";
+      return "fill risk";
+    }
+
+    function generateCase() {
+      const sex = pick(["Masculino", "Femenino"]);
+      const ageStart = pick([25, 30, 35, 40, 45, 50]);
+      const ageRange = `${ageStart}-${ageStart + 4}`;
+      const height = rand(158, 186, 0);
+      const weight = rand(63, 98, 1);
+      const imc = rand(23.8, 33.6, 1);
+      const pgc = rand(22.5, 36.5, 1);
+      const visceral = rand(7, 14, 0);
+      const score = rand(58, 82, 0);
+      const mme = rand(27.5, 37.8, 1);
+      const rcc = rand(0.86, 1.02, 2);
+      const sleepHours = rand(5.6, 7.8, 1);
+      const activityDays = rand(1, 5, 0);
+      const anonId = `HR-${Math.floor(Math.random() * 900000 + 100000)}`;
+      const generatedAt = new Date();
+
+      const metrics = [
+        { label: "Puntaje InBody", value: `${score}/100`, state: metricState("score", score) },
+        { label: "IMC", value: imc.toFixed(1), state: metricState("imc", imc) },
+        { label: "PGC", value: `${pgc.toFixed(1)}%`, state: metricState("pgc", pgc) },
+        { label: "Grasa visceral", value: String(visceral), state: metricState("visceral", visceral) },
+        { label: "Masa muscular esquelética", value: `${mme.toFixed(1)} kg`, state: "warn" },
+        { label: "Sueño promedio", value: `${sleepHours.toFixed(1)} h`, state: sleepHours >= 7 ? "good" : sleepHours >= 6 ? "warn" : "risk" }
+      ];
+
+      kpiGrid.innerHTML = metrics.map((metric) => `
+        <article class="kpi">
+          <h3>${metric.label}</h3>
+          <strong>${metric.value}</strong>
+          <span class="tag ${metric.state}">${riskTag(metric.state)}</span>
+        </article>
+      `).join("");
+
+      document.getElementById("anonId").textContent = anonId;
+      document.getElementById("ageRange").textContent = ageRange;
+      document.getElementById("sex").textContent = sex;
+      document.getElementById("height").textContent = `${height} cm`;
+      document.getElementById("weight").textContent = `${weight.toFixed(1)} kg`;
+      document.getElementById("rcc").textContent = rcc.toFixed(2);
+
+      const imcState = metricState("imc", imc);
+      const pgcState = metricState("pgc", pgc);
+      const visState = metricState("visceral", visceral);
+      const scoreState = metricState("score", score);
+
+      const bars = [
+        { id: "barImc", valueId: "barImcValue", value: imc, max: 40, state: imcState, suffix: "" },
+        { id: "barPgc", valueId: "barPgcValue", value: pgc, max: 45, state: pgcState, suffix: "%" },
+        { id: "barVisceral", valueId: "barVisceralValue", value: visceral, max: 20, state: visState, suffix: "" },
+        { id: "barScore", valueId: "barScoreValue", value: score, max: 100, state: scoreState, suffix: "/100" }
+      ];
+
+      bars.forEach((bar) => {
+        const el = document.getElementById(bar.id);
+        const valueEl = document.getElementById(bar.valueId);
+        const width = Math.max(8, Math.min(100, (bar.value / bar.max) * 100));
+        el.className = fillClass(bar.state);
+        el.style.width = `${width}%`;
+        valueEl.textContent = `${bar.value.toFixed(bar.id === "barScore" || bar.id === "barVisceral" ? 0 : 1)}${bar.suffix}`;
+      });
+
+      const monthNames = ["Sep", "Oct", "Nov", "Dic", "Ene", "Feb"];
+      const history = [];
+      let hWeight = weight + rand(1.2, 5.2, 1);
+      let hMme = mme - rand(0.2, 1.5, 1);
+      let hPgc = pgc + rand(1.0, 4.5, 1);
+      let hSleep = sleepHours - rand(0.2, 1.0, 1);
+      let hActivity = Math.max(0, activityDays - 2);
+
+      for (let i = 0; i < 6; i += 1) {
+        history.push({
+          month: monthNames[i],
+          weight: Math.max(58, hWeight - rand(0.2, 1.0, 1)).toFixed(1),
+          mme: Math.max(24, hMme + rand(-0.2, 0.3, 1)).toFixed(1),
+          pgc: Math.max(18, hPgc - rand(0.2, 0.8, 1)).toFixed(1),
+          sleep: Math.max(5, hSleep + rand(0.0, 0.4, 1)).toFixed(1),
+          activity: Math.max(0, Math.min(6, hActivity + rand(0, 1, 0)))
+        });
+        hWeight -= rand(0.2, 0.7, 1);
+        hMme += rand(0.0, 0.3, 1);
+        hPgc -= rand(0.2, 0.7, 1);
+        hSleep += rand(0.0, 0.2, 1);
+        hActivity = Math.min(6, hActivity + 1);
+      }
+
+      historyBody.innerHTML = history.map((row) => `
+        <tr>
+          <td>${row.month}</td>
+          <td>${row.weight}</td>
+          <td>${row.mme}</td>
+          <td>${row.pgc}</td>
+          <td>${row.sleep}</td>
+          <td>${row.activity}</td>
+        </tr>
+      `).join("");
+
+      const recoItems = [];
+      if (imcState !== "good" || pgcState !== "good") {
+        recoItems.push("Priorizar recomposición corporal: déficit calórico moderado con proteína suficiente y seguimiento semanal.");
+      }
+      if (visState !== "good") {
+        recoItems.push("Activar plan de reducción de adiposidad central: 150-210 min/semana de actividad aeróbica + 2 sesiones de fuerza.");
+      }
+      if (sleepHours < 7) {
+        recoItems.push("Mejorar higiene de sueño: horario consistente, corte de pantallas 60 min antes y rutina de desaceleración nocturna.");
+      }
+      if (activityDays < 3) {
+        recoItems.push("Subir actividad diaria con meta inicial de 7,000-8,500 pasos y progresión semanal.");
+      }
+      recoItems.push("Reforzar red de apoyo social para aumentar adherencia a hábitos: planear 2 espacios semanales con familia o amistades.");
+
+      recommendations.innerHTML = recoItems.map((item) => `<li>${item}</li>`).join("");
+
+      metaLine.textContent = `Caso generado: ${generatedAt.toLocaleDateString("es-MX")} ${generatedAt.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })} · Identificador anonimizado ${anonId} · Uso demostrativo.`;
+    }
+
+    document.getElementById("generateBtn").addEventListener("click", generateCase);
+    generateCase();
+  </script>
+</body>
+</html>

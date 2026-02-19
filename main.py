@@ -759,6 +759,11 @@ def caso():
     caso_path = Path(__file__).parent / "caso.html"
     return FileResponse(caso_path)
 
+@app.get("/casoind")
+def caso_individual():
+    casoind_path = Path(__file__).parent / "casoind.html"
+    return FileResponse(casoind_path)
+
 @app.get("/social")
 def social():
     social_path = Path(__file__).parent / "social.html"
