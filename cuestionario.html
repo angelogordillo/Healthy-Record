@@ -788,7 +788,19 @@
         });
 
         if (!response.ok) {
-          throw new Error("No se pudo enviar el cuestionario");
+          if (response.status === 401) {
+            localStorage.removeItem("panelToken");
+            localStorage.removeItem("panelUserName");
+            throw new Error("Tu sesion vencio. Vuelve a iniciar sesion en Acceso personas y reintenta.");
+          }
+          let detail = "";
+          try {
+            const errorData = await response.json();
+            detail = errorData.detail || "";
+          } catch (parseError) {
+            detail = "";
+          }
+          throw new Error(detail || "No se pudo enviar el cuestionario");
         }
 
         let userName = localStorage.getItem("panelUserName") || "";
@@ -809,7 +821,8 @@
         renderFinalSection(userName, trendSummary);
         nextBtn.textContent = "Completado";
       } catch (error) {
-        setStatus("Hubo un error al guardar. Intenta nuevamente.", "error");
+        const message = error instanceof Error ? error.message : "Hubo un error al guardar. Intenta nuevamente.";
+        setStatus(message, "error");
         sending = false;
         backBtn.disabled = false;
         nextBtn.disabled = false;
