@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Relaciones sociales y salud</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f4f9f6;
+      --card: #ffffff;
+      --ink: #11211b;
+      --muted: #416052;
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --line: rgba(17, 33, 27, 0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% -5%, rgba(0, 199, 140, 0.2), transparent 30%),
+        radial-gradient(circle at 90% 0%, rgba(6, 3, 141, 0.12), transparent 34%),
+        var(--bg);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+    }
+
+    .btn.primary {
+      color: #fff;
+      border: none;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    }
+
+    .btn.soft {
+      color: var(--muted);
+      background: #fff;
+    }
+
+    .hero {
+      background: linear-gradient(145deg, #fff, rgba(255, 255, 255, 0.7));
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: #0c6d4f;
+      background: rgba(0, 199, 140, 0.14);
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.3vw, 48px);
+      color: var(--logo-blue);
+      line-height: 1.08;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(26px, 3.2vw, 36px);
+      color: var(--logo-blue);
+      margin-bottom: 8px;
+    }
+
+    p { color: var(--muted); }
+
+    .grid {
+      margin-top: 24px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+    }
+
+    .card h3 {
+      color: #113427;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .section {
+      margin-top: 28px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+    }
+
+    .tips {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .tip {
+      border-left: 4px solid var(--brand);
+      padding-left: 12px;
+      color: #244a3b;
+    }
+
+    footer {
+      margin-top: 24px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="top">
+      <a class="btn soft" href="/">Volver al home</a>
+      <a class="btn primary" href="/cuestionario">Ir al cuestionario</a>
+    </div>
+
+    <section class="hero">
+      <span class="tag">Módulo social</span>
+      <h1>Las relaciones cercanas son una palanca real de salud mental y física.</h1>
+      <p>Mantener vínculos estables con familia, amistades y redes de apoyo reduce estrés crónico, mejora el estado de ánimo y ayuda a sostener hábitos saludables en el tiempo.</p>
+    </section>
+
+    <section class="grid" aria-label="Impacto demostrado">
+      <article class="card">
+        <h3>Mejor salud mental</h3>
+        <p>Las personas con mayor apoyo social reportan menos síntomas de ansiedad y depresión, y mejor capacidad de recuperación frente a momentos difíciles.</p>
+      </article>
+      <article class="card">
+        <h3>Menor carga de estrés</h3>
+        <p>Sentirse acompañado amortigua la respuesta fisiológica al estrés y disminuye su impacto sobre sueño, apetito, concentración y energía diaria.</p>
+      </article>
+      <article class="card">
+        <h3>Beneficio físico acumulado</h3>
+        <p>Una red social saludable se asocia con mejor adherencia a actividad física, alimentación y controles preventivos, con impacto positivo global en salud.</p>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2>Cómo cultivar relaciones que te cuidan</h2>
+      <div class="tips">
+        <p class="tip">Agenda 2 espacios semanales de calidad con personas importantes para ti, aunque sean cortos.</p>
+        <p class="tip">Haz check-ins simples: una llamada breve o mensaje intencional puede sostener el vínculo.</p>
+        <p class="tip">Comparte actividades saludables en compañía: caminatas, cocinar juntos o pausas de respiración.</p>
+        <p class="tip">Si te sientes aislado de forma persistente, pide apoyo profesional y activa tu red de confianza.</p>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn primary" href="/cuestionario">Responder cuestionario</a>
+        <a class="btn soft" href="/sueño">Ver módulo de sueño</a>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Bienestar integral basado en hábitos y soporte social.
+    </footer>
+  </main>
+</body>
+</html>

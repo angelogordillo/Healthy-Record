@@ -759,6 +759,11 @@ def caso():
     caso_path = Path(__file__).parent / "caso.html"
     return FileResponse(caso_path)
 
+@app.get("/social")
+def social():
+    social_path = Path(__file__).parent / "social.html"
+    return FileResponse(social_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:

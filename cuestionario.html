@@ -313,6 +313,13 @@
       font-size: 14px;
     }
 
+    .final-actions {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     @keyframes popIn {
       from { opacity: 0; transform: translateY(10px) scale(0.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
@@ -324,6 +331,7 @@
     @media (max-width: 580px) {
       .card { padding: 20px; }
       .actions .btn { width: 100%; }
+      .final-actions .btn { width: 100%; text-align: center; }
     }
   </style>
 </head>
@@ -333,7 +341,7 @@
       <div>
         <h1 class="title">Cuentanos como fue tu semana pasada en estas actividades</h1>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 6</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 8</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -384,6 +392,16 @@
           <b>Valoración general</b>
           <span id="summaryValoracion"></span>
         </article>
+        <article class="result-chip">
+          <b>Relaciones</b>
+          <span id="summarySocial"></span>
+        </article>
+      </div>
+      <p class="result-sub" id="tipsSummary"></p>
+      <div class="final-actions">
+        <a class="btn secondary" href="/">Volver al home</a>
+        <a class="btn secondary" href="/social">Ir al módulo social</a>
+        <a class="btn primary" href="/sueño">Ir al módulo de sueño</a>
       </div>
     </section>
   </main>
@@ -435,8 +453,30 @@
         ]
       },
       {
+        key: "vinculo_familia_amigos",
+        label: "6. Cuanto tiempo de calidad compartiste con familia o amistades esta semana?",
+        type: "options",
+        options: [
+          "4 o más momentos de calidad",
+          "2-3 momentos de calidad",
+          "1 momento breve",
+          "Casi nada o nada"
+        ]
+      },
+      {
+        key: "apoyo_social",
+        label: "7. Si tienes una semana dificil, sientes que cuentas con apoyo cercano?",
+        type: "options",
+        options: [
+          "Si, de forma constante",
+          "A veces, depende del momento",
+          "Pocas veces",
+          "No me siento acompañado/a"
+        ]
+      },
+      {
         key: "valoracion_general",
-        label: "6. Como valorarias en general el programa hasta este momento?",
+        label: "8. Como valorarias en general el programa hasta este momento?",
         type: "options",
         options: [
           "Excelente",
@@ -471,6 +511,8 @@
     const summaryAlimentacionEl = document.getElementById("summaryAlimentacion");
     const summaryEjercicioEl = document.getElementById("summaryEjercicio");
     const summaryValoracionEl = document.getElementById("summaryValoracion");
+    const summarySocialEl = document.getElementById("summarySocial");
+    const tipsSummaryEl = document.getElementById("tipsSummary");
 
     const feedbackByQuestion = {
       sueno_horas: {
@@ -501,6 +543,18 @@
         "1-2 días (30-60 min)": "Buen inicio. Subir a 3 dias semanales mejoraria resultados.",
         "Solo caminatas ligeras": "Caminar ayuda; sumar algo de fuerza potenciaria el avance.",
         "No realizo actividad fisica": "Un inicio gradual (10-15 min al dia) puede hacer gran diferencia."
+      },
+      vinculo_familia_amigos: {
+        "4 o más momentos de calidad": "Excelente red de apoyo activa. Suele proteger energia y estado de animo.",
+        "2-3 momentos de calidad": "Buena frecuencia. Mantenerla puede ayudarte a sostener otros habitos.",
+        "1 momento breve": "Hay espacio para aumentar contacto de calidad durante la semana.",
+        "Casi nada o nada": "Priorizar vinculos cercanos puede mejorar bienestar mental y fisico."
+      },
+      apoyo_social: {
+        "Si, de forma constante": "Contar con apoyo estable es un factor protector clave.",
+        "A veces, depende del momento": "Buena base; conviene reforzar 1-2 vinculos de confianza.",
+        "Pocas veces": "Vale la pena activar conversaciones y pedir apoyo de forma temprana.",
+        "No me siento acompañado/a": "Senal importante: buscar apoyo profesional y social puede marcar diferencia."
       },
       valoracion_general: {
         "Excelente": "Gracias por tu valoracion. Vamos por muy buen camino.",
@@ -619,6 +673,12 @@
       if (answers.ejercicio === "No realizo actividad fisica" || answers.ejercicio === "Solo caminatas ligeras") {
         notes.push("aumentar actividad fisica progresivamente");
       }
+      if (answers.vinculo_familia_amigos === "1 momento breve" || answers.vinculo_familia_amigos === "Casi nada o nada") {
+        notes.push("reservar espacios de calidad con familia y amistades");
+      }
+      if (answers.apoyo_social === "Pocas veces" || answers.apoyo_social === "No me siento acompañado/a") {
+        notes.push("fortalecer tu red de apoyo y pedir acompanamiento");
+      }
       if (answers.valoracion_general === "Regular" || answers.valoracion_general === "Necesita mejorar") {
         notes.push("revisar ajustes del programa para mejorar la experiencia");
       }
@@ -626,6 +686,23 @@
         return "Perfil inicial favorable. Recomendacion: mantener constancia en habitos clave.";
       }
       return `Feedback inicial: conviene enfocarte en ${notes.join(", ")}.`;
+    }
+
+    function buildTipsSummary() {
+      const tips = [];
+      if (answers.vinculo_familia_amigos !== "4 o más momentos de calidad") {
+        tips.push("agenda 2 momentos semanales con personas clave");
+      }
+      if (answers.apoyo_social === "Pocas veces" || answers.apoyo_social === "No me siento acompañado/a") {
+        tips.push("elige 1 persona de confianza para iniciar un check-in esta semana");
+      }
+      if (answers.sueno_calidad === "Baja (despertares frecuentes)" || answers.sueno_horas === "Menos de 6 horas") {
+        tips.push("combina higiene de sueño con apoyo social para reducir carga de estres");
+      }
+      if (!tips.length) {
+        return "Tip clave: mantener contacto social regular te ayuda a sostener energia, motivacion y adherencia a habitos.";
+      }
+      return `Tips: ${tips.join(" · ")}. Revisa el módulo social para recomendaciones prácticas.`;
     }
 
     async function buildTrendSummary(token) {
@@ -666,6 +743,8 @@
       summaryAlimentacionEl.textContent = answers.alimentacion || "-";
       summaryEjercicioEl.textContent = answers.ejercicio || "-";
       summaryValoracionEl.textContent = answers.valoracion_general || "-";
+      summarySocialEl.textContent = `${answers.vinculo_familia_amigos || "-"} · ${answers.apoyo_social || "-"}`;
+      tipsSummaryEl.textContent = buildTipsSummary();
 
       document.getElementById("questionContainer").style.display = "none";
       document.querySelector(".actions").style.display = "none";
