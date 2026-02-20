@@ -328,6 +328,16 @@
     .status.error { color: var(--danger); }
     .status.success { color: #0a6a4d; }
 
+    .login-cta {
+      display: none;
+      margin-top: 8px;
+      width: fit-content;
+    }
+
+    .login-cta.visible {
+      display: inline-block;
+    }
+
     @media (max-width: 580px) {
       .card { padding: 20px; }
       .actions .btn { width: 100%; }
@@ -362,6 +372,7 @@
     </div>
 
     <p class="status" id="status" aria-live="polite"></p>
+    <a class="btn secondary login-cta" id="loginCta" href="/#acceso">Ir a Acceso personas</a>
 
     <section class="result" id="finalResult" aria-live="polite">
       <div class="result-head">
@@ -514,6 +525,7 @@
     const summaryValoracionEl = document.getElementById("summaryValoracion");
     const summarySocialEl = document.getElementById("summarySocial");
     const tipsSummaryEl = document.getElementById("tipsSummary");
+    const loginCtaEl = document.getElementById("loginCta");
 
     const feedbackByQuestion = {
       sueno_horas: {
@@ -577,6 +589,7 @@
       setStatus(message, "error");
       nextBtn.disabled = true;
       backBtn.disabled = true;
+      loginCtaEl.classList.add("visible");
     }
 
     async function ensureActiveSession() {
@@ -600,6 +613,7 @@
           localStorage.setItem("panelUserName", meData.nombre);
         }
         sessionValidated = true;
+        loginCtaEl.classList.remove("visible");
         return true;
       } catch (error) {
         invalidateSession("No pudimos validar tu sesión. Intenta recargar e iniciar sesión nuevamente.");
