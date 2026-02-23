@@ -685,12 +685,14 @@ def send_company_lead_email(
     )
     msg.set_content(body)
 
+    effective_starttls = SMTP_STARTTLS or SMTP_PORT == 587
     attempts: list[tuple[str, bool, bool]] = []
-    if SMTP_PORT == 465 or not SMTP_STARTTLS:
+    if SMTP_PORT == 465:
         attempts.append(("ssl", True, False))
-    if SMTP_STARTTLS:
+    if effective_starttls:
         attempts.append(("starttls", False, True))
-    attempts.append(("plain", False, False))
+    if SMTP_PORT != 587 and not effective_starttls:
+        attempts.append(("plain", False, False))
 
     last_error: Exception | None = None
     for _, use_ssl, use_starttls in attempts:
