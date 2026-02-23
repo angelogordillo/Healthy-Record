@@ -342,35 +342,10 @@
       </div>
     </section>
 
-    <section class="section hidden-section" id="inscribirse">
-      <h2>Inscribirse</h2>
-      <p>Selecciona el tipo de registro.</p>
+    <section class="section" id="inscribirse">
+      <h2>Registro de empresa</h2>
+      <p>Completa este formulario para gestionar la operación del programa en tu organización.</p>
       <div class="grid">
-        <article class="card">
-          <h3>Registro persona</h3>
-          <p>Quiero registrarme para presentarlo a mi área de personal en la empresa.</p>
-          <form id="personForm">
-            <div class="form-grid">
-              <label>Nombre
-                <input type="text" name="nombre" required />
-              </label>
-              <label>Apellido
-                <input type="text" name="apellido" required />
-              </label>
-              <label>Correo electrónico (usuario)
-                <input type="email" name="email" required />
-              </label>
-              <label>Contraseña
-                <input type="password" name="password" required />
-              </label>
-              <label>Repetir contraseña
-                <input type="password" name="password_confirm" required />
-              </label>
-            </div>
-            <button class="btn primary" type="submit">Crear acceso personal</button>
-            <div class="form-status" id="personStatus" aria-live="polite"></div>
-          </form>
-        </article>
         <article class="card" id="empresa">
           <h3>Registro empresa</h3>
           <p>Crea las credenciales corporativas para gestionar la operación del programa.</p>
@@ -428,7 +403,8 @@
     </section>
 
     <footer>
-      Healthy Record · Hábitos saludables, empresas más productivas.
+      Healthy Record · Hábitos saludables, empresas más productivas.<br />
+      Escríbenos: <a href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a>
     </footer>
   </main>
 
@@ -438,83 +414,87 @@
     const companyForm = document.getElementById("companyForm");
     const companyStatus = document.getElementById("companyStatus");
 
-    personForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      personStatus.textContent = "Enviando...";
+    if (personForm && personStatus) {
+      personForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        personStatus.textContent = "Enviando...";
 
-      if (personForm.password.value !== personForm.password_confirm.value) {
-        personStatus.textContent = "Las contraseñas no coinciden.";
-        return;
-      }
-
-      const data = {
-        nombre: personForm.nombre.value.trim(),
-        apellido: personForm.apellido.value.trim(),
-        email: personForm.email.value.trim(),
-        password: personForm.password.value
-      };
-
-      try {
-        const response = await fetch("/api/person-register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-        if (!response.ok) throw new Error("No se pudo enviar el registro");
-
-        const loginResponse = await fetch("/api/panel-login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: data.email,
-            password: data.password
-          })
-        });
-        if (loginResponse.ok) {
-          const loginData = await loginResponse.json();
-          localStorage.setItem("panelToken", loginData.token);
-          localStorage.setItem("panelUserName", `${data.nombre} ${data.apellido}`.trim());
+        if (personForm.password.value !== personForm.password_confirm.value) {
+          personStatus.textContent = "Las contraseñas no coinciden.";
+          return;
         }
 
-        personForm.reset();
-        personStatus.textContent = "Acceso creado. Ya puedes entrar al panel de salud.";
-      } catch (error) {
-        personStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
-      }
-    });
+        const data = {
+          nombre: personForm.nombre.value.trim(),
+          apellido: personForm.apellido.value.trim(),
+          email: personForm.email.value.trim(),
+          password: personForm.password.value
+        };
 
-    companyForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      companyStatus.textContent = "Enviando...";
+        try {
+          const response = await fetch("/api/person-register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+          if (!response.ok) throw new Error("No se pudo enviar el registro");
 
-      if (companyForm.password.value !== companyForm.password_confirm.value) {
-        companyStatus.textContent = "Las contraseñas no coinciden.";
-        return;
-      }
+          const loginResponse = await fetch("/api/panel-login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: data.email,
+              password: data.password
+            })
+          });
+          if (loginResponse.ok) {
+            const loginData = await loginResponse.json();
+            localStorage.setItem("panelToken", loginData.token);
+            localStorage.setItem("panelUserName", `${data.nombre} ${data.apellido}`.trim());
+          }
 
-      const data = {
-        empresa_nombre: companyForm.empresa_nombre.value.trim(),
-        empresa_web: companyForm.empresa_web.value.trim() || null,
-        colaboradores_rango: companyForm.colaboradores_rango.value,
-        contacto_nombre: companyForm.contacto_nombre.value.trim(),
-        telefono_movil: companyForm.telefono_movil.value.trim(),
-        email_corporativo: companyForm.email_corporativo.value.trim(),
-        password: companyForm.password.value
-      };
+          personForm.reset();
+          personStatus.textContent = "Acceso creado. Ya puedes entrar al panel de salud.";
+        } catch (error) {
+          personStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
+        }
+      });
+    }
 
-      try {
-        const response = await fetch("/api/company-register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        });
-        if (!response.ok) throw new Error("No se pudo enviar el registro");
-        companyForm.reset();
-        companyStatus.textContent = "Registro enviado correctamente.";
-      } catch (error) {
-        companyStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
-      }
-    });
+    if (companyForm && companyStatus) {
+      companyForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        companyStatus.textContent = "Enviando...";
+
+        if (companyForm.password.value !== companyForm.password_confirm.value) {
+          companyStatus.textContent = "Las contraseñas no coinciden.";
+          return;
+        }
+
+        const data = {
+          empresa_nombre: companyForm.empresa_nombre.value.trim(),
+          empresa_web: companyForm.empresa_web.value.trim() || null,
+          colaboradores_rango: companyForm.colaboradores_rango.value,
+          contacto_nombre: companyForm.contacto_nombre.value.trim(),
+          telefono_movil: companyForm.telefono_movil.value.trim(),
+          email_corporativo: companyForm.email_corporativo.value.trim(),
+          password: companyForm.password.value
+        };
+
+        try {
+          const response = await fetch("/api/company-register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+          });
+          if (!response.ok) throw new Error("No se pudo enviar el registro");
+          companyForm.reset();
+          companyStatus.textContent = "Registro enviado correctamente.";
+        } catch (error) {
+          companyStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
+        }
+      });
+    }
   </script>
 </body>
 </html>
