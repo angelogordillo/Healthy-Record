@@ -663,17 +663,17 @@ def send_company_lead_email(
     telefono: str,
     whatsapp: str,
 ):
-    if not SMTP_HOST or not SMTP_USER or not SMTP_PASSWORD:
+    if not SMTP_HOST:
         raise RuntimeError("SMTP is not configured")
 
     msg = EmailMessage()
-    msg["Subject"] = f"Nuevo lead OWL LATAM: {nombre} {apellido} - {empresa}"
+    msg["Subject"] = f"Nueva solicitud Healthy Record: {nombre} {apellido} - {empresa}"
     msg["From"] = SMTP_FROM
     msg["To"] = COMPANY_LEAD_TO
     msg["Reply-To"] = correo_corporativo
 
     body = (
-        "Nuevo registro desde formulario OWL LATAM\n\n"
+        "Nueva solicitud desde formulario Healthy Record\n\n"
         f"Nombre: {nombre}\n"
         f"Apellido: {apellido}\n"
         f"Empresa: {empresa}\n"
@@ -685,19 +685,38 @@ def send_company_lead_email(
     )
     msg.set_content(body)
 
-    if SMTP_PORT == 465 and not SMTP_STARTTLS:
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
-            smtp.login(SMTP_USER, SMTP_PASSWORD)
-            smtp.send_message(msg)
-        return
+    attempts: list[tuple[str, bool, bool]] = []
+    if SMTP_PORT == 465 or not SMTP_STARTTLS:
+        attempts.append(("ssl", True, False))
+    if SMTP_STARTTLS:
+        attempts.append(("starttls", False, True))
+    attempts.append(("plain", False, False))
 
-    with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
-        smtp.ehlo()
-        if SMTP_STARTTLS:
-            smtp.starttls()
-            smtp.ehlo()
-        smtp.login(SMTP_USER, SMTP_PASSWORD)
-        smtp.send_message(msg)
+    last_error: Exception | None = None
+    for _, use_ssl, use_starttls in attempts:
+        try:
+            if use_ssl:
+                with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
+                    if SMTP_USER and SMTP_PASSWORD:
+                        smtp.login(SMTP_USER, SMTP_PASSWORD)
+                    smtp.send_message(msg)
+            else:
+                with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
+                    smtp.ehlo()
+                    if use_starttls:
+                        smtp.starttls()
+                        smtp.ehlo()
+                    if SMTP_USER and SMTP_PASSWORD:
+                        smtp.login(SMTP_USER, SMTP_PASSWORD)
+                    smtp.send_message(msg)
+            return
+        except Exception as exc:
+            last_error = exc
+            continue
+
+    if last_error:
+        raise RuntimeError(f"SMTP send failed: {last_error}")
+    raise RuntimeError("SMTP send failed")
 
 
 def require_panel_auth(request: Request):
@@ -1431,7 +1450,6 @@ def company_register(payload: CompanyRegistration):
                     ),
                 )
                 new_id = cur.fetchone()[0]
-        email_sent = True
         try:
             contact_parts = payload.contacto_nombre.strip().split()
             nombre = contact_parts[0] if contact_parts else payload.contacto_nombre.strip()
@@ -1445,9 +1463,9 @@ def company_register(payload: CompanyRegistration):
                 telefono=payload.telefono_movil.strip(),
                 whatsapp=payload.telefono_movil.strip(),
             )
-        except Exception:
-            email_sent = False
-        return {"ok": True, "id": new_id, "email_sent": email_sent}
+        except Exception as exc:
+            print(f"[company-register] email send failed for id={new_id}: {exc}")
+        return {"ok": True, "id": new_id}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
