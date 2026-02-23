@@ -27,6 +27,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+def clean_email_env(value: str | None, fallback: str) -> str:
+    if not value:
+        return fallback
+    cleaned = value.strip().strip("\"'").strip()
+    if "=" in cleaned:
+        left, right = cleaned.split("=", 1)
+        if "@" not in left and "@" in right:
+            cleaned = right.strip().strip("\"'").strip()
+    return cleaned or fallback
+
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_PORT = os.getenv("DB_PORT", "5432")
 DB_NAME = os.getenv("DB_NAME", "crear_mi_registro")
@@ -37,7 +47,10 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
-COMPANY_LEAD_TO = os.getenv("COMPANY_LEAD_TO", os.getenv("OWL_LEAD_TO", "angelo@healthyrecord.org"))
+COMPANY_LEAD_TO = clean_email_env(
+    os.getenv("COMPANY_LEAD_TO", os.getenv("OWL_LEAD_TO", "angelo@healthyrecord.org")),
+    "angelo@healthyrecord.org",
+)
 SMTP_HOST = os.getenv("SMTP_HOST", "")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
