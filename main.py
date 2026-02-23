@@ -37,7 +37,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
-OWL_LEAD_TO = os.getenv("OWL_LEAD_TO", "angelo@theowl.solutions")
+OWL_LEAD_TO = os.getenv("OWL_LEAD_TO", "angelo@healthyrecord.org")
 SMTP_HOST = os.getenv("SMTP_HOST", "")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
@@ -1409,6 +1409,20 @@ def list_questionnaire_entries(days: int = 90, auth: dict = Depends(require_pane
 @app.post("/api/company-register")
 def company_register(payload: CompanyRegistration):
     try:
+        contact_parts = payload.contacto_nombre.strip().split()
+        nombre = contact_parts[0] if contact_parts else payload.contacto_nombre.strip()
+        apellido = " ".join(contact_parts[1:]) if len(contact_parts) > 1 else "-"
+
+        send_owl_lead_email(
+            nombre=nombre,
+            apellido=apellido,
+            empresa=payload.empresa_nombre.strip(),
+            pagina_web=(payload.empresa_web or "").strip() or None,
+            correo_corporativo=str(payload.email_corporativo).strip(),
+            telefono=payload.telefono_movil.strip(),
+            whatsapp=payload.telefono_movil.strip(),
+        )
+
         password_hash = pwd_context.hash(payload.password)
         with get_conn() as conn:
             with conn.cursor() as cur:
@@ -1431,6 +1445,8 @@ def company_register(payload: CompanyRegistration):
                 )
                 new_id = cur.fetchone()[0]
         return {"ok": True, "id": new_id}
+    except RuntimeError as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
