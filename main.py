@@ -1409,20 +1409,6 @@ def list_questionnaire_entries(days: int = 90, auth: dict = Depends(require_pane
 @app.post("/api/company-register")
 def company_register(payload: CompanyRegistration):
     try:
-        contact_parts = payload.contacto_nombre.strip().split()
-        nombre = contact_parts[0] if contact_parts else payload.contacto_nombre.strip()
-        apellido = " ".join(contact_parts[1:]) if len(contact_parts) > 1 else "-"
-
-        send_company_lead_email(
-            nombre=nombre,
-            apellido=apellido,
-            empresa=payload.empresa_nombre.strip(),
-            pagina_web=(payload.empresa_web or "").strip() or None,
-            correo_corporativo=str(payload.email_corporativo).strip(),
-            telefono=payload.telefono_movil.strip(),
-            whatsapp=payload.telefono_movil.strip(),
-        )
-
         raw_password = payload.password.strip() if payload.password else secrets.token_urlsafe(16)
         password_hash = pwd_context.hash(raw_password)
         with get_conn() as conn:
@@ -1445,9 +1431,23 @@ def company_register(payload: CompanyRegistration):
                     ),
                 )
                 new_id = cur.fetchone()[0]
-        return {"ok": True, "id": new_id}
-    except RuntimeError as exc:
-        raise HTTPException(status_code=503, detail=str(exc))
+        email_sent = True
+        try:
+            contact_parts = payload.contacto_nombre.strip().split()
+            nombre = contact_parts[0] if contact_parts else payload.contacto_nombre.strip()
+            apellido = " ".join(contact_parts[1:]) if len(contact_parts) > 1 else "-"
+            send_company_lead_email(
+                nombre=nombre,
+                apellido=apellido,
+                empresa=payload.empresa_nombre.strip(),
+                pagina_web=(payload.empresa_web or "").strip() or None,
+                correo_corporativo=str(payload.email_corporativo).strip(),
+                telefono=payload.telefono_movil.strip(),
+                whatsapp=payload.telefono_movil.strip(),
+            )
+        except Exception:
+            email_sent = False
+        return {"ok": True, "id": new_id, "email_sent": email_sent}
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
 
