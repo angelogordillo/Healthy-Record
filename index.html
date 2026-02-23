@@ -343,12 +343,12 @@
     </section>
 
     <section class="section" id="inscribirse">
-      <h2>Registro de empresa</h2>
-      <p>Completa este formulario para gestionar la operación del programa en tu organización.</p>
+      <h2>Solicitar más información para empresas</h2>
+      <p>Completa este formulario y te contactaremos para compartir detalles del programa y próximos pasos.</p>
       <div class="grid">
         <article class="card" id="empresa">
-          <h3>Registro empresa</h3>
-          <p>Crea las credenciales corporativas para gestionar la operación del programa.</p>
+          <h3>Solicitud de información</h3>
+          <p>Déjanos tus datos corporativos y te escribiremos con una propuesta adaptada a tu empresa.</p>
           <form id="companyForm">
             <div class="form-grid">
               <label>Nombre de la empresa
@@ -378,14 +378,8 @@
               <label>Email corporativo
                 <input type="email" name="email_corporativo" required />
               </label>
-              <label>Contraseña
-                <input type="password" name="password" required />
-              </label>
-              <label>Repetir contraseña
-                <input type="password" name="password_confirm" required />
-              </label>
             </div>
-            <button class="btn primary" type="submit">Crear credenciales empresa</button>
+            <button class="btn primary" type="submit">Solicitar información</button>
             <div class="form-status" id="companyStatus" aria-live="polite"></div>
           </form>
         </article>
@@ -466,19 +460,13 @@
         event.preventDefault();
         companyStatus.textContent = "Enviando...";
 
-        if (companyForm.password.value !== companyForm.password_confirm.value) {
-          companyStatus.textContent = "Las contraseñas no coinciden.";
-          return;
-        }
-
         const data = {
           empresa_nombre: companyForm.empresa_nombre.value.trim(),
           empresa_web: companyForm.empresa_web.value.trim() || null,
           colaboradores_rango: companyForm.colaboradores_rango.value,
           contacto_nombre: companyForm.contacto_nombre.value.trim(),
           telefono_movil: companyForm.telefono_movil.value.trim(),
-          email_corporativo: companyForm.email_corporativo.value.trim(),
-          password: companyForm.password.value
+          email_corporativo: companyForm.email_corporativo.value.trim()
         };
 
         try {
@@ -489,7 +477,7 @@
           });
           if (!response.ok) throw new Error("No se pudo enviar el registro");
           companyForm.reset();
-          companyStatus.textContent = "Registro enviado correctamente.";
+          companyStatus.textContent = "Solicitud enviada correctamente. Te contactaremos pronto.";
         } catch (error) {
           companyStatus.textContent = "Ocurrió un error. Inténtalo nuevamente.";
         }

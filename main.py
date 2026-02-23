@@ -566,7 +566,7 @@ class CompanyRegistration(BaseModel):
     contacto_nombre: str
     telefono_movil: str
     email_corporativo: EmailStr
-    password: str
+    password: str | None = None
 
 
 class SleepHabitEntry(BaseModel):
@@ -1423,7 +1423,8 @@ def company_register(payload: CompanyRegistration):
             whatsapp=payload.telefono_movil.strip(),
         )
 
-        password_hash = pwd_context.hash(payload.password)
+        raw_password = payload.password.strip() if payload.password else secrets.token_urlsafe(16)
+        password_hash = pwd_context.hash(raw_password)
         with get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(
