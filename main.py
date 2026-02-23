@@ -37,7 +37,7 @@ ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
-OWL_LEAD_TO = os.getenv("OWL_LEAD_TO", "angelo@healthyrecord.org")
+COMPANY_LEAD_TO = os.getenv("COMPANY_LEAD_TO", os.getenv("OWL_LEAD_TO", "angelo@healthyrecord.org"))
 SMTP_HOST = os.getenv("SMTP_HOST", "")
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587"))
 SMTP_USER = os.getenv("SMTP_USER", "")
@@ -654,7 +654,7 @@ def verify_token(token: str):
         return None
 
 
-def send_owl_lead_email(
+def send_company_lead_email(
     nombre: str,
     apellido: str,
     empresa: str,
@@ -669,7 +669,7 @@ def send_owl_lead_email(
     msg = EmailMessage()
     msg["Subject"] = f"Nuevo lead OWL LATAM: {nombre} {apellido} - {empresa}"
     msg["From"] = SMTP_FROM
-    msg["To"] = OWL_LEAD_TO
+    msg["To"] = COMPANY_LEAD_TO
     msg["Reply-To"] = correo_corporativo
 
     body = (
@@ -1413,7 +1413,7 @@ def company_register(payload: CompanyRegistration):
         nombre = contact_parts[0] if contact_parts else payload.contacto_nombre.strip()
         apellido = " ".join(contact_parts[1:]) if len(contact_parts) > 1 else "-"
 
-        send_owl_lead_email(
+        send_company_lead_email(
             nombre=nombre,
             apellido=apellido,
             empresa=payload.empresa_nombre.strip(),
@@ -1462,7 +1462,7 @@ def submit_owl_latam_lead(
     whatsapp: str = Form(...),
 ):
     try:
-        send_owl_lead_email(
+        send_company_lead_email(
             nombre=nombre.strip(),
             apellido=apellido.strip(),
             empresa=empresa.strip(),
