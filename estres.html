@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Manejo de estrés y burnout</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f5f9ff;
+      --card: #ffffff;
+      --ink: #10203a;
+      --muted: #4a607f;
+      --line: rgba(16, 32, 58, 0.12);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --warn: #cb5f00;
+      --warn-bg: #fff4e8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(31, 132, 214, 0.16), transparent 30%),
+        radial-gradient(circle at 95% 5%, rgba(0, 199, 140, 0.18), transparent 32%),
+        var(--bg);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 20px 58px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      font-weight: 700;
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .btn.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #ffffff, #f7fbff);
+      padding: 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f5f95;
+      background: #e7f2ff;
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.3vw, 46px);
+      color: var(--logo-blue);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(26px, 3.5vw, 34px);
+      color: var(--logo-blue);
+      margin-bottom: 8px;
+    }
+
+    p { color: var(--muted); }
+
+    .section {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h3 {
+      color: #0f3558;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .alert {
+      margin-top: 12px;
+      border: 1px solid rgba(203, 95, 0, 0.25);
+      background: var(--warn-bg);
+      border-radius: 12px;
+      padding: 10px 12px;
+      color: var(--warn);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    ul {
+      margin-top: 10px;
+      margin-left: 18px;
+      color: #244666;
+    }
+
+    li { margin-bottom: 6px; }
+    li:last-child { margin-bottom: 0; }
+
+    .cta-row {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Volver al home</a>
+      <a class="btn primary" href="/cuestionario">Volver al cuestionario</a>
+    </header>
+
+    <section class="hero">
+      <span class="tag">Módulo estrés y burnout</span>
+      <h1>Identifica señales tempranas y recupera energía antes del agotamiento.</h1>
+      <p>El estrés sostenido sin recuperación puede afectar sueño, enfoque, estado de ánimo, salud física y rendimiento laboral. Este módulo te ayuda a detectar riesgo y aplicar acciones concretas.</p>
+    </section>
+
+    <section class="section">
+      <h2>Señales frecuentes de sobrecarga</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Mentales</h3>
+          <p>Dificultad para concentrarte, sensación de estar saturado y baja claridad para priorizar tareas.</p>
+        </article>
+        <article class="card">
+          <h3>Emocionales</h3>
+          <p>Irritabilidad, desmotivación, menor tolerancia a la presión y sensación de desconexión con tu trabajo.</p>
+        </article>
+        <article class="card">
+          <h3>Físicas</h3>
+          <p>Cansancio persistente, tensión muscular, alteraciones de sueño y fatiga que no mejora con descanso corto.</p>
+        </article>
+      </div>
+      <p class="alert">Si estas señales se mantienen por varias semanas, conviene escalar apoyo profesional y ajustar carga/ritmo de trabajo.</p>
+    </section>
+
+    <section class="section">
+      <h2>Plan práctico de 7 días</h2>
+      <ul>
+        <li>Agenda 2 pausas de regulación al día (respiración 4-6, caminata breve o estiramiento).</li>
+        <li>Define 3 prioridades diarias y elimina tareas de bajo impacto cuando sea posible.</li>
+        <li>Cierra jornada con un corte claro (sin pantallas laborales al menos 45 minutos antes de dormir).</li>
+        <li>Habla con una persona de confianza o líder cuando el nivel de carga sea no sostenible.</li>
+        <li>Combina actividad física ligera con espacios sociales para bajar activación fisiológica.</li>
+      </ul>
+      <div class="cta-row">
+        <a class="btn primary" href="/cuestionario">Actualizar mi feedback</a>
+        <a class="btn" href="/social">Ir al módulo social</a>
+        <a class="btn" href="/sueño">Ir al módulo de sueño</a>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Prevención de estrés crónico y burnout con hábitos sostenibles.
+    </footer>
+  </main>
+</body>
+</html>

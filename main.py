@@ -769,6 +769,12 @@ def social():
     social_path = Path(__file__).parent / "social.html"
     return FileResponse(social_path)
 
+@app.get("/stress")
+@app.get("/estres")
+def modulo_estres():
+    estres_path = Path(__file__).parent / "estres.html"
+    return FileResponse(estres_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:

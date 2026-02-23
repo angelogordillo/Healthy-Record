@@ -341,7 +341,7 @@
       <div>
         <h1 class="title">Cuentanos como fue tu semana pasada en estas actividades</h1>
       </div>
-      <span class="step" id="stepLabel">Pregunta 1 de 8</span>
+      <span class="step" id="stepLabel">Pregunta 1 de 10</span>
     </header>
 
     <div class="bar"><span id="progressBar"></span></div>
@@ -396,10 +396,15 @@
           <b>Relaciones</b>
           <span id="summarySocial"></span>
         </article>
+        <article class="result-chip">
+          <b>Estrés y burnout</b>
+          <span id="summaryStress"></span>
+        </article>
       </div>
       <p class="result-sub" id="tipsSummary"></p>
       <div class="final-actions">
         <a class="btn secondary" href="/">Volver al home</a>
+        <a class="btn secondary" href="/estres">Ir al módulo de estrés</a>
         <a class="btn secondary" href="/social">Ir al módulo social</a>
         <a class="btn primary" href="/sueño">Ir al módulo de sueño</a>
       </div>
@@ -475,8 +480,30 @@
         ]
       },
       {
+        key: "nivel_estres",
+        label: "8. Como estuvo tu nivel de estres la mayor parte de la semana?",
+        type: "options",
+        options: [
+          "Bajo y manejable",
+          "Moderado con control",
+          "Alto y frecuente",
+          "Muy alto y constante"
+        ]
+      },
+      {
+        key: "senales_burnout",
+        label: "9. Tuviste señales de agotamiento (cansancio extremo, irritabilidad, desconexion)?",
+        type: "options",
+        options: [
+          "No, casi nada",
+          "Leve en algunos dias",
+          "Si, varias veces en la semana",
+          "Si, casi todos los dias"
+        ]
+      },
+      {
         key: "valoracion_general",
-        label: "8. Como valorarias en general el programa hasta este momento?",
+        label: "10. Como valorarias en general el programa hasta este momento?",
         type: "options",
         options: [
           "Excelente",
@@ -512,6 +539,7 @@
     const summaryEjercicioEl = document.getElementById("summaryEjercicio");
     const summaryValoracionEl = document.getElementById("summaryValoracion");
     const summarySocialEl = document.getElementById("summarySocial");
+    const summaryStressEl = document.getElementById("summaryStress");
     const tipsSummaryEl = document.getElementById("tipsSummary");
 
     const feedbackByQuestion = {
@@ -555,6 +583,18 @@
         "A veces, depende del momento": "Buena base; conviene reforzar 1-2 vinculos de confianza.",
         "Pocas veces": "Vale la pena activar conversaciones y pedir apoyo de forma temprana.",
         "No me siento acompañado/a": "Senal importante: buscar apoyo profesional y social puede marcar diferencia."
+      },
+      nivel_estres: {
+        "Bajo y manejable": "Buen control de carga mental esta semana.",
+        "Moderado con control": "Nivel esperable; mantener pausas y recuperacion es clave.",
+        "Alto y frecuente": "Conviene intervenir temprano para evitar desgaste acumulado.",
+        "Muy alto y constante": "Alerta importante: prioriza recuperacion y ajuste de carga cuanto antes."
+      },
+      senales_burnout: {
+        "No, casi nada": "Buena señal de recuperacion y equilibrio.",
+        "Leve en algunos dias": "Hay indicios leves; reforzar descanso y limites puede prevenir escalamiento.",
+        "Si, varias veces en la semana": "Senal de riesgo: conviene activar plan de recuperacion.",
+        "Si, casi todos los dias": "Riesgo alto de burnout: busca apoyo profesional y ajuste de ritmo."
       },
       valoracion_general: {
         "Excelente": "Gracias por tu valoracion. Vamos por muy buen camino.",
@@ -679,6 +719,12 @@
       if (answers.apoyo_social === "Pocas veces" || answers.apoyo_social === "No me siento acompañado/a") {
         notes.push("fortalecer tu red de apoyo y pedir acompanamiento");
       }
+      if (answers.nivel_estres === "Alto y frecuente" || answers.nivel_estres === "Muy alto y constante") {
+        notes.push("reducir carga de estres con pausas de regulacion y limites de jornada");
+      }
+      if (answers.senales_burnout === "Si, varias veces en la semana" || answers.senales_burnout === "Si, casi todos los dias") {
+        notes.push("activar prevencion de burnout con recuperacion prioritaria y soporte");
+      }
       if (answers.valoracion_general === "Regular" || answers.valoracion_general === "Necesita mejorar") {
         notes.push("revisar ajustes del programa para mejorar la experiencia");
       }
@@ -699,6 +745,12 @@
       if (answers.sueno_calidad === "Baja (despertares frecuentes)" || answers.sueno_horas === "Menos de 6 horas") {
         tips.push("combina higiene de sueño con apoyo social para reducir carga de estres");
       }
+      if (answers.nivel_estres === "Alto y frecuente" || answers.nivel_estres === "Muy alto y constante") {
+        tips.push("agenda 2 pausas diarias de regulacion (respiracion, caminata o estiramiento)");
+      }
+      if (answers.senales_burnout === "Si, varias veces en la semana" || answers.senales_burnout === "Si, casi todos los dias") {
+        tips.push("consulta el módulo de estres y define un plan de recuperacion esta semana");
+      }
       if (!tips.length) {
         return "Tip clave: mantener contacto social regular te ayuda a sostener energia, motivacion y adherencia a habitos.";
       }
@@ -715,6 +767,9 @@
       }
       if (answers.ejercicio === "3+ días (30-60 min)" || answers.ejercicio === "1-2 días (30-60 min)") {
         strengths.push("actividad");
+      }
+      if (answers.nivel_estres === "Bajo y manejable" || answers.nivel_estres === "Moderado con control") {
+        strengths.push("manejo de estres");
       }
       if (!strengths.length) {
         return "Tu punto de partida muestra oportunidades claras. Enfócate en 1-2 hábitos por semana para sostener avance real.";
@@ -733,6 +788,7 @@
       summaryEjercicioEl.textContent = answers.ejercicio || "-";
       summaryValoracionEl.textContent = answers.valoracion_general || "-";
       summarySocialEl.textContent = `${answers.vinculo_familia_amigos || "-"} · ${answers.apoyo_social || "-"}`;
+      summaryStressEl.textContent = `${answers.nivel_estres || "-"} · ${answers.senales_burnout || "-"}`;
       tipsSummaryEl.textContent = buildTipsSummary();
 
       document.getElementById("questionContainer").style.display = "none";
