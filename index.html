@@ -49,23 +49,18 @@
     }
 
     .hero {
-      display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
-      gap: 26px;
-      align-items: center;
-      padding: 14px 0 30px;
-    }
-
-    .hero-brand {
-      background: linear-gradient(160deg, rgba(255, 255, 255, 0.85), rgba(246, 249, 246, 0.95));
-      border: 1px solid rgba(17, 33, 27, 0.06);
+      position: relative;
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(246, 249, 246, 0.98));
+      border: 1px solid rgba(17, 33, 27, 0.08);
       border-radius: 30px;
-      padding: 16px;
+      padding: 24px 22px 22px;
     }
 
-    .hero-brand img {
-      width: min(100%, 620px);
-      margin: 0 auto;
+    .hero-logo {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: clamp(90px, 12vw, 130px);
       filter: saturate(0.94);
     }
 
@@ -104,6 +99,33 @@
       color: #214336;
       font-size: 14px;
       font-weight: 600;
+    }
+
+    .insights-row {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .insight {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 10px 12px;
+    }
+
+    .insight strong {
+      display: block;
+      color: var(--logo-blue);
+      font-size: 18px;
+      margin-bottom: 3px;
+    }
+
+    .insight span {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .grid {
@@ -238,7 +260,8 @@
     }
 
     @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; }
+      .hero { padding-top: 86px; }
+      .hero-logo { width: 96px; }
       .top { flex-wrap: wrap; }
     }
   </style>
@@ -246,13 +269,25 @@
 <body>
   <main class="wrap">
     <section class="hero" id="inicio">
-      <div class="hero-brand">
-        <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
-      </div>
+      <img class="hero-logo" src="/static/healthy-record-logo.png" alt="Healthy Record" />
       <div>
         <span class="eyebrow">Programa de bienestar integral para empresas</span>
-        <h1>Visita mensual con nutricionista e InBody, seguimiento semanal y ajustes personalizados.</h1>
-        <p>Healthy Record acompaña a cada colaborador para sostener avances mensuales según objetivos individuales, con intervención continua cuando surgen dificultades.</p>
+        <h1>Colaboradores más sanos generan equipos más productivos y empresas con menor rotación.</h1>
+        <p>Healthy Record integra prevención, acompañamiento y seguimiento para sostener energía, foco y bienestar en la operación diaria, reduciendo riesgos que impactan desempeño y permanencia del talento.</p>
+        <div class="insights-row">
+          <article class="insight">
+            <strong>+Productividad</strong>
+            <span>Mejores hábitos de sueño, energía y salud reducen fatiga operativa y mejoran ejecución diaria.</span>
+          </article>
+          <article class="insight">
+            <strong>+Retención</strong>
+            <span>Programas de bienestar consistentes fortalecen compromiso y percepción de cuidado de la empresa.</span>
+          </article>
+          <article class="insight">
+            <strong>-Ausentismo</strong>
+            <span>Intervención temprana en hábitos y estrés ayuda a disminuir interrupciones por desgaste físico y mental.</span>
+          </article>
+        </div>
         <p class="note">Para empresas solo mostramos indicadores agregados de avance y áreas de oportunidad generales. Los datos personales son estrictamente confidenciales.</p>
       </div>
     </section>
