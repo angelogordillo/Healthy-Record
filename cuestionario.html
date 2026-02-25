@@ -416,13 +416,13 @@
     const questions = [
       {
         key: "sueno_horas",
-        label: "1. Cuantas horas duermes en promedio cada dia?",
+        label: "1. ¿Cuántas horas duermes en promedio cada día?",
         type: "options",
         options: ["7-8 horas", "6-7 horas", "Menos de 6 horas", "Más de 8 horas"]
       },
       {
         key: "sueno_calidad",
-        label: "2. Como describirias la calidad de tu sueño?",
+        label: "2. ¿Cómo describirías la calidad de tu sueño?",
         type: "options",
         options: [
           "Buena (descanso continuo)",
@@ -432,13 +432,13 @@
       },
       {
         key: "hidratacion",
-        label: "3. Cuanta agua sueles tomar al dia?",
+        label: "3. ¿Cuánta agua sueles tomar al día?",
         type: "options",
         options: ["2 litros o más", "1.5 a 2 litros", "1 a 1.5 litros", "Menos de 1 litro"]
       },
       {
         key: "alimentacion",
-        label: "4. Como calificas tu alimentacion diaria?",
+        label: "4. ¿Cómo calificas tu alimentación diaria?",
         type: "options",
         options: [
           "Balanceada (3 comidas + snacks saludables)",
@@ -449,18 +449,18 @@
       },
       {
         key: "ejercicio",
-        label: "5. Con que frecuencia haces actividad fisica?",
+        label: "5. ¿Con qué frecuencia haces actividad física?",
         type: "options",
         options: [
           "3+ días (30-60 min)",
           "1-2 días (30-60 min)",
           "Solo caminatas ligeras",
-          "No realizo actividad fisica"
+          "No realizo actividad física"
         ]
       },
       {
         key: "vinculo_familia_amigos",
-        label: "6. Cuanto tiempo de calidad compartiste con familia o amistades esta semana?",
+        label: "6. ¿Cuánto tiempo de calidad compartiste con familia o amistades esta semana?",
         type: "options",
         options: [
           "4 o más momentos de calidad",
@@ -471,10 +471,10 @@
       },
       {
         key: "apoyo_social",
-        label: "7. Si tienes una semana dificil, sientes que cuentas con apoyo cercano?",
+        label: "7. Si tienes una semana difícil, ¿sientes que cuentas con apoyo cercano?",
         type: "options",
         options: [
-          "Si, de forma constante",
+          "Sí, de forma constante",
           "A veces, depende del momento",
           "Pocas veces",
           "No me siento acompañado/a"
@@ -482,7 +482,7 @@
       },
       {
         key: "nivel_estres",
-        label: "8. Como estuvo tu nivel de estres la mayor parte de la semana?",
+        label: "8. ¿Cómo estuvo tu nivel de estrés la mayor parte de la semana?",
         type: "options",
         options: [
           "Bajo y manejable",
@@ -493,18 +493,18 @@
       },
       {
         key: "senales_burnout",
-        label: "9. Tuviste señales de agotamiento (cansancio extremo, irritabilidad, desconexion)?",
+        label: "9. ¿Tuviste señales de agotamiento (cansancio extremo, irritabilidad, desconexión)?",
         type: "options",
         options: [
           "No, casi nada",
-          "Leve en algunos dias",
-          "Si, varias veces en la semana",
-          "Si, casi todos los dias"
+          "Leve en algunos días",
+          "Sí, varias veces en la semana",
+          "Sí, casi todos los días"
         ]
       },
       {
         key: "valoracion_general",
-        label: "10. Como valorarias en general el programa hasta este momento?",
+        label: "10. ¿Cómo valorarías en general el programa hasta este momento?",
         type: "options",
         options: [
           "Excelente",
@@ -545,63 +545,63 @@
 
     const feedbackByQuestion = {
       sueno_horas: {
-        "7-8 horas": "Excelente base para recuperacion y energia diaria.",
-        "6-7 horas": "Buena base; subir un poco podria mejorar enfoque y recuperacion.",
-        "Menos de 6 horas": "Conviene priorizar descanso: dormir poco impacta energia, apetito y estres.",
-        "Más de 8 horas": "Puede ser positivo si despiertas con energia; revisa calidad y horarios regulares."
+        "7-8 horas": "Excelente base para recuperación y energía diaria.",
+        "6-7 horas": "Buena base; subir un poco podría mejorar enfoque y recuperación.",
+        "Menos de 6 horas": "Conviene priorizar descanso: dormir poco impacta energía, apetito y estrés.",
+        "Más de 8 horas": "Puede ser positivo si despiertas con energía; revisa calidad y horarios regulares."
       },
       sueno_calidad: {
         "Buena (descanso continuo)": "Buen indicador: sueles alcanzar sueño reparador.",
         "Regular (algunos despertares)": "Hay margen de mejora ajustando rutina nocturna y horario de descanso.",
-        "Baja (despertares frecuentes)": "Senal de atencion: vale la pena reforzar higiene de sueño."
+        "Baja (despertares frecuentes)": "Señal de atención: vale la pena reforzar higiene de sueño."
       },
       hidratacion: {
-        "2 litros o más": "Muy bien, mantienes una hidratacion protectora para rendimiento y enfoque.",
-        "1.5 a 2 litros": "Buen rango. Un poco mas puede apoyar energia y control del hambre.",
-        "1 a 1.5 litros": "Conviene subir progresivamente la hidratacion diaria.",
-        "Menos de 1 litro": "Nivel bajo: priorizar agua puede darte mejora rapida de bienestar."
+        "2 litros o más": "Muy bien, mantienes una hidratación protectora para rendimiento y enfoque.",
+        "1.5 a 2 litros": "Buen rango. Un poco más puede apoyar energía y control del hambre.",
+        "1 a 1.5 litros": "Conviene subir progresivamente la hidratación diaria.",
+        "Menos de 1 litro": "Nivel bajo: priorizar agua puede darte mejora rápida de bienestar."
       },
       alimentacion: {
-        "Balanceada (3 comidas + snacks saludables)": "Muy buena estructura de alimentacion diaria.",
-        "Regular (2-3 comidas, pocos snacks)": "Base aceptable; pequenos ajustes pueden dar resultados estables.",
+        "Balanceada (3 comidas + snacks saludables)": "Muy buena estructura de alimentación diaria.",
+        "Regular (2-3 comidas, pocos snacks)": "Base aceptable; pequeños ajustes pueden dar resultados estables.",
         "Irregular (saltas comidas)": "Saltarte comidas suele aumentar fatiga y antojos.",
         "Alta en ultraprocesados": "Conviene reducir ultraprocesados gradualmente y priorizar comida real."
       },
       ejercicio: {
         "3+ días (30-60 min)": "Excelente frecuencia. Mantener constancia es clave.",
-        "1-2 días (30-60 min)": "Buen inicio. Subir a 3 dias semanales mejoraria resultados.",
-        "Solo caminatas ligeras": "Caminar ayuda; sumar algo de fuerza potenciaria el avance.",
-        "No realizo actividad fisica": "Un inicio gradual (10-15 min al dia) puede hacer gran diferencia."
+        "1-2 días (30-60 min)": "Buen inicio. Subir a 3 días semanales mejoraría resultados.",
+        "Solo caminatas ligeras": "Caminar ayuda; sumar algo de fuerza potenciaría el avance.",
+        "No realizo actividad física": "Un inicio gradual (10-15 min al día) puede hacer gran diferencia."
       },
       vinculo_familia_amigos: {
-        "4 o más momentos de calidad": "Excelente red de apoyo activa. Suele proteger energia y estado de animo.",
-        "2-3 momentos de calidad": "Buena frecuencia. Mantenerla puede ayudarte a sostener otros habitos.",
+        "4 o más momentos de calidad": "Excelente red de apoyo activa. Suele proteger energía y estado de ánimo.",
+        "2-3 momentos de calidad": "Buena frecuencia. Mantenerla puede ayudarte a sostener otros hábitos.",
         "1 momento breve": "Hay espacio para aumentar contacto de calidad durante la semana.",
-        "Casi nada o nada": "Priorizar vinculos cercanos puede mejorar bienestar mental y fisico."
+        "Casi nada o nada": "Priorizar vínculos cercanos puede mejorar bienestar mental y físico."
       },
       apoyo_social: {
-        "Si, de forma constante": "Contar con apoyo estable es un factor protector clave.",
-        "A veces, depende del momento": "Buena base; conviene reforzar 1-2 vinculos de confianza.",
+        "Sí, de forma constante": "Contar con apoyo estable es un factor protector clave.",
+        "A veces, depende del momento": "Buena base; conviene reforzar 1-2 vínculos de confianza.",
         "Pocas veces": "Vale la pena activar conversaciones y pedir apoyo de forma temprana.",
-        "No me siento acompañado/a": "Senal importante: buscar apoyo profesional y social puede marcar diferencia."
+        "No me siento acompañado/a": "Señal importante: buscar apoyo profesional y social puede marcar diferencia."
       },
       nivel_estres: {
         "Bajo y manejable": "Buen control de carga mental esta semana.",
-        "Moderado con control": "Nivel esperable; mantener pausas y recuperacion es clave.",
+        "Moderado con control": "Nivel esperable; mantener pausas y recuperación es clave.",
         "Alto y frecuente": "Conviene intervenir temprano para evitar desgaste acumulado.",
-        "Muy alto y constante": "Alerta importante: prioriza recuperacion y ajuste de carga cuanto antes."
+        "Muy alto y constante": "Alerta importante: prioriza recuperación y ajuste de carga cuanto antes."
       },
       senales_burnout: {
-        "No, casi nada": "Buena señal de recuperacion y equilibrio.",
-        "Leve en algunos dias": "Hay indicios leves; reforzar descanso y limites puede prevenir escalamiento.",
-        "Si, varias veces en la semana": "Senal de riesgo: conviene activar plan de recuperacion.",
-        "Si, casi todos los dias": "Riesgo alto de burnout: busca apoyo profesional y ajuste de ritmo."
+        "No, casi nada": "Buena señal de recuperación y equilibrio.",
+        "Leve en algunos días": "Hay indicios leves; reforzar descanso y límites puede prevenir escalamiento.",
+        "Sí, varias veces en la semana": "Señal de riesgo: conviene activar plan de recuperación.",
+        "Sí, casi todos los días": "Riesgo alto de burnout: busca apoyo profesional y ajuste de ritmo."
       },
       valoracion_general: {
-        "Excelente": "Gracias por tu valoracion. Vamos por muy buen camino.",
+        "Excelente": "Gracias por tu valoración. Vamos por muy buen camino.",
         "Buena": "Muy buen avance. Seguimos afinando para mantener resultados.",
         "Regular": "Gracias por la honestidad. Podemos ajustar el programa para mejorar tu experiencia.",
-        "Necesita mejorar": "Gracias por compartirlo. Tomamos esto como prioridad para corregir rapido."
+        "Necesita mejorar": "Gracias por compartirlo. Tomamos esto como prioridad para corregir rápido."
       }
     };
 
@@ -619,7 +619,7 @@
         return;
       }
 
-      const lowSignal = /(conviene|senal|bajo|mejorar|subir|priorizar)/i.test(safeMessage);
+      const lowSignal = /(conviene|señal|bajo|mejorar|subir|priorizar)/i.test(safeMessage);
       feedbackCardEl.classList.add("visible");
       feedbackCardEl.classList.toggle("attention", lowSignal);
       feedbackIconEl.textContent = lowSignal ? "!" : "✓";
@@ -706,31 +706,31 @@
         notes.push("priorizar higiene y regularidad del sueño");
       }
       if (answers.hidratacion === "Menos de 1 litro" || answers.hidratacion === "1 a 1.5 litros") {
-        notes.push("subir hidratacion diaria");
+        notes.push("subir hidratación diaria");
       }
       if (answers.alimentacion === "Irregular (saltas comidas)" || answers.alimentacion === "Alta en ultraprocesados") {
-        notes.push("mejorar estructura y calidad de alimentacion");
+        notes.push("mejorar estructura y calidad de alimentación");
       }
-      if (answers.ejercicio === "No realizo actividad fisica" || answers.ejercicio === "Solo caminatas ligeras") {
-        notes.push("aumentar actividad fisica progresivamente");
+      if (answers.ejercicio === "No realizo actividad física" || answers.ejercicio === "Solo caminatas ligeras") {
+        notes.push("aumentar actividad física progresivamente");
       }
       if (answers.vinculo_familia_amigos === "1 momento breve" || answers.vinculo_familia_amigos === "Casi nada o nada") {
         notes.push("reservar espacios de calidad con familia y amistades");
       }
       if (answers.apoyo_social === "Pocas veces" || answers.apoyo_social === "No me siento acompañado/a") {
-        notes.push("fortalecer tu red de apoyo y pedir acompanamiento");
+        notes.push("fortalecer tu red de apoyo y pedir acompañamiento");
       }
       if (answers.nivel_estres === "Alto y frecuente" || answers.nivel_estres === "Muy alto y constante") {
-        notes.push("reducir carga de estres con pausas de regulacion y limites de jornada");
+        notes.push("reducir carga de estrés con pausas de regulación y límites de jornada");
       }
-      if (answers.senales_burnout === "Si, varias veces en la semana" || answers.senales_burnout === "Si, casi todos los dias") {
-        notes.push("activar prevencion de burnout con recuperacion prioritaria y soporte");
+      if (answers.senales_burnout === "Sí, varias veces en la semana" || answers.senales_burnout === "Sí, casi todos los días") {
+        notes.push("activar prevención de burnout con recuperación prioritaria y soporte");
       }
       if (answers.valoracion_general === "Regular" || answers.valoracion_general === "Necesita mejorar") {
         notes.push("revisar ajustes del programa para mejorar la experiencia");
       }
       if (!notes.length) {
-        return "Perfil inicial favorable. Recomendacion: mantener constancia en habitos clave.";
+        return "Perfil inicial favorable. Recomendación: mantener constancia en hábitos clave.";
       }
       return `Feedback inicial: conviene enfocarte en ${notes.join(", ")}.`;
     }
@@ -744,16 +744,16 @@
         tips.push("elige 1 persona de confianza para iniciar un check-in esta semana");
       }
       if (answers.sueno_calidad === "Baja (despertares frecuentes)" || answers.sueno_horas === "Menos de 6 horas") {
-        tips.push("combina higiene de sueño con apoyo social para reducir carga de estres");
+        tips.push("combina higiene de sueño con apoyo social para reducir carga de estrés");
       }
       if (answers.nivel_estres === "Alto y frecuente" || answers.nivel_estres === "Muy alto y constante") {
-        tips.push("agenda 2 pausas diarias de regulacion (respiracion, caminata o estiramiento)");
+        tips.push("agenda 2 pausas diarias de regulación (respiración, caminata o estiramiento)");
       }
-      if (answers.senales_burnout === "Si, varias veces en la semana" || answers.senales_burnout === "Si, casi todos los dias") {
-        tips.push("consulta el módulo de estres y define un plan de recuperacion esta semana");
+      if (answers.senales_burnout === "Sí, varias veces en la semana" || answers.senales_burnout === "Sí, casi todos los días") {
+        tips.push("consulta el módulo de estrés y define un plan de recuperación esta semana");
       }
       if (!tips.length) {
-        return "Tip clave: mantener contacto social regular te ayuda a sostener energia, motivacion y adherencia a habitos.";
+        return "Tip clave: mantener contacto social regular te ayuda a sostener energía, motivación y adherencia a hábitos.";
       }
       return `Tips: ${tips.join(" · ")}. Revisa el módulo social para recomendaciones prácticas.`;
     }
@@ -764,13 +764,13 @@
         strengths.push("descanso");
       }
       if (answers.hidratacion === "2 litros o más" || answers.hidratacion === "1.5 a 2 litros") {
-        strengths.push("hidratacion");
+        strengths.push("hidratación");
       }
       if (answers.ejercicio === "3+ días (30-60 min)" || answers.ejercicio === "1-2 días (30-60 min)") {
         strengths.push("actividad");
       }
       if (answers.nivel_estres === "Bajo y manejable" || answers.nivel_estres === "Moderado con control") {
-        strengths.push("manejo de estres");
+        strengths.push("manejo de estrés");
       }
       if (!strengths.length) {
         return "Tu punto de partida muestra oportunidades claras. Enfócate en 1-2 hábitos por semana para sostener avance real.";
