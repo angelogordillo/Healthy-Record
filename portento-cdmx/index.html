@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Portento CDMX</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #05060d;
+      padding: 20px;
+      font-family: system-ui, sans-serif;
+    }
+
+    .wrap {
+      width: min(900px, 100%);
+      display: grid;
+      gap: 18px;
+      justify-items: center;
+    }
+
+    .logo {
+      width: min(220px, 50vw);
+      height: auto;
+      display: block;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: #fff;
+    }
+
+    iframe {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      border-radius: 14px;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <img class="logo" src="./portento-logo.png" alt="Logo Portento" />
+    <iframe
+      src="https://www.youtube.com/embed/ktjeEKt8N1Q?rel=0"
+      title="Portento video"
+      loading="lazy"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+  </main>
+</body>
+</html>
