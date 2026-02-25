@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Pausas activas con escaleras</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f5f8ff;
+      --card: #ffffff;
+      --ink: #10213d;
+      --muted: #4e6285;
+      --line: rgba(16, 33, 61, 0.14);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --soft-blue: #e9f1ff;
+      --soft-green: #e9fbf4;
+      --warn: #985800;
+      --warn-bg: #fff4e6;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% -5%, rgba(6, 3, 141, 0.16), transparent 33%),
+        radial-gradient(circle at 90% 0%, rgba(0, 199, 140, 0.2), transparent 36%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .btn.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #ffffff, #f7faff);
+      padding: 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f5f95;
+      background: var(--soft-blue);
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.5vw, 48px);
+      color: var(--logo-blue);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(26px, 3.5vw, 34px);
+      color: var(--logo-blue);
+      margin-bottom: 8px;
+    }
+
+    p { color: var(--muted); }
+
+    .summary {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: #1e3760;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      padding: 18px;
+    }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h3 {
+      color: #12375d;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .plan {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .plan li {
+      list-style: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      color: #27486d;
+    }
+
+    .notice {
+      margin-top: 12px;
+      border: 1px solid rgba(152, 88, 0, 0.22);
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .sources {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .source-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(130deg, #fff, var(--soft-green));
+    }
+
+    .source-item a {
+      color: var(--logo-blue);
+      font-weight: 700;
+    }
+
+    .cta {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Volver al home</a>
+      <a class="btn primary" href="/cuestionario">Ir al cuestionario</a>
+    </header>
+
+    <section class="hero">
+      <span class="tag">Modulo pausas activas</span>
+      <h1>Pausas activas con escaleras: mas energia para cuerpo y cerebro en pocos minutos.</h1>
+      <p>Este modulo resume en espanol los hallazgos del articulo de BBC Future sobre subir escaleras y su impacto en salud cardiometabolica y rendimiento mental. El enfoque es practico para jornada laboral.</p>
+      <div class="summary">
+        <article class="summary-card">
+          <strong>Salud cardiovascular</strong>
+          <p>Subir escaleras de forma habitual se asocia con menor riesgo de eventos cardiovasculares y mortalidad.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Rendimiento cognitivo</strong>
+          <p>Un bloque corto de escaleras puede mejorar tareas de pensamiento creativo y flexibilidad mental.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Aplicacion en oficina</strong>
+          <p>Las "exercise snacks" son breves, no requieren equipo y suelen percibirse como mas viables que sesiones largas.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Lo mas util para tu dia laboral</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>1) Micro-estimulo fisiologico</h3>
+          <p>Subir 2-3 pisos eleva frecuencia cardiaca y activa grandes grupos musculares. Eso puede romper largos periodos de sedentarismo sin bloquear la agenda.</p>
+        </article>
+        <article class="card">
+          <h3>2) Beneficio acumulado</h3>
+          <p>La evidencia observacional sugiere que incorporar escaleras en la rutina diaria, aunque sea en bloques cortos, aporta ganancia acumulativa para salud a largo plazo.</p>
+        </article>
+        <article class="card">
+          <h3>3) Enfoque mental</h3>
+          <p>En estudios experimentales, una breve subida de escaleras mostro mejora en componentes de creatividad frente al uso de elevador.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Protocolo Healthy Record: pausa activa de 5-7 minutos</h2>
+      <ul class="plan">
+        <li><strong>Minuto 0-1:</strong> caminar suave hacia escaleras y preparar respiracion.</li>
+        <li><strong>Minuto 1-4:</strong> subir 2-3 pisos a ritmo vivo, bajar controlado, repetir 1-2 rondas segun condicion.</li>
+        <li><strong>Minuto 4-6:</strong> movilidad breve de hombros, cadera y tobillos.</li>
+        <li><strong>Minuto 6-7:</strong> volver al puesto y retomar tarea prioritaria.</li>
+      </ul>
+      <p class="notice">Si hay dolor de pecho, mareo, lesion activa o condicion cardiaca no evaluada, evita intensidad alta y consulta con profesional de salud antes de aplicar este protocolo.</p>
+      <div class="cta">
+        <a class="btn primary" href="/cuestionario">Registrar avance en cuestionario</a>
+        <a class="btn" href="/estres">Ver modulo de estres</a>
+        <a class="btn" href="/sueño">Ver modulo de sueno</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Fuentes y vinculos</h2>
+      <p>Base del contenido: articulo solicitado de BBC Future y estudios cientificos relacionados con escaleras, salud cardiovascular y rendimiento cognitivo.</p>
+      <div class="sources">
+        <article class="source-item">
+          <p><a href="https://www.bbc.com/future/article/20250529-why-climbing-the-stairs-can-be-good-for-your-body-and-brain" target="_blank" rel="noopener noreferrer">BBC Future (2025): Why climbing the stairs can be good for your body and brain</a></p>
+        </article>
+        <article class="source-item">
+          <p><a href="https://www.escardio.org/The-ESC/Press-Office/Press-releases/Climb-stairs-to-live-longer" target="_blank" rel="noopener noreferrer">European Society of Cardiology (2024): meta-analisis sobre subir escaleras y riesgo cardiovascular</a></p>
+        </article>
+        <article class="source-item">
+          <p><a href="https://pubmed.ncbi.nlm.nih.gov/37813170/" target="_blank" rel="noopener noreferrer">American Journal of Preventive Medicine (PubMed): asociacion entre uso diario de escaleras y enfermedades cronicas</a></p>
+        </article>
+        <article class="source-item">
+          <p><a href="https://pubmed.ncbi.nlm.nih.gov/35153696/" target="_blank" rel="noopener noreferrer">Frontiers in Behavioral Neuroscience (PubMed): efecto de breve subida de escaleras en pensamiento divergente</a></p>
+        </article>
+        <article class="source-item">
+          <p><a href="https://www.nature.com/articles/s41598-023-50282-2" target="_blank" rel="noopener noreferrer">Scientific Reports (2024): impacto de subir escaleras (2, 5 u 8 pisos) en creatividad</a></p>
+        </article>
+        <article class="source-item">
+          <p><a href="https://pubmed.ncbi.nlm.nih.gov/37748202/" target="_blank" rel="noopener noreferrer">Applied Physiology, Nutrition, and Metabolism (PubMed): receptividad de "exercise snacks" con escaleras en oficina</a></p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Modulo educativo de pausas activas basado en evidencia disponible y adaptado a entorno laboral.
+    </footer>
+  </main>
+</body>
+</html>

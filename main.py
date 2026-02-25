@@ -809,6 +809,12 @@ def modulo_estres():
     estres_path = Path(__file__).parent / "estres.html"
     return FileResponse(estres_path)
 
+@app.get("/pausas")
+@app.get("/pausas-activas")
+def modulo_pausas_activas():
+    pausas_path = Path(__file__).parent / "pausas.html"
+    return FileResponse(pausas_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:
