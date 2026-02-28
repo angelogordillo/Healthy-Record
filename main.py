@@ -757,6 +757,11 @@ def portento():
     portento_path = Path(__file__).parent / "portento-cdmx" / "index.html"
     return FileResponse(portento_path)
 
+@app.get("/forotp")
+def forotp():
+    forotp_path = Path(__file__).parent / "forotp.html"
+    return FileResponse(forotp_path)
+
 @app.get("/owl-latam")
 def owl_latam():
     owl_path = Path(__file__).parent / "owl-latam.html"
