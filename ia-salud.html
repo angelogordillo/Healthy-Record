@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | IA para salud y bienestar</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f5f9ff;
+      --card: #ffffff;
+      --ink: #10213d;
+      --muted: #4e6285;
+      --line: rgba(16, 33, 61, 0.14);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --soft-blue: #eaf0ff;
+      --soft-green: #e9fbf4;
+      --warn: #7a2f05;
+      --warn-bg: #fff1e8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% -5%, rgba(6, 3, 141, 0.14), transparent 33%),
+        radial-gradient(circle at 90% 0%, rgba(0, 199, 140, 0.19), transparent 36%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .btn.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #ffffff, #f7faff);
+      padding: 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f5f95;
+      background: var(--soft-blue);
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.5vw, 48px);
+      color: var(--logo-blue);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(26px, 3.5vw, 34px);
+      color: var(--logo-blue);
+      margin-bottom: 8px;
+    }
+
+    p { color: var(--muted); }
+
+    .summary {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: #1e3760;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
+    .section {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      padding: 18px;
+    }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h3 {
+      color: #12375d;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .plan {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .plan li {
+      list-style: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px 12px;
+      color: #27486d;
+    }
+
+    .notice {
+      margin-top: 12px;
+      border: 1px solid rgba(122, 47, 5, 0.24);
+      background: var(--warn-bg);
+      color: var(--warn);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .sources {
+      margin-top: 10px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .source-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: linear-gradient(130deg, #fff, var(--soft-green));
+    }
+
+    .source-item a {
+      color: var(--logo-blue);
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .cta {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Volver al home</a>
+      <a class="btn primary" href="/cuestionario">Ir al cuestionario</a>
+    </header>
+
+    <section class="hero">
+      <span class="tag">Módulo IA para salud</span>
+      <h1>Uso de IA para salud y bienestar: utilidad real y limites</h1>
+      <p>Resumen en espanol del articulo de Houston Methodist publicado el 16 de febrero de 2026. El enfoque principal es separar usos de bajo riesgo (habitos) de situaciones clinicas donde la IA no debe reemplazar atencion profesional.</p>
+
+      <div class="summary">
+        <article class="summary-card">
+          <strong>Idea central</strong>
+          <p>La IA puede sonar convincente aun cuando se equivoca. En salud, una respuesta parcialmente correcta puede desviar decisiones importantes.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Donde mas ayuda</strong>
+          <p>Organizacion de habitos: planeacion de comidas, rutina de ejercicio inicial y tecnicas basicas de manejo de estres.</p>
+        </article>
+        <article class="summary-card">
+          <strong>Limite clave</strong>
+          <p>No usar IA para diagnostico, cambios de medicamentos, interacciones o manejo de sintomas agudos de salud mental.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Resumen del articulo</h2>
+      <p>El articulo explica que los modelos de lenguaje (LLM) generan respuestas a partir de patrones de texto, no desde razonamiento clinico equivalente al de un medico. Por eso, aunque funcionen bien en preguntas estructuradas, su rendimiento cae en conversaciones medicas reales donde hay contexto ambiguo, sintomas inespecificos y necesidad de repreguntar con criterio clinico.</p>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Riesgo frecuente</h3>
+          <p>La IA puede mezclar recomendaciones bien fundamentadas con otras debiles. Esa mezcla puede dar una sensacion falsa de respaldo cientifico total.</p>
+        </article>
+        <article class="card">
+          <h3>Uso razonable</h3>
+          <p>Puede ahorrar tiempo en tareas de bienestar con impacto bajo si hay error: ideas de menus, listas de compras, planes iniciales de actividad y guiones breves de respiracion o meditacion.</p>
+        </article>
+        <article class="card">
+          <h3>Uso no aceptable</h3>
+          <p>No debe sustituir evaluacion medica presencial para decisiones de tratamiento, ajuste de farmacos, efectos adversos, interacciones o cuadros con señales de alarma.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Aplicacion practica en Healthy Record</h2>
+      <ul class="plan">
+        <li><strong>IA como asistente de habitos:</strong> usarla para organizar opciones, no para decidir diagnosticos.</li>
+        <li><strong>Verificacion profesional:</strong> validar con medico o nutriologo cuando exista enfermedad cronica o tratamiento activo.</li>
+        <li><strong>Escalamiento humano:</strong> ante ansiedad intensa, depresion o panico, priorizar atencion por personal de salud.</li>
+      </ul>
+      <p class="notice">Regla operativa: si la decision puede afectar seguridad clinica, la IA no reemplaza evaluacion de un profesional acreditado.</p>
+    </section>
+
+    <section class="section">
+      <h2>Fuente original</h2>
+      <div class="sources">
+        <article class="source-item">
+          <p><a href="https://www.houstonmethodist.org/blog/articles/2026/feb/ai-for-health-wellness-where-it-helps-when-it-crosses-the-line/" target="_blank" rel="noopener noreferrer">Houston Methodist (16 Feb 2026): AI for Health &amp; Wellness: Where It Helps &amp; When It Crosses the Line</a></p>
+        </article>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="/">Volver al home</a>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Modulo educativo sobre uso responsable de IA en salud.
+    </footer>
+  </main>
+</body>
+</html>

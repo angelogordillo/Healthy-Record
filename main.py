@@ -825,6 +825,12 @@ def modulo_pausas_activas():
     pausas_path = Path(__file__).parent / "pausas.html"
     return FileResponse(pausas_path)
 
+@app.get("/ia")
+@app.get("/ia-salud")
+def modulo_ia_salud():
+    ia_path = Path(__file__).parent / "ia-salud.html"
+    return FileResponse(ia_path)
+
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
     try:
