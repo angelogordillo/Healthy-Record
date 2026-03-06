@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Salud Mental y NOM 035</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&family=DM+Serif+Display&display=swap");
+
+    :root {
+      --bg: #f5f8ff;
+      --card: #ffffff;
+      --ink: #10213e;
+      --muted: #4e6182;
+      --line: rgba(16, 33, 62, 0.14);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --soft-blue: #eaf0ff;
+      --soft-green: #e9fbf4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% -2%, rgba(6, 3, 141, 0.16), transparent 34%),
+        radial-gradient(circle at 95% 0%, rgba(0, 199, 140, 0.2), transparent 36%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 26px 20px 56px;
+    }
+
+    .top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+    }
+
+    .btn.primary {
+      border: none;
+      color: #fff;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(145deg, #ffffff, #f7fbff);
+      padding: 24px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #0f5f95;
+      background: var(--soft-blue);
+    }
+
+    h1 {
+      font-size: clamp(30px, 4.6vw, 48px);
+      color: var(--logo-blue);
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-family: "DM Serif Display", serif;
+      font-size: clamp(26px, 3.4vw, 34px);
+      color: var(--logo-blue);
+      margin-bottom: 8px;
+    }
+
+    p { color: var(--muted); }
+
+    .section {
+      margin-top: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      padding: 18px;
+    }
+
+    .grid {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      background: #fff;
+    }
+
+    .card h3 {
+      color: #12375d;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+
+    .steps {
+      margin-top: 10px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .steps li {
+      list-style: none;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: linear-gradient(130deg, #fff, var(--soft-green));
+      color: #23466b;
+      padding: 10px 12px;
+    }
+
+    .cta-row {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .gallery {
+      margin-top: 12px;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .shot {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .shot figcaption {
+      padding: 10px 12px;
+      color: #27476c;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    footer {
+      margin-top: 22px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Volver al home</a>
+      <a class="btn primary" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Entrar a The Wellnest</a>
+    </header>
+
+    <section class="hero">
+      <span class="tag">Salud mental organizacional + NOM 035</span>
+      <h1>Evaluación, priorización e intervención de riesgos psicosociales con soporte digital.</h1>
+      <p>Healthy Record integra una nueva línea de salud mental y NOM 035 en alianza con The Wellnest para facilitar levantamiento de información, seguimiento y acompañamiento de acciones preventivas en empresas.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Iniciar evaluación NOM 035</a>
+        <a class="btn" href="/cuestionario">Continuar en cuestionario Healthy Record</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Qué incluye esta sección (según tu material NOM 035)</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Guías de evaluación NOM 035</h3>
+          <p>Selección por tamaño y objetivo: Guía I (eventos traumáticos), Guía II (empresas medianas) y Guía III (empresas grandes).</p>
+        </article>
+        <article class="card">
+          <h3>Despliegue por campaña y área</h3>
+          <p>Generación de enlaces por equipos/departamentos para ejecutar levantamientos segmentados y medir participación.</p>
+        </article>
+        <article class="card">
+          <h3>Resultado con análisis y recomendaciones</h3>
+          <p>Puntuación general, desglose por categoría y recomendaciones personalizadas para plan de intervención con RRHH.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Estructura de evaluación observada</h2>
+      <ul class="steps">
+        <li>Guía I - Eventos Traumáticos: visible para todas las empresas, con bloque de detección inicial.</li>
+        <li>Ejemplo de pregunta base: exposición a acontecimientos traumáticos severos vinculados al trabajo.</li>
+        <li>Categorías de resultados: Acontecimientos Traumáticos Severos, Recuerdos Persistentes, Esfuerzos por Evitar Circunstancias y Afectación.</li>
+        <li>Niveles de riesgo comunicados: Nulo/Bajo, Medio, Alto/Muy Alto, con prioridad de intervención en niveles altos.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Flujo operativo para RRHH y líderes</h2>
+      <ul class="steps">
+        <li>1. Crear campaña y seleccionar guía NOM 035 (I, II o III) según población.</li>
+        <li>2. Distribuir enlaces por área y monitorear avance de respuestas y tasa de finalización.</li>
+        <li>3. Revisar panel agregado: distribución de riesgo (Muy Alto, Alto, Medio, Bajo, Nulo).</li>
+        <li>4. Ejecutar acciones recomendadas: apoyo psicológico, protocolo de crisis y formación en resiliencia.</li>
+        <li>5. Repetir evaluación periódica para medir mejora y ajustar el plan.</li>
+      </ul>
+      <div class="grid">
+        <article class="card">
+          <h3>Confidencialidad</h3>
+          <p>El flujo mostrado comunica respuestas anónimas y sin datos personales identificables, con envío agregado para la organización.</p>
+        </article>
+        <article class="card">
+          <h3>Entregables</h3>
+          <p>Resultados inmediatos en plataforma y descarga de reporte en PDF en español o inglés.</p>
+        </article>
+      </div>
+      <div class="cta-row">
+        <a class="btn primary" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Acceso plataforma aliada</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Vista del flujo en plataforma</h2>
+      <div class="gallery">
+        <figure class="shot">
+          <img src="/static/nom035-shot-1.png" alt="Pantalla de inicio de sesion de The Wellnest para evaluaciones de bienestar psicosocial" />
+          <figcaption>Inicio de sesión y propuesta de valor de la plataforma.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/static/nom035-shot-3.png" alt="Creacion de campana con seleccion de Guia NOM 035" />
+          <figcaption>Creación de campaña y selección de Guía I, II o III.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/static/nom035-shot-5.png" alt="Inicio de evaluacion de bienestar laboral con guia y tiempo estimado" />
+          <figcaption>Inicio de evaluación con duración y número de preguntas.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/static/nom035-shot-8.png" alt="Resultado general de la evaluacion con analisis de IA e insights personalizados" />
+          <figcaption>Resultado general con insights personalizados.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/static/nom035-shot-10.png" alt="Desglose por categoria de factores de riesgo psicosocial" />
+          <figcaption>Desglose por categoría y nivel de riesgo.</figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="/static/nom035-shot-11.png" alt="Recomendaciones personalizadas y proximos pasos de intervencion" />
+          <figcaption>Recomendaciones de intervención y próximos pasos.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <footer>
+      Healthy Record · Salud mental y NOM 035 en alianza con The Wellnest.
+    </footer>
+  </main>
+</body>
+</html>

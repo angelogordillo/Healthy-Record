@@ -819,6 +819,13 @@ def modulo_estres():
     estres_path = Path(__file__).parent / "estres.html"
     return FileResponse(estres_path)
 
+@app.get("/salud-mental")
+@app.get("/nom-035")
+@app.get("/salud-mental-nom035")
+def modulo_nom035():
+    nom035_path = Path(__file__).parent / "nom035.html"
+    return FileResponse(nom035_path)
+
 @app.get("/pausas")
 @app.get("/pausas-activas")
 def modulo_pausas_activas():

@@ -199,6 +199,40 @@
       margin-bottom: 10px;
     }
 
+    .nom-gallery {
+      margin-top: 12px;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(250px, 1fr);
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .nom-shot {
+      scroll-snap-align: start;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .nom-shot img {
+      width: 100%;
+      display: block;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nom-shot span {
+      display: block;
+      padding: 8px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
     .success-card {
       margin-top: 20px;
       border: 1px solid var(--line);
@@ -356,6 +390,32 @@
         <p>Identifica señales tempranas de estrés crónico y burnout, y aplica acciones prácticas para recuperar energía, enfoque y equilibrio.</p>
         <div class="cta-row">
           <a class="btn primary" href="/estres">Ir al módulo de estrés</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="modulo-salud-mental-nom035">
+      <h2>Salud mental y NOM 035</h2>
+      <div class="mini-modulo">
+        <h3>Nueva sección en alianza con The Wellnest</h3>
+        <p>Integra evaluación de riesgo psicosocial, hallazgos agregados y seguimiento de intervenciones para cumplir NOM 035 con una ruta operativa clara para RRHH y líderes.</p>
+        <div class="nom-gallery" aria-label="Galeria del flujo NOM 035">
+          <figure class="nom-shot">
+            <img src="/static/nom035-shot-3.png" alt="Creacion de campana NOM 035" />
+            <span>Creación de campaña</span>
+          </figure>
+          <figure class="nom-shot">
+            <img src="/static/nom035-shot-5.png" alt="Inicio de evaluacion de bienestar laboral" />
+            <span>Inicio de evaluación</span>
+          </figure>
+          <figure class="nom-shot">
+            <img src="/static/nom035-shot-10.png" alt="Desglose por categoria de riesgo psicosocial" />
+            <span>Desglose por categoría</span>
+          </figure>
+        </div>
+        <div class="cta-row">
+          <a class="btn primary" href="/salud-mental-nom035">Ver sección NOM 035</a>
+          <a class="btn soft" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Entrar a The Wellnest</a>
         </div>
       </div>
     </section>
