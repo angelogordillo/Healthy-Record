@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Al Filo del Poder | Portento</title>
+  <style>
+    :root {
+      --bg: #0a0b0d;
+      --panel: #12130f;
+      --ink: #ffffff;
+      --muted: rgba(255, 255, 255, 0.78);
+      --olive: #8f8e10;
+      --gold: #d4b743;
+      --line: rgba(212, 183, 67, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(143, 142, 16, 0.22), transparent 38%),
+        radial-gradient(circle at 100% 100%, rgba(212, 183, 67, 0.2), transparent 32%),
+        var(--bg);
+      color: var(--ink);
+      font-family: system-ui, sans-serif;
+      padding: 24px;
+    }
+
+    .wrap {
+      width: min(1040px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .back {
+      display: inline-flex;
+      width: fit-content;
+      text-decoration: none;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 20px;
+      background: linear-gradient(145deg, rgba(143, 142, 16, 0.14), rgba(0, 0, 0, 0.28));
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .cover-col {
+      display: grid;
+      gap: 12px;
+    }
+
+    .cover-link {
+      display: block;
+    }
+
+    .cover {
+      width: 100%;
+      border-radius: 14px;
+      border: 2px solid rgba(212, 183, 67, 0.75);
+      box-shadow: 0 20px 36px rgba(0, 0, 0, 0.52);
+      display: block;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: #0a0b0d;
+      background: linear-gradient(130deg, var(--gold), #efe07a);
+      border-radius: 999px;
+      padding: 6px 10px;
+      margin-bottom: 10px;
+    }
+
+    .cover-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #0a0b0d;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-weight: 800;
+      background: linear-gradient(130deg, var(--gold), #efe07a 52%, var(--olive));
+      border: 1px solid transparent;
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 56px);
+      line-height: 0.97;
+      margin-bottom: 10px;
+      text-wrap: balance;
+    }
+
+    .lead {
+      color: var(--muted);
+      margin-bottom: 14px;
+      max-width: 54ch;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 0;
+    }
+
+    .spotify-album {
+      width: 100%;
+      height: 352px;
+      border: 0;
+      border-radius: 12px;
+      background: #000;
+    }
+
+    .details {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.26);
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .details h2 {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    .synopsis {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <a class="back" href="/">Volver al home</a>
+
+    <section class="hero">
+      <aside class="cover-col">
+        <a class="cover-link" href="https://a.co/d/0cAcmmZw" target="_blank" rel="noopener noreferrer" aria-label="Abrir Al Filo del Poder en Amazon">
+          <img class="cover" src="../portada%20al%20filo%20del%20poder.jpg" alt="Portada Al Filo del Poder" />
+        </a>
+        <a class="cover-btn" href="../al-filo-del-poder-cap-1.pdf" target="_blank" rel="noopener noreferrer">Leer capitulo 1 (PDF)</a>
+
+        <section>
+          <span class="eyebrow">Musica incidental</span>
+          <h1>Al Filo del Poder</h1>
+          <p class="lead">ebook de espionaje contemporaneo y acción</p>
+
+          <section class="details">
+            <h2>Sinopsis</h2>
+            <p class="synopsis">Una historia de intriga, poder y relaciones personales ambientada en el mundo contemporáneo de la diplomacia y la inteligencia. Esta novela combina tensión política, crítica social y emociones humanas con una prosa ágil y envolvente. Ideal para lectores que disfrutan de las tramas actuales, con profundidad cultural y giros estratégicos inesperados.</p>
+          </section>
+        </section>
+      </aside>
+
+      <article>
+        <div class="actions">
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/0CEqPx7oyzvf8rYZUgwCTn?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <iframe
+            class="spotify-album"
+            src="https://open.spotify.com/embed/album/6kH82YjJ7EnP4Kh4cuAwqq?utm_source=generator"
+            title="Spotify album"
+            loading="lazy"
+            allowfullscreen
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+          </iframe>
+          <iframe
+            class="spotify-album"
+            src="https://open.spotify.com/embed/album/2kjGsHTdpNMhaVkiLyH7MW?utm_source=generator"
+            title="Spotify album autor"
+            loading="lazy"
+            allowfullscreen
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+          </iframe>
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/3Vg28hxk9Blnv5mt1GocQO?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+          <iframe style="border-radius:12px" src="https://open.spotify.com/embed/album/0f5GHTjRaz2RCzdnq9bkd0?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
