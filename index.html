@@ -32,10 +32,17 @@
 
     .top {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
       gap: 12px;
       margin-bottom: 28px;
+    }
+
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px;
     }
 
     .top a {
@@ -135,6 +142,34 @@
       margin-top: 30px;
     }
 
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .module-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .module-card h3 {
+      font-size: 19px;
+      color: var(--logo-blue);
+    }
+
+    .module-card p { color: var(--muted); font-size: 14px; }
+
+    .module-card.highlight {
+      background: linear-gradient(140deg, rgba(0, 199, 140, 0.12), rgba(6, 3, 141, 0.08));
+    }
+
     .card {
       background: var(--card);
       border: 1px solid var(--line);
@@ -197,6 +232,39 @@
     .mini-modulo p {
       color: var(--muted);
       margin-bottom: 10px;
+    }
+
+    .video-embed {
+      margin: 14px 0 6px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+      aspect-ratio: 16 / 9;
+      position: relative;
+    }
+
+    .video-embed iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .spotify-embed {
+      margin: 10px 0 6px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .spotify-embed iframe {
+      display: block;
+      width: 100%;
+      height: 352px;
+      border: 0;
     }
 
     .nom-gallery {
@@ -313,11 +381,20 @@
       .hero { padding-top: 86px; }
       .hero-logo { width: 96px; }
       .top { flex-wrap: wrap; }
+      .top-links { justify-content: center; }
     }
   </style>
 </head>
 <body>
   <main class="wrap">
+    <div class="top">
+      <nav class="top-links" aria-label="Accesos directos">
+        <a href="#modulos">Módulos</a>
+        <a href="#nom035">NOM 035</a>
+        <a href="#news">News</a>
+        <a href="#inscribirse">Contacto</a>
+      </nav>
+    </div>
     <section class="hero" id="inicio">
       <img class="hero-logo" src="/static/healthy-record-logo.png" alt="Healthy Record" />
       <div>
@@ -361,84 +438,74 @@
       </div>
     </section>
 
-    <section class="section" id="modulo-sueno">
-      <h2>Módulo de sueño</h2>
-      <div class="mini-modulo">
-        <h3>Mejora cantidad y calidad de sueño con guía práctica</h3>
-        <p>Revisa tips, mejores prácticas, beneficios para la salud y riesgos asociados a una baja higiene de sueño.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/sueño">Ir al módulo de sueño</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modulo-social">
-      <h2>Módulo de relaciones sociales</h2>
-      <div class="mini-modulo">
-        <h3>Familia y amistades: un factor protector para salud mental y física</h3>
-        <p>Revisa por qué cultivar vínculos cercanos ayuda a reducir estrés, sostener mejores hábitos y mejorar bienestar general en el tiempo.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/social">Ir al módulo social</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modulo-estres">
-      <h2>Módulo de estrés y burnout</h2>
-      <div class="mini-modulo">
-        <h3>Prevención de sobrecarga y recuperación sostenible</h3>
-        <p>Identifica señales tempranas de estrés crónico y burnout, y aplica acciones prácticas para recuperar energía, enfoque y equilibrio.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/estres">Ir al módulo de estrés</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modulo-salud-mental-nom035">
-      <h2>Salud mental y NOM 035</h2>
-      <div class="mini-modulo">
-        <h3>Nueva sección en alianza con The Wellnest</h3>
-        <p>Integra evaluación de riesgo psicosocial, hallazgos agregados y seguimiento de intervenciones para cumplir NOM 035 con una ruta operativa clara para RRHH y líderes.</p>
-        <div class="nom-gallery" aria-label="Galeria del flujo NOM 035">
-          <figure class="nom-shot">
-            <img src="/static/nom035-shot-3.png" alt="Creacion de campana NOM 035" />
-            <span>Creación de campaña</span>
-          </figure>
-          <figure class="nom-shot">
-            <img src="/static/nom035-shot-5.png" alt="Inicio de evaluacion de bienestar laboral" />
-            <span>Inicio de evaluación</span>
-          </figure>
-          <figure class="nom-shot">
-            <img src="/static/nom035-shot-10.png" alt="Desglose por categoria de riesgo psicosocial" />
-            <span>Desglose por categoría</span>
-          </figure>
-        </div>
-        <div class="cta-row">
-          <a class="btn primary" href="/salud-mental-nom035">Ver sección NOM 035</a>
-          <a class="btn soft" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Entrar a The Wellnest</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modulo-pausas-activas">
-      <h2>Módulo de pausas activas</h2>
-      <div class="mini-modulo">
-        <h3>Subir escaleras en pausas breves para activar cuerpo y cerebro</h3>
-        <p>Conoce la evidencia resumida del artículo de BBC Future y una guía práctica para implementar micro-pausas activas de 5-7 minutos durante la jornada.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/pausas-activas">Ir al módulo de pausas activas</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="modulo-ia-salud">
-      <h2>Módulo de IA para salud y bienestar</h2>
-      <div class="mini-modulo">
-        <h3>Dónde la IA ayuda y dónde debe detenerse</h3>
-        <p>Consulta un resumen en español del artículo de Houston Methodist sobre usos prácticos de IA para hábitos saludables, límites clínicos y riesgos de confiar en respuestas no verificadas.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/ia-salud">Ir al módulo de IA para salud</a>
-        </div>
+    <section class="section" id="modulos">
+      <h2>Módulos</h2>
+      <p>Accesos directos a los módulos activos, con una breve descripción de cada uno.</p>
+      <div class="modules-grid">
+        <article class="module-card">
+          <h3>Módulo de sueño</h3>
+          <p>Mejora cantidad y calidad de sueño con guía práctica, beneficios y riesgos de una baja higiene de sueño.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/sueño">Ir al módulo de sueño</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Módulo de relaciones sociales</h3>
+          <p>Vínculos cercanos como factor protector para reducir estrés y sostener mejores hábitos.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/social">Ir al módulo social</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Módulo de estrés y burnout</h3>
+          <p>Señales tempranas de estrés crónico y acciones prácticas para recuperar energía y enfoque.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/estres">Ir al módulo de estrés</a>
+          </div>
+        </article>
+        <article class="module-card highlight" id="nom035">
+          <h3>Salud mental y NOM 035</h3>
+          <p>Evaluación de riesgo psicosocial, hallazgos agregados y seguimiento de intervenciones para RRHH y líderes.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/salud-mental-nom035">Ver sección NOM 035</a>
+            <a class="btn soft" href="https://thewellnest.ai/auth/login" target="_blank" rel="noopener noreferrer">Entrar a The Wellnest</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Módulo de pausas activas</h3>
+          <p>Guía práctica para implementar micro-pausas activas de 5-7 minutos durante la jornada.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/pausas-activas">Ir al módulo de pausas activas</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Módulo de IA para salud y bienestar</h3>
+          <p>Usos prácticos de IA para hábitos saludables, límites clínicos y riesgos de respuestas no verificadas.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/ia-salud">Ir al módulo de IA para salud</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Caso empresarial</h3>
+          <p>Análisis agregado anonimizado con hallazgos y recomendaciones organizacionales.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/caso">Ver caso empresarial</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Caso individual anonimizado</h3>
+          <p>Perfil individual de muestra con indicadores y recomendaciones sin exponer identidad real.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/casoind">Ver caso individual</a>
+          </div>
+        </article>
+        <article class="module-card">
+          <h3>Cuestionario individual</h3>
+          <p>Feedback inmediato sobre sueño, alimentación, hidratación, actividad física, relaciones y estrés.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="/cuestionario">Responder cuestionario individual</a>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -450,36 +517,38 @@
       </article>
     </section>
 
-    <section class="section" id="caso-empresarial">
-      <h2>Caso empresarial</h2>
+    <section class="section" id="news">
+      <h2>News</h2>
+      <p>Actualizaciones y lanzamientos recientes del programa Healthy Record.</p>
       <div class="mini-modulo">
-        <h3>Análisis agregado anonimizado con hallazgos y recomendaciones</h3>
-        <p>Consulta un ejemplo de análisis gráfico organizacional con principales riesgos detectados y plan de acción sugerido.</p>
+        <h3>Entrevista: hábitos, sedentarismo y rendimiento organizacional</h3>
+        <p>El sedentarismo y los hábitos no saludables no solo afectan a las personas: afectan directamente el rendimiento de la empresa.</p>
+        <p>En este episodio conversamos sobre cómo pequeñas decisiones diarias pueden impactar productividad, energía y resultados organizacionales.</p>
+        <p>Te invitamos a verlo y cuestionar cómo está operando tu equipo hoy.</p>
+        <div class="video-embed" aria-label="Entrevista en YouTube">
+          <iframe
+            src="https://www.youtube.com/embed/rgHyYxkVplw"
+            title="Entrevista sobre habitos, sedentarismo y rendimiento organizacional"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="spotify-embed" aria-label="Entrevista en Spotify">
+          <iframe
+            src="https://open.spotify.com/embed/episode/2RGtBFo0J3Mo5xfUG6ptPx?utm_source=generator"
+            title="Entrevista en Spotify"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
         <div class="cta-row">
-          <a class="btn primary" href="/caso">Ver caso empresarial</a>
+          <a class="btn primary" href="https://youtu.be/rgHyYxkVplw?si=O7opA1zUj6r6UD2l" target="_blank" rel="noopener noreferrer">Ver entrevista</a>
+          <a class="btn soft" href="https://garagebrand.mx" target="_blank" rel="noopener noreferrer">Conecta con garagebrand.mx</a>
+          <a class="btn soft" href="https://www.instagram.com/garagebrandmx/" target="_blank" rel="noopener noreferrer">Síguenos: @garagebrandmx</a>
         </div>
       </div>
-    </section>
-
-    <section class="section" id="caso-individual">
-      <h2>Caso individual anonimizado</h2>
-      <div class="mini-modulo">
-        <h3>Ejemplo de perfil individual con data anonimizada</h3>
-        <p>Genera un caso de muestra por persona con indicadores corporales, hábitos y recomendaciones de seguimiento sin exponer identidad real.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/casoind">Ver caso individual</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="cuestionario-individual">
-      <h2>Cuestionario individual</h2>
-      <div class="mini-modulo">
-        <h3>Recibe feedback personalizado inmediato sobre tus hábitos</h3>
-        <p>Responde el cuestionario semanal de sueño, alimentación, hidratación, actividad física, relaciones, estrés y burnout para obtener recomendaciones prácticas.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="/cuestionario">Responder cuestionario individual</a>
-        </div>
+      <div class="cta-row">
+        <a class="btn soft" href="#inscribirse">Recibir novedades</a>
       </div>
     </section>
 
