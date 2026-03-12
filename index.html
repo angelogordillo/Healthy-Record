@@ -252,6 +252,27 @@
       border: 0;
     }
 
+    .video-grid {
+      display: grid;
+      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      margin-top: 18px;
+    }
+
+    .video-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: 0 14px 26px rgba(11, 27, 69, 0.06);
+    }
+
+    .video-card h3 {
+      font-size: 16px;
+      color: var(--logo-blue);
+      margin: 10px 0 0;
+    }
+
     .spotify-embed {
       margin: 10px 0 6px;
       border-radius: 16px;
@@ -392,6 +413,7 @@
         <a href="#modulos">Módulos</a>
         <a href="#nom035">NOM 035</a>
         <a href="#news">News</a>
+        <a href="#videos">Videos</a>
         <a href="#inscribirse">Contacto</a>
       </nav>
     </div>
@@ -548,6 +570,69 @@
       </div>
       <div class="cta-row">
         <a class="btn soft" href="#inscribirse">Recibir novedades</a>
+      </div>
+    </section>
+
+    <section class="section" id="videos">
+      <h2>Videos</h2>
+      <p>Contenido recomendado para profundizar en bienestar, hábitos y desempeño organizacional.</p>
+      <div class="video-grid">
+        <article class="video-card">
+          <div class="video-embed" aria-label="Video de YouTube">
+            <iframe
+              src="https://www.youtube.com/embed/1WXWtdWHH3Q"
+              title="Video: bienestar y desempeño organizacional"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <h3>Bienestar y desempeño organizacional</h3>
+          <div class="cta-row">
+            <a class="btn soft" href="https://youtu.be/1WXWtdWHH3Q?si=mKAMc0tMMnGIpaLY" target="_blank" rel="noopener noreferrer">Ver en YouTube</a>
+          </div>
+        </article>
+        <article class="video-card">
+          <div class="video-embed" aria-label="Video de YouTube">
+            <iframe
+              src="https://www.youtube.com/embed/o0IDOpXBpDE"
+              title="Video: hábitos y productividad sostenible"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <h3>Hábitos y productividad sostenible</h3>
+          <div class="cta-row">
+            <a class="btn soft" href="https://youtu.be/o0IDOpXBpDE?si=3W3I-P3EXthhAL_E" target="_blank" rel="noopener noreferrer">Ver en YouTube</a>
+          </div>
+        </article>
+        <article class="video-card">
+          <div class="video-embed" aria-label="Video de YouTube">
+            <iframe
+              src="https://www.youtube.com/embed/ymTOhiPsGc4"
+              title="Video: cultura saludable y engagement"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <h3>Cultura saludable y engagement</h3>
+          <div class="cta-row">
+            <a class="btn soft" href="https://youtu.be/ymTOhiPsGc4?si=OaP_H4VrdVK0wNj2" target="_blank" rel="noopener noreferrer">Ver en YouTube</a>
+          </div>
+        </article>
+        <article class="video-card">
+          <div class="video-embed" aria-label="Video de YouTube">
+            <iframe
+              src="https://www.youtube.com/embed/9k2ssoMo3IM"
+              title="Video: energía y rendimiento del equipo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            ></iframe>
+          </div>
+          <h3>Energía y rendimiento del equipo</h3>
+          <div class="cta-row">
+            <a class="btn soft" href="https://youtu.be/9k2ssoMo3IM?si=B3MfWInzXwOCvB2b" target="_blank" rel="noopener noreferrer">Ver en YouTube</a>
+          </div>
+        </article>
       </div>
     </section>
 
