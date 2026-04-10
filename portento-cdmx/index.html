@@ -3,153 +3,472 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Portento CDMX</title>
+  <title>Portento Records | Musica, letras y universo creativo</title>
   <style>
+    @import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
     :root {
-      --bg: #05060d;
-      --ink: #ffffff;
-      --muted: rgba(255, 255, 255, 0.82);
-      --olive: #9a990f;
-      --gold: #d5ba46;
-      --line: rgba(255, 255, 255, 0.22);
+      --bg: #06070d;
+      --bg-soft: #0d1018;
+      --card: rgba(12, 15, 24, 0.9);
+      --card-strong: rgba(18, 22, 33, 0.96);
+      --ink: #f7f4eb;
+      --muted: rgba(247, 244, 235, 0.76);
+      --olive: #959311;
+      --gold: #dbc768;
+      --gold-soft: rgba(219, 199, 104, 0.14);
+      --line: rgba(255, 255, 255, 0.14);
+      --shadow: 0 24px 50px rgba(0, 0, 0, 0.34);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at 50% -20%, #20251a 0%, var(--bg) 55%);
-      padding: 20px;
-      font-family: system-ui, sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(149, 147, 17, 0.18), transparent 34%),
+        radial-gradient(circle at 85% 15%, rgba(219, 199, 104, 0.08), transparent 22%),
+        linear-gradient(180deg, #11131c 0%, #06070d 42%, #05060b 100%);
       color: var(--ink);
+      font-family: "Manrope", system-ui, sans-serif;
+      line-height: 1.6;
+      padding: 24px 18px 48px;
     }
 
-    .wrap {
-      width: min(920px, 100%);
-      display: grid;
-      gap: 18px;
-      justify-items: center;
+    a { color: inherit; }
+
+    .page {
+      width: min(1160px, 100%);
+      margin: 0 auto;
     }
 
-    .logo {
-      width: min(220px, 50vw);
-      height: auto;
-      display: block;
+    .topbar {
+      position: sticky;
+      top: 14px;
+      z-index: 20;
+      margin-bottom: 18px;
+    }
+
+    .topbar-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
       border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #fff;
+      background: rgba(5, 7, 13, 0.74);
+      backdrop-filter: blur(20px);
+      box-shadow: var(--shadow);
     }
 
-    .video-frame {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border: 0;
-      border-radius: 14px;
-      background: #000;
+    .brand-mark {
+      font-size: 12px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      white-space: nowrap;
     }
 
-    .spotify-frame {
-      width: 100%;
-      height: 352px;
-      border: 0;
-      border-radius: 14px;
-      background: #000;
-    }
-
-    .book {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      background: linear-gradient(155deg, rgba(154, 153, 15, 0.2), rgba(0, 0, 0, 0.35));
-      display: grid;
+    .top-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
       gap: 10px;
-      justify-items: center;
     }
 
-    .book h2 {
-      font-size: 24px;
+    .top-links a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 8px 14px;
+      transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .top-links a:hover {
+      transform: translateY(-1px);
+      color: var(--ink);
+      border-color: rgba(219, 199, 104, 0.5);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background:
+        linear-gradient(140deg, rgba(219, 199, 104, 0.13), rgba(255, 255, 255, 0.03)),
+        rgba(10, 12, 20, 0.9);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -90px -110px auto;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(219, 199, 104, 0.18), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+      gap: 26px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1, h2, h3 {
+      font-family: "Cormorant Garamond", Georgia, serif;
+      line-height: 0.98;
       letter-spacing: 0.01em;
     }
 
-    .book p {
+    h1 {
+      font-size: clamp(48px, 7vw, 88px);
+      margin-bottom: 16px;
+    }
+
+    .hero-copy p {
+      max-width: 58ch;
       color: var(--muted);
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn.primary {
+      color: #07080d;
+      background: linear-gradient(130deg, var(--gold), #fff0ad 55%, var(--olive));
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+    }
+
+    .btn.secondary {
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .hero-side {
+      display: grid;
+      justify-items: center;
+      gap: 18px;
+    }
+
+    .logo {
+      width: min(280px, 100%);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: #fff;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+    }
+
+    .hero-stats {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--gold);
+      font-size: 24px;
+      margin-bottom: 3px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .section {
+      margin-top: 28px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: var(--card);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-header p {
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .section h2 {
+      font-size: clamp(36px, 5vw, 54px);
+      margin-bottom: 8px;
+    }
+
+    .media-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--card-strong);
+      padding: 16px;
+    }
+
+    .panel h3 {
+      font-size: 30px;
+      margin-bottom: 8px;
+    }
+
+    .panel p {
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .video-frame,
+    .spotify-frame {
+      width: 100%;
+      border: 0;
+      border-radius: 18px;
+      background: #000;
+    }
+
+    .video-frame { aspect-ratio: 16 / 9; }
+    .spotify-frame { height: 352px; }
+
+    .stack {
+      display: grid;
+      gap: 18px;
     }
 
     .book-cover {
       width: min(320px, 100%);
-      border-radius: 10px;
-      border: 2px solid rgba(213, 186, 70, 0.6);
-      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
       display: block;
-      margin: 0 auto;
+      margin: 0 auto 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(219, 199, 104, 0.45);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
     }
 
-    .book-cta {
+    .meta-line {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      min-width: 260px;
-      color: #05060d;
-      text-decoration: none;
+      gap: 8px;
+      padding: 6px 10px;
       border-radius: 999px;
-      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--gold);
+      font-size: 12px;
       font-weight: 800;
-      background: linear-gradient(130deg, var(--gold), #f2e071 50%, #9a990f);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-      transition: transform 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
     }
 
-    .book-cta:hover { transform: translateY(-2px); }
-
-    .forotp {
-      width: 100%;
+    .lyrics-shell {
       border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(219, 199, 104, 0.05), transparent 140px),
+        rgba(7, 9, 14, 0.82);
+      padding: 18px;
+    }
+
+    .lyrics-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 16px;
-      padding: 16px;
-      background: linear-gradient(155deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.4));
+      padding: 13px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--ink);
+      font: inherit;
+    }
+
+    .search-input::placeholder { color: rgba(247, 244, 235, 0.46); }
+
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .filter-btn {
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.is-active {
+      transform: translateY(-1px);
+      color: var(--ink);
+      border-color: rgba(219, 199, 104, 0.54);
+      background: rgba(219, 199, 104, 0.12);
+    }
+
+    .results-meta {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+
+    .lyrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .song-card {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.035);
+      overflow: hidden;
+    }
+
+    .song-card[open] {
+      background: rgba(255, 255, 255, 0.055);
+      border-color: rgba(219, 199, 104, 0.3);
+    }
+
+    .song-summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 18px;
       display: grid;
       gap: 10px;
-      justify-items: center;
-      text-align: center;
     }
 
-    .forotp h2 {
-      font-size: 22px;
-      letter-spacing: 0.01em;
+    .song-summary::-webkit-details-marker { display: none; }
+
+    .song-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
     }
 
-    .forotp p {
-      color: var(--muted);
-      max-width: 680px;
+    .song-summary h3 {
+      font-size: 30px;
     }
 
-    .forotp-cta {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 220px;
-      color: #05060d;
-      text-decoration: none;
+    .song-tag {
+      flex-shrink: 0;
       border-radius: 999px;
-      padding: 12px 18px;
+      padding: 5px 10px;
+      background: rgba(219, 199, 104, 0.12);
+      color: var(--gold);
+      font-size: 11px;
       font-weight: 800;
-      background: linear-gradient(130deg, var(--gold), #f2e071 50%, #9a990f);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
-      transition: transform 0.2s ease;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
 
-    .forotp-cta:hover { transform: translateY(-2px); }
+    .song-preview {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .song-content {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 18px 18px;
+    }
+
+    .lyrics-body {
+      white-space: pre-wrap;
+      color: rgba(247, 244, 235, 0.9);
+      font-size: 15px;
+      line-height: 1.72;
+      padding-top: 16px;
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(255, 255, 255, 0.14);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+    }
 
     .social {
-      margin-top: 8px;
       display: grid;
+      gap: 14px;
       justify-items: center;
-      gap: 8px;
-      width: 100%;
+      text-align: center;
     }
 
     .ig-link {
@@ -163,61 +482,953 @@
 
     .ig-badge {
       width: 100%;
-      height: auto;
       display: block;
-      border-radius: 12px;
+      border-radius: 14px;
     }
 
     .ig-handle {
-      color: #fff;
-      font-size: 18px;
+      color: var(--ink);
       font-weight: 700;
-      letter-spacing: 0.01em;
+      font-size: 18px;
+    }
+
+    @media (max-width: 900px) {
+      body { padding-inline: 14px; }
+      .topbar {
+        position: static;
+        margin-bottom: 14px;
+      }
+      .topbar-inner,
+      .hero-grid,
+      .media-grid,
+      .lyrics-toolbar,
+      .section-header {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+      .topbar-inner {
+        border-radius: 24px;
+      }
+      .top-links,
+      .filter-row {
+        justify-content: flex-start;
+      }
+      .hero,
+      .section {
+        padding: 20px;
+        border-radius: 24px;
+      }
+      .hero-stats {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <main class="wrap">
-    <img class="logo" src="./portento-logo.png" alt="Logo Portento" />
+  <main class="page">
+    <div class="topbar">
+      <div class="topbar-inner">
+        <span class="brand-mark">Portento Records</span>
+        <nav class="top-links" aria-label="Navegacion principal">
+          <a href="#inicio">Inicio</a>
+          <a href="#escuchar">Escuchar</a>
+          <a href="#letras">Letras</a>
+          <a href="#contacto">Instagram</a>
+        </nav>
+      </div>
+    </div>
 
-    <iframe
-      class="video-frame"
-      src="https://www.youtube.com/embed/ktjeEKt8N1Q?rel=0"
-      title="Portento Video"
-      loading="lazy"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      allowfullscreen>
-    </iframe>
-
-    <iframe
-      class="spotify-frame"
-      src="https://open.spotify.com/embed/artist/0p0NNmXeyiUoxsalvITKgc?utm_source=generator"
-      title="Portento Spotify"
-      loading="lazy"
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
-    </iframe>
-
-    <section class="book" aria-label="Al Filo del Poder">
-      <h2>Al Filo del Poder</h2>
-      <p>Musica incidental original de la obra.</p>
-      <a href="https://a.co/d/0cAcmmZw" target="_blank" rel="noopener noreferrer" aria-label="Ver Al Filo del Poder en Amazon">
-        <img class="book-cover" src="./portada%20al%20filo%20del%20poder.jpg" alt="Portada del ebook Al Filo del Poder" />
-      </a>
-      <a class="book-cta" href="/poder/">Ver musica incidental</a>
+    <section class="hero" id="inicio">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Catalogo Portento</span>
+          <h1>Musica, historias y letras reunidas en un mismo lugar.</h1>
+          <p>Portento ahora puede mostrar no solo el universo sonoro del proyecto, sino tambien el archivo de letras que acompana cada etapa creativa. Esta seccion funciona como biblioteca viva para escuchar, leer y compartir.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#letras">Explorar letras</a>
+            <a class="btn secondary" href="https://open.spotify.com/artist/0p0NNmXeyiUoxsalvITKgc" target="_blank" rel="noopener noreferrer">Escuchar en Spotify</a>
+          </div>
+        </div>
+        <div class="hero-side">
+          <img class="logo" src="/static/portento-cdmx/portento-logo.png" alt="Logo Portento" />
+          <div class="hero-stats" aria-label="Resumen del catalogo">
+            <article class="stat">
+              <strong>25</strong>
+              <span>Letras</span>
+            </article>
+            <article class="stat">
+              <strong>2</strong>
+              <span>Idiomas</span>
+            </article>
+            <article class="stat">
+              <strong>1</strong>
+              <span>Archivo vivo</span>
+            </article>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="forotp" aria-label="Foro TP">
-      <h2>Foro TP</h2>
-      <p>Explora el album destacado del Foro TP en Spotify desde una vista dedicada para escuchar y compartir facilmente.</p>
-      <a class="forotp-cta" href="/forotp">Ir a Foro TP</a>
+    <section class="section" id="escuchar">
+      <div class="section-header">
+        <div>
+          <h2>Escuchar y descubrir</h2>
+          <p>La portada concentra las piezas principales de Portento: video, perfil de Spotify, lanzamiento editorial y acceso directo a Foro TP.</p>
+        </div>
+      </div>
+      <div class="media-grid">
+        <article class="panel">
+          <span class="meta-line">Video destacado</span>
+          <h3>Portento en video</h3>
+          <p>Una vista directa para presentar el universo visual del proyecto desde la misma landing.</p>
+          <iframe
+            class="video-frame"
+            src="https://www.youtube.com/embed/ktjeEKt8N1Q?rel=0"
+            title="Portento Video"
+            loading="lazy"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen>
+          </iframe>
+        </article>
+
+        <div class="stack">
+          <article class="panel">
+            <span class="meta-line">Spotify</span>
+            <h3>Escucha el catalogo</h3>
+            <p>El embed sigue disponible para que la reproduccion sea inmediata sin salir del sitio.</p>
+            <iframe
+              class="spotify-frame"
+              src="https://open.spotify.com/embed/artist/0p0NNmXeyiUoxsalvITKgc?utm_source=generator"
+              title="Portento Spotify"
+              loading="lazy"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture">
+            </iframe>
+          </article>
+
+          <article class="panel">
+            <span class="meta-line">Proyecto editorial</span>
+            <h3>Al Filo del Poder</h3>
+            <p>Musica incidental original de la obra, conectada con la portada y su pagina dedicada.</p>
+            <a href="https://a.co/d/0cAcmmZw" target="_blank" rel="noopener noreferrer" aria-label="Ver Al Filo del Poder en Amazon">
+              <img class="book-cover" src="/static/portento-cdmx/portada%20al%20filo%20del%20poder.jpg" alt="Portada del ebook Al Filo del Poder" />
+            </a>
+            <a class="btn primary" href="https://a.co/d/0cAcmmZw" target="_blank" rel="noopener noreferrer">Ver ebook</a>
+          </article>
+
+          <article class="panel">
+            <span class="meta-line">Comunidad</span>
+            <h3>Foro TP</h3>
+            <p>Acceso directo al album destacado del Foro TP para escuchar y compartir desde una vista dedicada.</p>
+            <a class="btn secondary" href="/forotp">Ir a Foro TP</a>
+          </article>
+        </div>
+      </div>
     </section>
 
-    <section class="social" aria-label="Instagram de Portento">
-      <a class="ig-link" href="https://www.instagram.com/portentorecords/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Portento Records">
-        <img class="ig-badge" src="./instagram-logo.svg" alt="Instagram Portento Records" />
-      </a>
-      <p class="ig-handle">@portentorecords</p>
+    <section class="section" id="letras">
+      <div class="section-header">
+        <div>
+          <h2>Seccion de letras</h2>
+          <p>Un archivo consultable con buscador y filtro por idioma. Cada cancion se despliega completa para que la experiencia sea clara tanto en desktop como en movil.</p>
+        </div>
+      </div>
+
+      <div class="lyrics-shell">
+        <div class="lyrics-toolbar">
+          <input id="lyrics-search" class="search-input" type="search" placeholder="Buscar por titulo o fragmento de letra" aria-label="Buscar letras" />
+          <div class="filter-row" aria-label="Filtros de idioma">
+            <button class="filter-btn is-active" type="button" data-filter="all">Todas</button>
+            <button class="filter-btn" type="button" data-filter="es">Espanol</button>
+            <button class="filter-btn" type="button" data-filter="en">English</button>
+          </div>
+        </div>
+
+        <p class="results-meta" id="lyrics-meta">Cargando letras...</p>
+        <div class="lyrics-grid" id="lyrics-grid"></div>
+      </div>
+    </section>
+
+    <section class="section" id="contacto">
+      <div class="social" aria-label="Instagram de Portento">
+        <div>
+          <h2>Instagram</h2>
+          <p>Sigue el proyecto y comparte esta nueva biblioteca de letras desde la cuenta oficial.</p>
+        </div>
+        <a class="ig-link" href="https://www.instagram.com/portentorecords/" target="_blank" rel="noopener noreferrer" aria-label="Instagram Portento Records">
+          <img class="ig-badge" src="/static/portento-cdmx/instagram-logo.svg" alt="Instagram Portento Records" />
+        </a>
+        <p class="ig-handle">@portentorecords</p>
+      </div>
     </section>
   </main>
+
+  <script>
+    const songs = [
+      {
+        title: "Lady Liberty",
+        language: "en",
+        lyrics: `In the land/ where nobody uses to ask/ what you came for/where you came from or who you believe in
+
+We got it here/ for working hard enough to succeed/ admired the way you think/ also wanted to be free
+
+Hey, Lady Liberty/ please don´t walked (look) away/ don´t give up on us
+
+Now that you/ had change the way you feel/ you´ll be wondering if we worth to trust in/ are we now just not good enough/ for you
+
+We got it here/ for working hard enough to succeed/ admired the way you think/ also wanted to be free
+
+Hey, Lady Liberty/ please don´t walked (look) away/ don´t give up on us
+
+Instrumental
+
+Hey, Lady Liberty/ please don´t walked (look) away/ don´t give up on us`
+      },
+      {
+        title: "El Pais Imaginario",
+        language: "es",
+        lyrics: `Siempre creimos vivir/ en un oasis de prosperidad/ honestos y trabajadores/ incorruptibles hasta el final
+
+Fueron muchos los años/ de vivir en una fantasia/ decadas de ceguera sin querer escuchar/ a quienes nos gritaban la verdad
+
+Hasta que un dia nos vimos obligados a enfrentar la realidad
+
+Vivimos un sueño, no queriamos despertar
+Del pais imaginario no quieriamos escapar
+
+La conoci tan perfecta/ era tan bella pero imaginaria
+Crei en todas sus promesas/ y resultaron ilusiones vanas
+
+Hasta que un dia me enfrente a la realidad
+
+Yo vivi un sueño, no queria despertar
+De este amor imaginario, no queria escapar
+
+Y en las noches, recuerdo su amor
+Y vuelvo a sentir ese mismo dolor
+
+Vivimos una mentira, repetida sin parar
+El pais imaginario, ya no volvera
+Vivimos una mentira, repetida sin parar
+El pais imaginario, ya no volvera`
+      },
+      {
+        title: "Epifania",
+        language: "es",
+        lyrics: `Una nueva idea al despertar/ ese sentimiento especial/ como convencer a los demas/ de una conclusion tan racional
+
+Mi mente funciona sin parar/ recopila datos que busca explicar/ muchas trampas se presentaran/ atajos seductores me buscaran
+
+Solo son, hipotesis sin comprobar, tentadoras ilusiones, de las que debemos despertar
+
+Epifania, dejame en libertad, ya no me impongas tu voluntad
+Epifania, la verdad se impondra, tus ilusiones, desapareceran
+
+Mi mente funciona sin para, recopila datos que busca explicar, muchas trampas se presentaran, atajos seductores me buscaran
+
+Solo son, hipotesis sin comprobar, tentadoras ilusiones, de las que debemos despertar
+
+Epifania, dejame en libertad, ya no me impongas tu voluntad
+Epifania, la verdad se impondra, tus ilusiones, desapareceran
+
+Instrumental
+
+A veces te necesito, cuando no se por donde empezar, tu inspiracion divina, siempre bienvenida será
+
+Solo son, hipotesis sin comprobar, tentadoras ilusiones, de las que debemos despertar
+
+Epifania, dejame en libertad, ya no me impongas tu voluntad
+Epifania, la verdad se impondra, tus ilusiones, desapareceran`
+      },
+      {
+        title: "Love Chose Us",
+        language: "en",
+        lyrics: `That night, changed our lives, we never expected, to find each other
+That single night, we believe in love again, in our hearts, we did trust, to follow someone else
+
+I chose you, you chose me, love chose us
+
+Every single night, we used to get to bed, anger in our words, got so insane
+
+I chose you, you chose me, love chose us
+
+We were so happy, had so many good times, and the fruit of our love, will be forever with us
+
+Every single night, we used to get to bed, anger in our words, got so insane
+
+I loved you, you loved me, but love stopped in the end
+
+I chose you, you chose me, love chose us
+
+We were so happy, had so many good times, and the fruit of our love, will be forever with us
+
+We were in love, enjoyed every time, but in the end, could never imagined, that love left us`
+      },
+      {
+        title: "Que Diria Gabriela",
+        language: "es",
+        lyrics: `Que dificil era vivir, sin poderlo conversar, perder la reputacion a cambio de mi libertad
+No poder decir te amo, enfrente de los demas, presentarte como amiga y tener que disimular
+
+Que diria hoy Gabriela, de esta nuestra realidad, donde se han roto barreras, sin temor al que diran
+
+Que dificil hoy pensar, en un mundo sin igualdad, ya no estamos disponibles, para decir si y callar
+Y Lucila que hablaba a rio, a montaña y cañaveral, en las lunas de locura, recibio reino de verdad*
+
+Fue otra epoca, una falsa realidad, en la sociedad
+
+Que diria hoy Gabriela, de esta nuestra realidad
+Donde se han roto barreras, sin temor al que diran
+
+Gracias hoy a ti Gabriela, por luchar por tu verdad
+Y por no rendirte nunca, a la felicidad
+
+*Todas ibamos a ser reinas. Gabriela Mistral`
+      },
+      {
+        title: "Nunca Fue Facil",
+        language: "es",
+        lyrics: `Sola esta, sin amor/ amistad, compasion
+Libero, su otro yo/ lo espero, sin rencor
+
+Nunca fue facil, dentro de un cuerpo que no es
+Mirar al espejo otra vez, la imagen de un hombre y no mujer
+
+Nunca fue facil, volver a un hogar que no fue
+Mirar al espejo otra vez, sentir el rechazo en su piel
+
+Alcanzo, redención/ libertad, emoción
+Renuncio, a su dolor/ frustación y temor
+
+Instrumental
+
+Nunca fue facil, dentro de un cuerpo que no es
+Mirar al espejo otra vez, la imagen de un hombre y no mujer
+
+Nunca fue facil, volver a un hogar que no fue
+Mirar al espejo otra vez, sentir el rechazo en su piel`
+      },
+      {
+        title: "Volar",
+        language: "es",
+        lyrics: `La verdad siempre la supe/ disimular nunca fue mi opcion
+Soporte el rechazo por mi transgresion/ no entendieron mi decision
+
+No he hecho nada malo/ pero en las sombras tuve que caminar
+Fueron tantas pesadillas que debi soportar/ fueron pruebas duras hasta poderte encontrar
+
+Queria volar/ dejar todo atrás
+No abandonar/ y contigo volar
+
+Mi vida ha cambiado/ ya no tengo nada que ocultar
+Me rodean personas que entienden mi verdad
+Ya no cargo hoy ninguna falsedad
+
+Instrumental
+
+Queria volar/ dejar todo atrás
+No abandonar/ y contigo volar
+
+Somos almas rebeldes/ somos almas que buscan/ su felicidad
+
+Queria volar/ dejar todo atrás
+No abandonar/ y contigo volar`
+      },
+      {
+        title: "Recordar",
+        language: "es",
+        lyrics: `A veces miro atrás y no puedo olvidar aquellos que lucharon por la libertad
+muchos perseguidos, muchos ya no estan, a donde fueron todos a parar
+
+Y si hubieras sido tu, a quien haya que recordar, y si hubiera sido tu cuerpo a quien debemos encontrar
+
+No quisiera imaginar, que decidimos sepultar y borrar nuestras memorias por unas monedas mas
+Muchos perseguidos, muchos quedaran, sin recuerdos, sin memoria, no quisiera imaginar
+
+Y si hubieras sido tu, a quien haya que recordar, y si hubiera sido tu cuerpo a quien debemos encontrar
+
+No es solo por flagelo o clamor de justicia, no es solo por nosotros, es por los que vendran
+Por eso es importante recordar, para que no vuelva a pasar, para que no vuelva a pasar
+
+A veces miro atrás y no puedo olvidar aquellos que lucharon por la libertad`
+      },
+      {
+        title: "Lejos de Ti",
+        language: "es",
+        lyrics: `Que diran ahora de mi, tantos años ya que parti
+Me juzgaran, criticaran, mi nueva forma de pensar
+
+Si supieras lo que vivi, sabrias lo que estar lejos de ti, de tu raiz
+
+Encontre un nuevo hogar, comprension y amistad, felicidad
+Que diran ahora de mi, tantos años ya que parti
+De mi raiz
+Quieres saber que pienso hoy de ti, como has cambiado desde que me fui
+Tantos años ya que parti
+
+Encontre un nuevo hogar, comprension y amistad, felicidad
+
+Instrumental
+
+Quieres saber que pienso hoy de ti, como has cambiado desde que me fui
+Tantos años ya que parti
+
+Encontre un nuevo hogar, comprension y amistad, felicidad
+
+Un nuevo hogar, felicidad`
+      },
+      {
+        title: "Summer Love",
+        language: "en",
+        lyrics: `It´s a new day at the beach, everybody is looking hot and free
+Young bodies flirting in the sea, dreaming of the nightfall and what it will bring
+
+Tonight I say we fall in love, you´ll see we´ll be forever young
+And summer will never end/ full of joy and playfulness
+
+What, is next/ a new summer love until the end
+
+It´s a new day at the beach, everybody is looking for a kiss
+Young bodies flirting in the sea, dreaming of the sunset and what it will bring
+
+What, is next/ a new summer love until the end
+
+Our bodies, nobody/ could interfere in this affaire
+Our secret, this moment/ will be sealed in the sand
+
+What, is next/ a new summer love until the end
+
+What, is next/ a new summer love is what I expected`
+      },
+      {
+        title: "Adios",
+        language: "es",
+        lyrics: `No es fácil perdonar, no es facil olvidar
+Momentos que no volveran
+Quisiera avanzar, dejar de recordar
+Lo dicho no se puede borrar
+
+Mis errores, no los pude evitar, fue muy alto el precio que tuve que pagar
+
+No puedo aceptar, mi nueva realidad, asumo que ya no volveras
+Vivir con el dolor, negar al amor, saber que perdi la oportunidad
+
+Mis errores, no los pude evitar, fue muy alto el precio que tuve que pagar
+Lo intentamos, no lo pudimos lograr, es momento de no mirar atrás
+
+Herirte nunca fue mi afan, no estaba preparada, para amar
+
+Instrumental
+
+Mis errores, no los pude evitar, fue muy alto el precio que tuve que pagar
+Lo intentamos, no lo pudimos lograr, es momento de no mirar atrás
+
+Es momento de no mirar atrás`
+      },
+      {
+        title: "Luz y Fuego",
+        language: "es",
+        lyrics: `Ya, ya llegara, ese respiro necesario, ante tanta adversidad
+Hoy, hay que seguir, remando contra la corriente, aunque esta sea fuerte
+Tenemos que, persistir, sobrevivir
+
+Ayer, desfalleci, pero tu me ayudaste a encontrar esa fuerza dentro de mi
+Gracias a Dios, gracias a ti
+
+Eres mi luz y fuego, que hace arder mis ganas de amar
+Me miras y me seduces, tu eres mi aroma favorito al despertar
+
+A veces siento morir, pero cuando te recuerdo vuelve a mi ese gran deseo de vivir
+De amancer junto a ti
+
+Eres mi luz y fuego, que hace arder mis ganas de amar
+Me miras y me seduces, tu eres mi aroma favorito al despertar
+
+Tu eres el faro, tu eres mi guia
+No se que haria, si te pierdo, si te pierdo algun dia
+
+Eres mi luz y fuego, que hace arder mis ganas de amar
+Me miras y me seduces, tu eres mi aroma favorito al despertar
+
+Eres mi luz y fuego, mi deseo y mi hogar
+No soltemos nuestras manos
+No nos dejemos de amar`
+      },
+      {
+        title: "Shine",
+        language: "en",
+        lyrics: `Parts just floating away
+Going round and around again
+Is there anybody watching me fade
+Full speed under the light again
+
+Coming out
+Shine bright
+
+Darkness keeps creeping my brain
+I don’t wanna run
+Wanna get out of the shade
+And let the light shine my way
+
+Coming out
+Shine bright
+Coming out
+
+Coming out
+Shine bright`
+      },
+      {
+        title: "The End",
+        language: "en",
+        lyrics: `Running away from love/ been hurted so many times/ wondering what is next, to complete this living in hell
+
+Wanting to shut all down/ lacking strength for fight/ dreaming about the end, for sad and loneliness
+
+Told you so many times, there were ways I’d never accept/ that you were playing with fire so it´s damn easy to burn
+Wanting to shut all down, lacking strength for fight, dreaming about the end, for sad and loneliness
+
+I need you tonight, one more time, feeling you all over
+Over and over again
+
+Take me into, your arms
+Make me forgive who, I am
+Take me to that place, where I can be myself
+
+Running away from love/ been hurt so many times/ wondering what is next, to complete this living in hell
+
+I do need you tonight, one last time
+But I won´t try it, I won´t try it again
+
+Take me into, the night
+Do to me whatever you want
+Use my body and soul for the last time
+
+I need you tonight one more time
+
+Take me into, your arms
+Make me forgive who, I am
+Take me to that place, where I can be myself
+
+Take me into, the night
+Do to me whatever you want
+Use my body and soul for the last time`
+      },
+      {
+        title: "Rain",
+        language: "en",
+        lyrics: `I´m feeling the wind blow
+Nights coming
+Nights falling
+I´m feeling the wind blow
+nights coming
+nights falling
+I´m feeling the wind blow
+
+And Let the rain drops fall on me
+And let´s all soak up the sun
+And Let the rain drops fall on me
+And let´s all soak up the sun`
+      },
+      {
+        title: "Homesick",
+        language: "en",
+        lyrics: `Moving to the sound and the rhythm of the streets
+My heart beats abnormally fast
+Trying to look back, the future stands still
+I don´t even recall my past, but…
+
+Far away from home sweet home, feels so bad to be alone
+Homesick don´t wanna be, hometown I should have never leaved
+
+Eyes staring out in the middle of the way, don´t know were else to look
+Trying to look back, the future stands still
+I don´t even recall my past, but…
+
+Far away from home sweet home, feels so bad to be alone
+Homesick don´t wanna be, hometown I should have never leaved
+
+Instrumental
+
+I´ve tried, tried to keep calm
+I can´t stop thinking about
+All I left behind
+
+Because I never felt you
+I´ll just keep running away`
+      },
+      {
+        title: "Groovy Tonight",
+        language: "en",
+        lyrics: `I feel like grooving tonight
+Slowly moving around with you
+Oh baby now
+It’s killing me
+Let’s just listen to the radio
+I feel like falling in love
+Oh Baby
+
+Let’s get groovy tonight
+I feel that love is getting me high
+This feeling/ Is going right
+
+You’ve got me surfing in the sunrise
+Baby I’m feeling new
+We´ve got to groove until its dark were the stars shine so bright
+Baby feel it/ I’m in love`
+      },
+      {
+        title: "Stop Pollution",
+        language: "en",
+        lyrics: `Let’s do it/ We all can change
+If we believe/ in a new and  better world
+Together
+if you believe/ in victory
+sing with me, take my hand
+
+Stop pollution/ Let’s make a change
+And tell the whole world
+that me and the kids all together will make it
+Stop pollution/ That’s the only way
+tell the world we’ll survive/ ´til the end
+
+It’s moment/ The end is near
+Release the veil/ Feel the wind over you
+Together
+Believe as one/ With holding hands
+We’ll be more the ones who’ll win
+
+Stop pollution/ Let’s make a change
+And tell the whole world
+that me and the kids all together will make it
+Stop pollution/ That’s the only way
+tell the world we’ll survive/ ´til the end
+
+Will you follow my lead
+I’m still waiting here
+Are you one with everybody’s dreams
+Would you mind to save me
+Will you answer yes
+Are you gonna stay here, gonna help me, break my chains
+
+Stop pollution/ Let’s make a change
+And tell the whole world
+that me and the kids all together will make it
+Stop pollution/ That’s the only way
+tell the world we’ll survive/ ´til the end
+OUTRO (´till the end)`
+      },
+      {
+        title: "Your Eyes Again",
+        language: "en",
+        lyrics: `I REMEMBER YOU STARRING AT MY MOON
+
+THAT ONE YOU CHOSE FOR ME ON THAT APRIL SPRING.
+
+MY HAND WAS COLD YOUR HAIR WAS LIKE THE WIND,
+
+THE WARMEST KISS SEALED OFF A SUNSHINE IN YOUR LIPS
+
+AND IF I CLOSE MY EYES, I’LL SEE YOU AGAIN.
+
+YOUR EYES AGAIN BEYOND THIS LOCKDOWN WINTER,
+
+A SUMMER HOPE TO HOLD YOUR HAND AGAIN,
+
+YOUR EYES AGAIN WITHOUT A LOW WIFI,
+
+A SUMMER HOPE TO FIND YOUR SKIN AGAIN,
+
+YOUR EYES, YOUR EYES AGAIN.
+
+THAT SUMMER TRIPS, BEACH AND HILLS
+
+OUR HANDS WERE ONLY ONE, I WAS YOUR SMILE
+
+YOU WENT BACK HOME BUT NOT BEFORE,
+
+YOU PROMISED ME WE WILL ESCAPE TO LIVE OUR DREAMS,
+
+PRE-CHORUS
+
+AND IF I CLOSE MY EYES, I’LL SEE YOU AGAIN
+BEFORE YOU LEFT ME, ALONE
+
+CORO
+
+PT.C
+
+CORO
+
+ESTROFA 1: C#dim7 - C - Am7 - Em - C - Em - C#dim7 - C - Am
+Bm7 - C - G - G
+
+ESTROFA 2: Cmaj7 - G - Am - Em7 - Cmaj7 - Em - C#dim7 - C - G
+Bm7 - C - D7 - Em7 - Bm7 - D - G
+
+CORO: D - Em -Bm7 - C - D - Em - Bm7 - C - D7 - D7 - G
+
+PARTE C: Fmaj7 - Eb dim7 - Am7 - C - D`
+      },
+      {
+        title: "Take a Leap",
+        language: "en",
+        lyrics: `IF YOU ARE A ROUTINE BORED MAN,
+BEING ALWAYS LATE TO WORK,
+THEN -YOU HAVE-TO TAKE A BREAK.
+
+IF YOU’RE THINKING OF A CHANGE,
+‘CAUSE YOU ALWAYS DO JUST THE SAME,
+THEN -YOU MUST - TAKE A CHANCE.
+
+BETTER BEWARE OF THE STORM,
+IT CAN REACH YOU SOON,
+COULD FALL DOWN A LOT OF RAIN-
+OVER YOU.
+
+CO.- TAKE- TAKE A LEAP….. BE- BE YOURSELF
+DON’T - HESITATE - TO HOLD THE WORLD IN TO YOUR HANDS.
+TAKE A LEAP AND BE YOURSELF
+HURRY - AS YOU CAN -- BUT DON’T, DON’T STOP GOING ON STEP BY STEP.
+
+WHEN YOU FEEL LIKE A BOMB ‘BOUT TO EXPLODE,
+JUST A GUY INTO LONELINESS,
+YOU SHOULD - GO OUT -TO THE WORLD.
+
+GOTTA WAKE AND TAKE A BREATH,
+PUT ADRENALINE IN TO YOUR BRAIN
+AND HAVE- TO MAKE… MAKE IT WORTH.
+
+BETTER BEWARE OF THE STORM
+IT CAN REACH YOU SOON,
+COULD FALL DOWN A LOT OF RAIN-
+OVER YOU.
+
+CO.- TAKE- TAKE A LEAP….. BE- BE YOURSELF
+DON’T - HESITATE - TO HOLD THE WORLD INTO YOUR HANDS.
+TAKE A LEAP AND BE YOURSELF
+HURRY - AS YOU CAN -- BUT DON’T, DON’T STOP GOING ON STEP BY STEP.
+
+CA.- MANY PEOPLE HAS
+A STONE - INSTEAD OF A HEART,
+WON’T YOU REALIZE MY FRIEND?,
+DON’T YOU WORRY,
+AWFUL DAYS WILL NEVER LAST.
+
+CO.- TAKE- TAKE A LEAP….. BE- BE YOURSELF
+DON’T - HESITATE - TO HOLD THE WORLD INTO YOUR HANDS.
+TAKE A LEAP AND BE YOURSELF
+HURRY - AS YOU CAN -- BUT DON’T, DON’T STOP GOING ON STEP BY STEP…`
+      },
+      {
+        title: "Atmosfera",
+        language: "es",
+        lyrics: `ESTROFA
+Yo te quiero y no se como resolverlo
+tu eres mas que mi otra mitad
+Te diría si te quiero
+Si me miras fijamente la otra mitad
+
+Y digo si, si, tu eres para mi
+Yo aquí, si tengo lo que quieres
+Tu eres mi otra mitad
+
+Y yo ya no puedo resolverlo
+verte fuera de mi mente
+deja mi otra mitad
+
+CORO
+Invisibles somos
+de mi mente un misterio
+y para que vivimos lejos
+para ser un recuerdo
+
+y es que no puedo evitarlo
+ni disimularlo
+soy atmosfera de luz
+
+Y seremos invisibles
+en mi mente un misterio
+eres Tu.
+
+ESTROFA…
+Yo te quiero….
+
+CORO…
+Invisibles somos….
+
+PARTE C (solo Guitarra)`
+      },
+      {
+        title: "Floto",
+        language: "es",
+        lyrics: `Siento que mi cuerpo vibra vibra por dentro
+Cuando te encuentras muy cerca
+Y te vas otra vez
+
+Mi cuerpo acelera corre corre con tiempo
+Mi amor estate cerca
+Quedate junto a mi
+
+Cuando te veo siento que vuelo
+Oh oh
+Contigo mi amor
+Floto por dentro siento que vuelo
+Oh oh
+Contigo mi amor
+
+Pájaros volando todo desde adentro
+Mi cabeza dando vueltas
+Y te vas otra vez
+
+Siento que yo exploto cuando te tengo cerca
+Y no me puedo dar la vuelta
+Quedate junto a mi`
+      },
+      {
+        title: "Been Loved",
+        language: "en",
+        lyrics: `Something doesn’t feel right
+My body’s going numb now
+Im falling in love
+
+You stepped in to my brain all right
+Shamelessly in to my life
+Lets fall in love
+And Ive been searching for you
+
+Feel my soul
+I feel…
+I’ve been loved
+Ive been loved
+I’ve been loved
+Its coming for you
+
+Come and make me feel fine
+Changing everything i am
+Im falling in love
+
+We will fall
+far in love
+Everyday
+Everyday
+
+I’ve been loved
+Ive been loved
+I’ve been loved
+Its coming for you
+
+I’ve been loved
+Ive been loved
+I’ve been loved
+Its coming for you`
+      },
+      {
+        title: "Dia Especial",
+        language: "es",
+        lyrics: `Otro café, otro despertar
+Nada nuevo a que aspirar
+No crei que este dia fuera especial
+
+Entonces por accidente
+Eras tu simplemente
+
+Pienso en ti, estas en mi mente
+Cuento los minutos para verte/ tenerte
+
+Todo cambio, nada es igual
+De ti no me quiero separar
+No crei que algo asi me fuera a suceder
+
+Comprendi que a tu lado
+Queria vivir para siempre
+
+Pienso en ti estas en mi mente
+Cuento los minutos para verte/ tenerte`
+      },
+      {
+        title: "Loneliness",
+        language: "en",
+        lyrics: `WHILE I LOOK AROUND ME INSIDE THESE FOUR WALLS,
+FROZEN TIME DETECTED, DARKNESS FALLS.
+I THINK THE SUN DOESN´T SHINE FOR ME DAY BY DAY,
+THERE IS NO DIFFERENT STORY TO TELL.
+
+CO.- NO SMILE IN THE MIRROR, NO JOY, THIS IS MY FACE.
+GOOD MEMORIES ARE ALL GONE,
+FEEL I CAN´T ESCAPE OF THIS LONELINESS.
+
+FLOWERS BLOOM OUTSIDE WHILE I’M A WITHER,
+IT´S SO DAMN HARD FOR ME TO GET OUT OF BED.
+CONFUSION TEARS LIVE WITH ME IN MY ENTIRE ROOM,
+CAN ANYBODY TAKE MY SOUL CHAINS OFF?
+
+CO.- NO SMILE "IN THE MIRROR, NO JOY, THIS IS MY FACE.
+GOOD MEMORIES ARE ALL GONE,
+FEEL I CAN´T ESCAPE OF THIS LONELINESS.
+
+CO.- ASKED MY MIRROR ONLY A HELPING HAND TO HOLD MINE,
+IT COULD CHANGE MY FATE.
+GOOD VIBES WOULD SURE COME UP
+FOR ME TO ESCAPE OF THIS LONELINESS.`
+      }
+    ];
+
+    const grid = document.getElementById("lyrics-grid");
+    const meta = document.getElementById("lyrics-meta");
+    const searchInput = document.getElementById("lyrics-search");
+    const filterButtons = Array.from(document.querySelectorAll(".filter-btn"));
+    let activeFilter = "all";
+
+    function songPreview(text) {
+      return text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean)
+        .slice(0, 2)
+        .join(" / ");
+    }
+
+    function renderSongs() {
+      const query = searchInput.value.trim().toLowerCase();
+      const filtered = songs.filter((song) => {
+        const byLanguage = activeFilter === "all" || song.language === activeFilter;
+        const haystack = `${song.title} ${song.lyrics}`.toLowerCase();
+        const byQuery = !query || haystack.includes(query);
+        return byLanguage && byQuery;
+      });
+
+      meta.textContent = `${filtered.length} letra${filtered.length === 1 ? "" : "s"} disponible${filtered.length === 1 ? "" : "s"}${activeFilter === "all" ? "" : activeFilter === "es" ? " en espanol" : " en ingles"}.`;
+
+      if (!filtered.length) {
+        grid.innerHTML = '<div class="empty-state">No encontramos resultados con ese filtro. Prueba con otro titulo o fragmento.</div>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map((song) => `
+        <details class="song-card">
+          <summary class="song-summary">
+            <div class="song-topline">
+              <h3>${song.title}</h3>
+              <span class="song-tag">${song.language === "es" ? "ES" : "EN"}</span>
+            </div>
+            <p class="song-preview">${songPreview(song.lyrics)}</p>
+          </summary>
+          <div class="song-content">
+            <pre class="lyrics-body">${song.lyrics}</pre>
+          </div>
+        </details>
+      `).join("");
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeFilter = button.dataset.filter;
+        filterButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+        renderSongs();
+      });
+    });
+
+    searchInput.addEventListener("input", renderSongs);
+    renderSongs();
+  </script>
 </body>
 </html>

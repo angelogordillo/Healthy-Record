@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-labelledby="title desc">
+  <title id="title">Instagram Logo</title>
+  <desc id="desc">Instagram icon with wordmark</desc>
+  <defs>
+    <linearGradient id="igg" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#feda75"/>
+      <stop offset="30%" stop-color="#fa7e1e"/>
+      <stop offset="55%" stop-color="#d62976"/>
+      <stop offset="78%" stop-color="#962fbf"/>
+      <stop offset="100%" stop-color="#4f5bd5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="400" fill="none"/>
+  <g transform="translate(20,20)">
+    <rect x="0" y="0" width="360" height="360" rx="84" fill="url(#igg)"/>
+    <rect x="66" y="66" width="228" height="228" rx="68" fill="none" stroke="#fff" stroke-width="24"/>
+    <circle cx="180" cy="180" r="54" fill="none" stroke="#fff" stroke-width="24"/>
+    <circle cx="260" cy="100" r="18" fill="#fff"/>
+  </g>
+  <text x="430" y="250" fill="#0a0a0a" font-size="160" font-family="Brush Script MT, Segoe Script, Snell Roundhand, cursive">Instagram</text>
+</svg>
