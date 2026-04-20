@@ -44,6 +44,8 @@ DB_USER = os.getenv("DB_USER", "agordillo")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "1234567890")
 ADMIN_USER = os.getenv("ADMIN_USER", "admin")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
+ARMONIA_USER = os.getenv("ARMONIA_USER", ADMIN_USER).strip() or ADMIN_USER
+ARMONIA_PASSWORD = os.getenv("ARMONIA_PASSWORD", ADMIN_PASSWORD)
 DATABASE_URL = os.getenv("DATABASE_URL")
 APP_SECRET = os.getenv("APP_SECRET", "dev-secret")
 UPLOAD_DIR = Path(os.getenv("UPLOAD_DIR", Path(__file__).parent / "uploads"))
@@ -611,7 +613,7 @@ def get_conn():
     )
 
 
-def require_basic_auth(request: Request):
+def require_credentials(request: Request, username_expected: str, password_expected: str):
     auth = request.headers.get("Authorization")
     if not auth or not auth.startswith("Basic "):
         raise HTTPException(
@@ -628,19 +630,27 @@ def require_basic_auth(request: Request):
             detail="Unauthorized",
         )
     username, _, password = decoded.partition(":")
-    if not username or not secrets.compare_digest(username, ADMIN_USER):
+    if not username or not secrets.compare_digest(username, username_expected):
         raise HTTPException(
             status_code=401,
             headers={"WWW-Authenticate": "Basic"},
             detail="Unauthorized",
         )
-    if not secrets.compare_digest(password, ADMIN_PASSWORD):
+    if not secrets.compare_digest(password, password_expected):
         raise HTTPException(
             status_code=401,
             headers={"WWW-Authenticate": "Basic"},
             detail="Unauthorized",
         )
     return True
+
+
+def require_basic_auth(request: Request):
+    return require_credentials(request, ADMIN_USER, ADMIN_PASSWORD)
+
+
+def require_armonia_auth(request: Request):
+    return require_credentials(request, ARMONIA_USER, ARMONIA_PASSWORD)
 
 
 def create_token(email: str, expires_in: int = 60 * 60 * 2):
@@ -757,6 +767,12 @@ def portento():
     portento_path = Path(__file__).parent / "portento-cdmx" / "index.html"
     return FileResponse(portento_path)
 
+@app.get("/armonia")
+@app.get("/armonia/")
+def armonia(_: bool = Depends(require_armonia_auth)):
+    armonia_path = Path(__file__).parent / "armonia.html"
+    return FileResponse(armonia_path)
+
 @app.get("/forotp")
 def forotp():
     forotp_path = Path(__file__).parent / "forotp.html"
@@ -837,6 +853,16 @@ def modulo_pausas_activas():
 def modulo_ia_salud():
     ia_path = Path(__file__).parent / "ia-salud.html"
     return FileResponse(ia_path)
+
+@app.get("/cansancio-silencioso")
+def landing_cansancio_silencioso():
+    landing_path = Path(__file__).parent / "hr-cansancio.html"
+    return FileResponse(landing_path)
+
+@app.get("/healthy-record-logo.png")
+def healthy_record_logo():
+    logo_path = Path(__file__).parent / "healthy-record-logo.png"
+    return FileResponse(logo_path)
 
 @app.get("/api/panel")
 def panel_snapshot(_: bool = Depends(require_panel_auth)):
