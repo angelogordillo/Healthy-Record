@@ -187,6 +187,55 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    .osp {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .osp-intro,
+    .osp-feature {
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius);
+      padding: 1.05rem;
+    }
+
+    .osp-intro p,
+    .osp-feature p {
+      margin: 0;
+      color: var(--owl-ice);
+      opacity: 0.92;
+      line-height: 1.6;
+      font-size: 0.94rem;
+    }
+
+    .osp-intro h2 {
+      margin-bottom: 0.8rem;
+    }
+
+    .osp-tag {
+      display: inline-flex;
+      margin-bottom: 0.85rem;
+      color: var(--owl-cyan);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .osp-features {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    .osp-feature h3 {
+      margin: 0 0 0.45rem;
+      font-size: 1rem;
+    }
+
     .card {
       background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.03));
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -323,6 +372,7 @@
     @media (max-width: 920px) {
       .hero { grid-template-columns: 1fr; padding-top: 4.2rem; }
       .grid { grid-template-columns: 1fr 1fr; }
+      .osp { grid-template-columns: 1fr; }
       .process { grid-template-columns: 1fr 1fr; }
       .fva-highlight { grid-template-columns: 1fr; }
       .contact-form { grid-template-columns: 1fr; }
@@ -330,6 +380,7 @@
 
     @media (max-width: 640px) {
       .grid,
+      .osp-features,
       .process { grid-template-columns: 1fr; }
     }
   </style>
@@ -360,6 +411,36 @@
           <li>Modelo adaptable por país y sector</li>
         </ul>
       </aside>
+    </section>
+
+    <section class="section" id="osp">
+      <div class="osp">
+        <article class="osp-intro">
+          <span class="osp-tag">OSP | Owl Simple Planning</span>
+          <h2>Planeación simple para equipos que necesitan control sin fricción</h2>
+          <p>
+            OSP ayuda a organizaciones que operan con ERP y hojas de cálculo a planear demanda, suministro y materiales con una herramienta práctica, medible y sin la complejidad de soluciones APS tradicionales.
+          </p>
+        </article>
+        <div class="osp-features" aria-label="Funcionalidades OSP">
+          <article class="osp-feature">
+            <h3>Planeación conectada</h3>
+            <p>Integra datos del ERP y sistemas complementarios para consolidar la operación en una vista común.</p>
+          </article>
+          <article class="osp-feature">
+            <h3>KPIs en tiempo real</h3>
+            <p>Monitorea métricas clave de cadena de suministro para detectar desviaciones y actuar antes.</p>
+          </article>
+          <article class="osp-feature">
+            <h3>Alertas e insights</h3>
+            <p>Identifica oportunidades de alto impacto con señales accionables para decisiones más rápidas.</p>
+          </article>
+          <article class="osp-feature">
+            <h3>Menos trabajo manual</h3>
+            <p>Reduce reportes manuales y dependencia de hojas de cálculo para enfocar al equipo en análisis y ejecución.</p>
+          </article>
+        </div>
+      </div>
     </section>
 
     <section class="section" id="servicios">
