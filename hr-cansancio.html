@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Healthy Record | Cansancio silencioso</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap");
+
+    :root {
+      --bg: #f5f9ff;
+      --ink: #10213d;
+      --muted: #4e6285;
+      --line: rgba(16, 33, 61, 0.14);
+      --brand: #00c78c;
+      --brand-dark: #0a8f68;
+      --logo-blue: #06038d;
+      --card: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      font-family: "Manrope", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% -5%, rgba(6, 3, 141, 0.14), transparent 34%),
+        radial-gradient(circle at 92% 0%, rgba(0, 199, 140, 0.18), transparent 36%),
+        var(--bg);
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 26px 20px 52px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(120deg, var(--brand), var(--brand-dark));
+      border: none;
+    }
+
+    .hero {
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: linear-gradient(145deg, #ffffff, #f7faff);
+      padding: 28px 22px;
+    }
+
+    .logo {
+      width: clamp(130px, 20vw, 190px);
+      height: auto;
+      margin-bottom: 18px;
+    }
+
+    .messages {
+      display: grid;
+      gap: 12px;
+    }
+
+    .message {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--card);
+      padding: 16px;
+      color: var(--logo-blue);
+      font-size: clamp(21px, 3.3vw, 33px);
+      line-height: 1.15;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .message strong {
+      color: var(--brand-dark);
+    }
+
+    .note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .contact {
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .contact a {
+      color: var(--logo-blue);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <a class="btn" href="/">Acceso Home principal</a>
+    </header>
+
+    <section class="hero">
+      <img class="logo" src="healthy-record-logo.png" alt="Healthy Record" />
+      <div class="messages">
+        <p class="message">¿Sabes cuánto te cuesta realmente el <strong>cansancio silencioso</strong> de tu equipo?</p>
+        <p class="message">¿Cuántos problemas de desempeño en tu empresa son en realidad problemas de salud no detectados?</p>
+        <p class="message">¿Tu empresa cuida realmente la salud mental de su equipo?</p>
+      </div>
+      <p class="note">Healthy Record</p>
+      <div class="contact">
+        <p>Healthy Record · Hábitos saludables, empresas más productivas.</p>
+        <p>Escríbenos: <a href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a></p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
