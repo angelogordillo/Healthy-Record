@@ -758,7 +758,16 @@ def require_panel_auth(request: Request):
 
 
 @app.get("/")
-def index():
+def index(request: Request):
+    host = (request.headers.get("host") or "").lower()
+
+    # Subdominio de sueño → servir SueñoPlus
+    if host.startswith("sueno.healthyrecord.org"):
+        suenoplus_path = Path(__file__).parent / "suenoplus" / "index.html"
+        if suenoplus_path.exists():
+            return FileResponse(suenoplus_path)
+
+    # Sitio principal normal
     index_path = Path(__file__).parent / "index.html"
     return FileResponse(index_path)
 
@@ -1871,3 +1880,4 @@ def export_companies_csv(_: bool = Depends(require_basic_auth)):
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+Servir SueñoPlus en sueno.healthyrecord.org
