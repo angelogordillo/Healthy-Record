@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>SueñoPlus | Healthy Record – Bitácora de sueño</title>
+  <meta name="description" content="Herramienta interactiva de Healthy Record para mejorar hábitos de sueño: bitácora diaria, sugerencias personalizadas y recordatorios.">
+  <meta name="author" content="Healthy Record">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --surface: #111827;
+      --surface2: #1e293b;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --moon: #a5b4fc;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Background stars */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+        radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(1.5px 1.5px at 90px 40px, #fff, transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.4), transparent),
+        radial-gradient(1px 1px at 160px 20px, #fff, transparent);
+      background-size: 200px 100px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 80px;
+    }
+
+    /* Header */
+    header {
+      padding: 20px 20px 12px;
+      text-align: center;
+      background: linear-gradient(180deg, rgba(99,102,241,0.15) 0%, transparent 100%);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    header h1 span.icon {
+      font-size: 1.8rem;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 0 16px 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+
+    .tab {
+      flex: 1;
+      min-width: 70px;
+      padding: 10px 8px;
+      border: none;
+      border-radius: 12px;
+      background: var(--surface);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tab.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+    }
+
+    .tab .emoji { font-size: 1.2rem; }
+
+    /* Main content */
+    main {
+      flex: 1;
+      padding: 0 16px 24px;
+    }
+
+    .panel {
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    .panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Cards */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--moon);
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 14px 8px;
+      text-align: center;
+    }
+
+    .stat .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-hover);
+    }
+
+    .stat .label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Form elements */
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="time"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface2);
+      color: var(--text);
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    /* Range / stars */
+    .rating {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 10px 0 18px;
+    }
+
+    .star {
+      font-size: 2rem;
+      cursor: pointer;
+      opacity: 0.35;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .star.active { opacity: 1; transform: scale(1.15); }
+    .star:hover { opacity: 0.8; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      width: auto;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* Suggestion cards */
+    .suggestion {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      border-left: 4px solid var(--primary);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .suggestion .check {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      margin-top: 2px;
+    }
+
+    .suggestion.done .check {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .suggestion.done .check::after {
+      content: '✓';
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .suggestion.done .text {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    .suggestion .text {
+      flex: 1;
+      font-size: 0.92rem;
+    }
+
+    .suggestion .tag {
+      font-size: 0.7rem;
+      background: rgba(99,102,241,0.2);
+      color: var(--moon);
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 6px;
+      display: inline-block;
+    }
+
+    /* History items */
+    .history-item {
+      background: var(--surface2);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .history-item .date {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .history-item .meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .history-item .score {
+      font-size: 1.3rem;
+      font-weight: 700;
+      min-width: 48px;
+      text-align: center;
+      border-radius: 10px;
+      padding: 6px;
+    }
+
+    .score.good { background: rgba(34,197,94,0.2); color: var(--success); }
+    .score.mid { background: rgba(245,158,11,0.2); color: var(--warning); }
+    .score.bad { background: rgba(239,68,68,0.2); color: var(--danger); }
+
+    /* Reminder settings */
+    .reminder-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .reminder-row:last-child { border-bottom: none; }
+
+    .toggle {
+      width: 48px;
+      height: 28px;
+      background: var(--border);
+      border-radius: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .toggle.on { background: var(--primary); }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.2s;
+    }
+    .toggle.on::after { transform: translateX(20px); }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty .emoji { font-size: 3rem; margin-bottom: 12px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      z-index: 100;
+      opacity: 0;
+      transition: all 0.3s;
+      box-shadow: var(--shadow);
+      max-width: 90%;
+      text-align: center;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Bottom nav (mobile) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+      z-index: 50;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 10px;
+      transition: color 0.2s;
+    }
+    .nav-btn.active { color: var(--primary-hover); }
+    .nav-btn .emoji { font-size: 1.35rem; }
+
+    /* Progress ring */
+    .progress-ring {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+    .progress-ring svg {
+      transform: rotate(-90deg);
+    }
+    .progress-ring circle {
+      fill: none;
+      stroke-width: 8;
+    }
+    .progress-ring .bg { stroke: var(--surface2); }
+    .progress-ring .fg {
+      stroke: var(--primary);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.6s ease;
+    }
+    .progress-ring .center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .progress-ring .center .num {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    .progress-ring .center .lbl {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* Insight box */
+    .insight {
+      background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(165,180,252,0.08));
+      border: 1px solid rgba(99,102,241,0.3);
+      border-radius: 12px;
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1><span class="icon">🌙</span> SueñoPlus</h1>
+      <p>Mejora tus hábitos de sueño día a día</p>
+    </header>
+
+    <div class="tabs" id="topTabs">
+      <button class="tab active" data-panel="home">
+        <span class="emoji">🏠</span> Inicio
+      </button>
+      <button class="tab" data-panel="log">
+        <span class="emoji">📝</span> Bitácora
+      </button>
+      <button class="tab" data-panel="suggestions">
+        <span class="emoji">💡</span> Sugerencias
+      </button>
+      <button class="tab" data-panel="history">
+        <span class="emoji">📊</span> Historial
+      </button>
+      <button class="tab" data-panel="reminders">
+        <span class="emoji">⏰</span> Recordatorios
+      </button>
+    </div>
+
+    <main>
+      <!-- HOME -->
+      <section class="panel active" id="home">
+        <div class="card">
+          <div class="progress-ring" id="streakRing">
+            <svg width="120" height="120">
+              <circle class="bg" cx="60" cy="60" r="52"></circle>
+              <circle class="fg" cx="60" cy="60" r="52" 
+                stroke-dasharray="326.7" 
+                stroke-dashoffset="326.7"
+                id="streakCircle"></circle>
+            </svg>
+            <div class="center">
+              <div class="num" id="streakDays">0</div>
+              <div class="lbl">días racha</div>
+            </div>
+          </div>
+          <div class="stats">
+            <div class="stat">
+              <div class="value" id="avgScore">–</div>
+              <div class="label">Calidad media</div>
+            </div>
+            <div class="stat">
+              <div class="value" id="avgHours">–</div>
+              <div class="label">Horas media</div>
+            </div>
+            <div class="stat">
+              <div class="value" id="totalLogs">0</div>
+              <div class="label">Registros</div>
+            </div>
+          </div>
+          <div class="insight" id="homeInsight">
+            Empieza registrando tu sueño de anoche para recibir sugerencias personalizadas.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>🌙 Esta noche</h2>
+          <div id="tonightSuggestions"></div>
+          <button class="btn btn-primary" style="margin-top:12px" onclick="switchPanel('suggestions')">
+            Ver todas las sugerencias
+          </button>
+        </div>
+      </section>
+
+      <!-- LOG -->
+      <section class="panel" id="log">
+        <div class="card">
+          <h2>📝 Bitácora de sueño</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px">
+            Registra cómo dormiste anoche y cómo te sentiste.
+          </p>
+
+          <label>Fecha</label>
+          <input type="date" id="logDate">
+
+          <label>Horas dormidas</label>
+          <input type="number" id="logHours" min="0" max="16" step="0.5" placeholder="Ej: 7.5">
+
+          <label>Calidad del sueño (1-5)</label>
+          <div class="rating" id="qualityStars">
+            <span class="star" data-v="1">★</span>
+            <span class="star" data-v="2">★</span>
+            <span class="star" data-v="3">★</span>
+            <span class="star" data-v="4">★</span>
+            <span class="star" data-v="5">★</span>
+          </div>
+          <input type="hidden" id="logQuality" value="0">
+
+          <label>¿Seguiste las sugerencias de ayer?</label>
+          <select id="logFollowed">
+            <option value="yes">Sí, la mayoría</option>
+            <option value="partial">Algunas</option>
+            <option value="no">No</option>
+            <option value="none">No había sugerencias</option>
+          </select>
+
+          <label>¿Notaste mejora por las sugerencias?</label>
+          <select id="logResult">
+            <option value="better">Sí, dormí mejor</option>
+            <option value="same">Más o menos igual</option>
+            <option value="worse">Peor</option>
+            <option value="unknown">No estoy seguro</option>
+          </select>
+
+          <label>Notas (opcional)</label>
+          <textarea id="logNotes" placeholder="¿Qué te ayudó o te molestó? Café tarde, estrés, ejercicio..."></textarea>
+
+          <button class="btn btn-primary" onclick="saveLog()">
+            Guardar registro
+          </button>
+        </div>
+      </section>
+
+      <!-- SUGGESTIONS -->
+      <section class="panel" id="suggestions">
+        <div class="card">
+          <h2>💡 Sugerencias personalizadas</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:14px">
+            Basadas en tus registros. Márcalas cuando las completes.
+          </p>
+          <div id="suggestionsList"></div>
+          <button class="btn btn-secondary" style="margin-top:12px" onclick="generateSuggestions(true)">
+            🔄 Regenerar sugerencias
+          </button>
+        </div>
+
+        <div class="card">
+          <h2>📚 Biblioteca de hábitos</h2>
+          <div id="libraryList"></div>
+        </div>
+      </section>
+
+      <!-- HISTORY -->
+      <section class="panel" id="history">
+        <div class="card">
+          <h2>📊 Historial y resultados</h2>
+          <div id="historyList"></div>
+        </div>
+      </section>
+
+      <!-- REMINDERS -->
+      <section class="panel" id="reminders">
+        <div class="card">
+          <h2>⏰ Recordatorios</h2>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px">
+            Configura alertas para tu rutina nocturna. Activa las notificaciones del navegador para recibirlas.
+          </p>
+
+          <div class="reminder-row">
+            <div>
+              <strong>Hora de acostarse</strong>
+              <div style="font-size:0.85rem;color:var(--text-muted)">Recordatorio principal</div>
+            </div>
+            <input type="time" id="bedtime" style="width:auto;margin:0" value="22:30">
+          </div>
+
+          <div class="reminder-row">
+            <div>
+              <strong>Inicio de wind-down</strong>
+              <div style="font-size:0.85rem;color:var(--text-muted)">30-60 min antes</div>
+            </div>
+            <input type="time" id="winddown" style="width:auto;margin:0" value="21:45">
+          </div>
+
+          <div class="reminder-row">
+            <div>
+              <strong>Corte de cafeína</strong>
+              <div style="font-size:0.85rem;color:var(--text-muted)">Última taza recomendada</div>
+            </div>
+            <input type="time" id="caffeine" style="width:auto;margin:0" value="14:00">
+          </div>
+
+          <div class="reminder-row">
+            <div>
+              <strong>Activar notificaciones</strong>
+            </div>
+            <div class="toggle" id="notifToggle" onclick="toggleNotifications()"></div>
+          </div>
+
+          <button class="btn btn-primary" style="margin-top:18px" onclick="saveReminders()">
+            Guardar recordatorios
+          </button>
+          <button class="btn btn-secondary" style="margin-top:10px" onclick="testNotification()">
+            Probar notificación
+          </button>
+        </div>
+
+        <div class="card">
+          <h2>🎯 Metas diarias</h2>
+          <label>Horas objetivo de sueño</label>
+          <input type="number" id="goalHours" min="5" max="12" step="0.5" value="8">
+          <button class="btn btn-secondary" onclick="saveGoal()">Guardar meta</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===================== DATA =====================
+    const STORAGE_KEY = 'suenoplus_v1';
+
+    const defaultLibrary = [
+      { id: 'no_screens', text: 'Sin pantallas 60 min antes de dormir', tag: 'Higiene digital', category: 'evening' },
+      { id: 'cool_room', text: 'Mantén la habitación fresca (18-20°C)', tag: 'Ambiente', category: 'evening' },
+      { id: 'caffeine_cut', text: 'Sin cafeína después de las 14:00', tag: 'Nutrición', category: 'day' },
+      { id: 'consistent', text: 'Acuéstate y levántate a la misma hora', tag: 'Rutina', category: 'core' },
+      { id: 'dim_lights', text: 'Baja las luces 1 hora antes', tag: 'Ambiente', category: 'evening' },
+      { id: 'no_alcohol', text: 'Evita alcohol cerca de la hora de dormir', tag: 'Nutrición', category: 'evening' },
+      { id: 'exercise', text: 'Haz ejercicio moderado (no muy tarde)', tag: 'Actividad', category: 'day' },
+      { id: 'journal', text: 'Escribe 3 cosas por las que estés agradecido', tag: 'Mente', category: 'evening' },
+      { id: 'breathing', text: '5 minutos de respiración 4-7-8', tag: 'Relajación', category: 'evening' },
+      { id: 'no_naps', text: 'Evita siestas largas después de las 15:00', tag: 'Rutina', category: 'day' },
+      { id: 'heavy_meals', text: 'Cena ligera al menos 2-3 h antes', tag: 'Nutrición', category: 'evening' },
+      { id: 'reading', text: 'Lee un libro en papel en vez de pantallas', tag: 'Higiene digital', category: 'evening' },
+    ];
+
+    let state = {
+      logs: [],
+      suggestions: [],
+      completedToday: [],
+      reminders: {
+        bedtime: '22:30',
+        winddown: '21:45',
+        caffeine: '14:00',
+        notifications: false
+      },
+      goalHours: 8,
+      lastSuggestionDate: null
+    };
+
+    // ===================== INIT =====================
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          state = { ...state, ...parsed };
+        }
+      } catch (e) { console.warn(e); }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function init() {
+      loadState();
+      // Set today's date
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('logDate').value = today;
+
+      // Load reminder times
+      document.getElementById('bedtime').value = state.reminders.bedtime || '22:30';
+      document.getElementById('winddown').value = state.reminders.winddown || '21:45';
+      document.getElementById('caffeine').value = state.reminders.caffeine || '14:00';
+      document.getElementById('goalHours').value = state.goalHours || 8;
+      if (state.reminders.notifications) {
+        document.getElementById('notifToggle').classList.add('on');
+      }
+
+      // Stars
+      document.querySelectorAll('#qualityStars .star').forEach(star => {
+        star.addEventListener('click', () => {
+          const v = parseInt(star.dataset.v);
+          document.getElementById('logQuality').value = v;
+          document.querySelectorAll('#qualityStars .star').forEach(s => {
+            s.classList.toggle('active', parseInt(s.dataset.v) <= v);
+          });
+        });
+      });
+
+      // Tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => switchPanel(tab.dataset.panel));
+      });
+
+      generateSuggestions();
+      renderAll();
+      scheduleReminders();
+    }
+
+    // ===================== NAV =====================
+    function switchPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.getElementById(name).classList.add('active');
+      document.querySelector(`.tab[data-panel="${name}"]`).classList.add('active');
+      if (name === 'history') renderHistory();
+      if (name === 'suggestions') renderSuggestions();
+      if (name === 'home') renderHome();
+    }
+
+    // ===================== SUGGESTIONS =====================
+    function generateSuggestions(force = false) {
+      const today = new Date().toISOString().slice(0, 10);
+      if (!force && state.lastSuggestionDate === today && state.suggestions.length > 0) {
+        return;
+      }
+
+      // Analyze recent logs
+      const recent = state.logs.slice(0, 7);
+      let picks = [];
+
+      // Core always
+      picks.push(defaultLibrary.find(s => s.id === 'consistent'));
+
+      // Based on quality
+      const avgQuality = recent.length
+        ? recent.reduce((a, l) => a + (l.quality || 0), 0) / recent.length
+        : 3;
+
+      if (avgQuality < 3.5 || recent.length === 0) {
+        picks.push(defaultLibrary.find(s => s.id === 'no_screens'));
+        picks.push(defaultLibrary.find(s => s.id === 'dim_lights'));
+        picks.push(defaultLibrary.find(s => s.id === 'breathing'));
+      } else {
+        picks.push(defaultLibrary.find(s => s.id === 'reading'));
+        picks.push(defaultLibrary.find(s => s.id === 'journal'));
+      }
+
+      // Hours
+      const avgHours = recent.length
+        ? recent.reduce((a, l) => a + (l.hours || 0), 0) / recent.length
+        : 7;
+      if (avgHours < state.goalHours - 0.5) {
+        picks.push(defaultLibrary.find(s => s.id === 'no_naps'));
+        picks.push(defaultLibrary.find(s => s.id === 'caffeine_cut'));
+      }
+
+      // Always some environment
+      if (!picks.find(p => p.id === 'cool_room')) {
+        picks.push(defaultLibrary.find(s => s.id === 'cool_room'));
+      }
+
+      // Dedup and limit
+      const unique = [];
+      const seen = new Set();
+      for (const p of picks) {
+        if (p && !seen.has(p.id)) {
+          seen.add(p.id);
+          unique.push({ ...p, done: false });
+        }
+      }
+
+      // Fill up to 5
+      for (const item of defaultLibrary) {
+        if (unique.length >= 5) break;
+        if (!seen.has(item.id)) {
+          seen.add(item.id);
+          unique.push({ ...item, done: false });
+        }
+      }
+
+      state.suggestions = unique.slice(0, 5);
+      state.completedToday = [];
+      state.lastSuggestionDate = today;
+      saveState();
+      renderSuggestions();
+      renderHome();
+    }
+
+    function toggleSuggestion(id) {
+      const s = state.suggestions.find(x => x.id === id);
+      if (s) {
+        s.done = !s.done;
+        if (s.done) {
+          if (!state.completedToday.includes(id)) state.completedToday.push(id);
+        } else {
+          state.completedToday = state.completedToday.filter(x => x !== id);
+        }
+        saveState();
+        renderSuggestions();
+        renderHome();
+        showToast(s.done ? '¡Sugerencia completada! 🌟' : 'Marcada como pendiente');
+      }
+    }
+
+    function renderSuggestions() {
+      const list = document.getElementById('suggestionsList');
+      if (!state.suggestions.length) {
+        list.innerHTML = '<div class="empty"><div class="emoji">💡</div>No hay sugerencias aún.</div>';
+        return;
+      }
+      list.innerHTML = state.suggestions.map(s => `
+        <div class="suggestion ${s.done ? 'done' : ''}" onclick="toggleSuggestion('${s.id}')">
+          <div class="check"></div>
+          <div>
+            <div class="text">${s.text}</div>
+            <span class="tag">${s.tag}</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Library
+      const lib = document.getElementById('libraryList');
+      lib.innerHTML = defaultLibrary.map(s => `
+        <div class="suggestion" style="border-left-color: var(--border); cursor:default">
+          <div style="flex:1">
+            <div class="text">${s.text}</div>
+            <span class="tag">${s.tag}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ===================== LOG =====================
+    function saveLog() {
+      const date = document.getElementById('logDate').value;
+      const hours = parseFloat(document.getElementById('logHours').value);
+      const quality = parseInt(document.getElementById('logQuality').value);
+      const followed = document.getElementById('logFollowed').value;
+      const result = document.getElementById('logResult').value;
+      const notes = document.getElementById('logNotes').value.trim();
+
+      if (!date) return showToast('Elige una fecha');
+      if (isNaN(hours) || hours < 0) return showToast('Indica las horas dormidas');
+      if (!quality) return showToast('Selecciona la calidad del sueño');
+
+      // Remove existing log for same date
+      state.logs = state.logs.filter(l => l.date !== date);
+
+      state.logs.unshift({
+        date,
+        hours,
+        quality,
+        followed,
+        result,
+        notes,
+        suggestionsDone: [...state.completedToday],
+        createdAt: new Date().toISOString()
+      });
+
+      // Keep last 90
+      state.logs = state.logs.slice(0, 90);
+      saveState();
+
+      // Reset form a bit
+      document.getElementById('logNotes').value = '';
+      document.getElementById('logQuality').value = 0;
+      document.querySelectorAll('#qualityStars .star').forEach(s => s.classList.remove('active'));
+
+      showToast('¡Registro guardado! 💤');
+      generateSuggestions(true);
+      renderHome();
+      switchPanel('home');
+    }
+
+    // ===================== HOME =====================
+    function renderHome() {
+      const logs = state.logs;
+      document.getElementById('totalLogs').textContent = logs.length;
+
+      if (logs.length) {
+        const avgQ = (logs.reduce((a, l) => a + l.quality, 0) / logs.length).toFixed(1);
+        const avgH = (logs.reduce((a, l) => a + l.hours, 0) / logs.length).toFixed(1);
+        document.getElementById('avgScore').textContent = avgQ;
+        document.getElementById('avgHours').textContent = avgH + 'h';
+      } else {
+        document.getElementById('avgScore').textContent = '–';
+        document.getElementById('avgHours').textContent = '–';
+      }
+
+      // Streak
+      let streak = 0;
+      const today = new Date();
+      for (let i = 0; i < 60; i++) {
+        const d = new Date(today);
+        d.setDate(d.getDate() - i);
+        const key = d.toISOString().slice(0, 10);
+        if (logs.some(l => l.date === key)) streak++;
+        else if (i > 0) break;
+      }
+      document.getElementById('streakDays').textContent = streak;
+
+      // Ring
+      const maxStreakVisual = 14;
+      const pct = Math.min(streak / maxStreakVisual, 1);
+      const circumference = 2 * Math.PI * 52;
+      document.getElementById('streakCircle').style.strokeDashoffset = circumference * (1 - pct);
+
+      // Insight
+      const insightEl = document.getElementById('homeInsight');
+      if (logs.length === 0) {
+        insightEl.textContent = 'Empieza registrando tu sueño de anoche para recibir sugerencias personalizadas.';
+      } else {
+        const last = logs[0];
+        const followedWell = last.followed === 'yes';
+        const better = last.result === 'better';
+        if (followedWell && better) {
+          insightEl.innerHTML = '🔥 ¡Las sugerencias están funcionando! Sigue así. Tu última calidad fue <strong>' + last.quality + '/5</strong>.';
+        } else if (last.quality <= 2) {
+          insightEl.innerHTML = '😴 Noche difícil. Prueba reforzar: sin pantallas y respiración 4-7-8 esta noche.';
+        } else if (last.hours < state.goalHours - 1) {
+          insightEl.innerHTML = '⏱️ Dormiste menos de tu meta. Revisa tu hora de acostarte y el corte de cafeína.';
+        } else {
+          insightEl.innerHTML = 'Buen progreso. Tienes <strong>' + streak + '</strong> días de racha. ¡Mantén la constancia!';
+        }
+      }
+
+      // Tonight suggestions preview
+      const tonight = document.getElementById('tonightSuggestions');
+      const evening = state.suggestions.filter(s => s.category === 'evening' || s.category === 'core').slice(0, 3);
+      if (evening.length) {
+        tonight.innerHTML = evening.map(s => `
+          <div class="suggestion ${s.done ? 'done' : ''}" onclick="toggleSuggestion('${s.id}')">
+            <div class="check"></div>
+            <div class="text">${s.text}</div>
+          </div>
+        `).join('');
+      } else {
+        tonight.innerHTML = '<p style="color:var(--text-muted);font-size:0.9rem">Genera sugerencias en la pestaña correspondiente.</p>';
+      }
+    }
+
+    // ===================== HISTORY =====================
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      if (!state.logs.length) {
+        list.innerHTML = '<div class="empty"><div class="emoji">📊</div>Aún no hay registros.<br>¡Empieza hoy!</div>';
+        return;
+      }
+
+      list.innerHTML = state.logs.map(l => {
+        const scoreClass = l.quality >= 4 ? 'good' : l.quality >= 3 ? 'mid' : 'bad';
+        const resultMap = {
+          better: '✅ Mejoró',
+          same: '➡️ Igual',
+          worse: '❌ Peor',
+          unknown: '❓'
+        };
+        const followedMap = {
+          yes: 'Siguió sugerencias',
+          partial: 'Parcial',
+          no: 'No siguió',
+          none: 'Sin sugerencias'
+        };
+        return `
+          <div class="history-item">
+            <div>
+              <div class="date">${formatDate(l.date)}</div>
+              <div class="meta">${l.hours}h · ${followedMap[l.followed] || ''} · ${resultMap[l.result] || ''}</div>
+              ${l.notes ? `<div class="meta" style="margin-top:4px">“${l.notes.slice(0,60)}${l.notes.length>60?'…':''}”</div>` : ''}
+            </div>
+            <div class="score ${scoreClass}">${l.quality}/5</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function formatDate(iso) {
+      const d = new Date(iso + 'T12:00:00');
+      return d.toLocaleDateString('es', { weekday: 'short', day: 'numeric', month: 'short' });
+    }
+
+    // ===================== REMINDERS =====================
+    function saveReminders() {
+      state.reminders.bedtime = document.getElementById('bedtime').value;
+      state.reminders.winddown = document.getElementById('winddown').value;
+      state.reminders.caffeine = document.getElementById('caffeine').value;
+      saveState();
+      scheduleReminders();
+      showToast('Recordatorios guardados ⏰');
+    }
+
+    function saveGoal() {
+      state.goalHours = parseFloat(document.getElementById('goalHours').value) || 8;
+      saveState();
+      showToast('Meta actualizada');
+    }
+
+    async function toggleNotifications() {
+      const toggle = document.getElementById('notifToggle');
+      if (!state.reminders.notifications) {
+        if (!('Notification' in window)) {
+          showToast('Tu navegador no soporta notificaciones');
+          return;
+        }
+        const perm = await Notification.requestPermission();
+        if (perm !== 'granted') {
+          showToast('Permiso denegado. Actívalo en ajustes del navegador.');
+          return;
+        }
+        state.reminders.notifications = true;
+        toggle.classList.add('on');
+        showToast('Notificaciones activadas');
+      } else {
+        state.reminders.notifications = false;
+        toggle.classList.remove('on');
+        showToast('Notificaciones desactivadas');
+      }
+      saveState();
+    }
+
+    function testNotification() {
+      if (Notification.permission === 'granted') {
+        new Notification('SueñoPlus 🌙', {
+          body: '¡Hora de empezar tu rutina de wind-down! Baja las luces y deja las pantallas.',
+          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌙</text></svg>'
+        });
+      } else {
+        showToast('Primero activa las notificaciones');
+      }
+    }
+
+    let reminderTimers = [];
+    function scheduleReminders() {
+      // Clear previous
+      reminderTimers.forEach(clearTimeout);
+      reminderTimers = [];
+
+      if (!state.reminders.notifications || Notification.permission !== 'granted') return;
+
+      const now = new Date();
+      const schedule = (timeStr, title, body) => {
+        const [h, m] = timeStr.split(':').map(Number);
+        const target = new Date();
+        target.setHours(h, m, 0, 0);
+        if (target <= now) target.setDate(target.getDate() + 1);
+        const delay = target - now;
+        const id = setTimeout(() => {
+          new Notification(title, { body, icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">🌙</text></svg>' });
+          // Reschedule for next day
+          scheduleReminders();
+        }, delay);
+        reminderTimers.push(id);
+      };
+
+      schedule(state.reminders.winddown, 'SueñoPlus – Wind-down 🌙', 'Empieza a bajar las luces y deja las pantallas. Tu cuerpo te lo agradecerá.');
+      schedule(state.reminders.bedtime, 'SueñoPlus – Hora de dormir 💤', 'Es momento de acostarte. ¡Que descanses muy bien!');
+      schedule(state.reminders.caffeine, 'SueñoPlus – Corte de cafeína ☕', 'A partir de ahora, mejor evita cafeína para no afectar tu sueño.');
+    }
+
+    // ===================== UTILS =====================
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function renderAll() {
+      renderHome();
+      renderSuggestions();
+      renderHistory();
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
