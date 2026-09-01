@@ -1880,4 +1880,4 @@ def export_companies_csv(_: bool = Depends(require_basic_auth)):
         )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
-Servir SueñoPlus en sueno.healthyrecord.org
+
