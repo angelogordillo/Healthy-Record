@@ -4,841 +4,345 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Healthy Record | Bienestar integral para empresas</title>
+  <meta name="description" content="Healthy Record integra prevención, acompañamiento y seguimiento para sostener energía, foco y bienestar en tu empresa." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" />
   <style>
-    @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&display=swap");
-
     :root {
-      --bg: #F7F9FB;
-      --ink: #0B1829;
-      --muted: #566370;
-      --brand: #00C98D;
-      --brand-dark: #009E6F;
-      --blue: #06038D;
-      --blue-mid: #0805c4;
-      --blue-light: #EEF0FF;
-      --card: #FFFFFF;
-      --border: rgba(11, 24, 41, 0.09);
-      --shadow-sm: 0 1px 3px rgba(11,24,41,0.07), 0 1px 2px rgba(11,24,41,0.05);
-      --shadow-md: 0 4px 20px rgba(11,24,41,0.09), 0 2px 6px rgba(11,24,41,0.05);
-      --shadow-lg: 0 12px 40px rgba(11,24,41,0.12), 0 4px 12px rgba(11,24,41,0.06);
-      --radius: 16px;
-      --radius-sm: 10px;
-      --radius-pill: 999px;
+      --ink: #111111;
+      --muted: #555555;
+      --soft: #8a8a8a;
+      --line: #e6e6e6;
+      --green: #007a56;
+      --green-bg: #e9f7f1;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
 
     body {
-      font-family: "Inter", system-ui, sans-serif;
+      background: #ffffff;
       color: var(--ink);
-      background: var(--bg);
+      font-family: "Inter", system-ui, sans-serif;
+      font-size: 17px;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── NAV ── */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(247, 249, 251, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
+    a { color: var(--ink); }
 
-    .nav-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 24px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
 
-    .nav-logo img { height: 34px; display: block; }
+    /* Header */
+    header { position: sticky; top: 0; z-index: 10; background: rgba(255,255,255,0.94); border-bottom: 1px solid var(--line); backdrop-filter: blur(8px); }
+    .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+    .logo img { height: 36px; width: auto; display: block; }
+    .top nav { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+    .top nav a { font-size: 15px; color: var(--muted); text-decoration: none; padding: 10px 12px; }
+    .top nav a:hover { color: var(--ink); }
+    .top nav a.nav-cta { color: #ffffff; background: var(--ink); border-radius: 999px; padding: 10px 18px; margin-left: 8px; }
+    .top nav a.nav-cta:hover { opacity: 0.8; color: #ffffff; }
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 8px 14px;
-      border-radius: var(--radius-sm);
-      transition: color .15s, background .15s;
-    }
-
-    .nav-links a:hover { color: var(--ink); background: rgba(11,24,41,0.05); }
-
-    .nav-cta {
-      background: var(--blue) !important;
-      color: #fff !important;
-      border-radius: var(--radius-pill) !important;
-      font-weight: 600 !important;
-      padding: 9px 18px !important;
-      transition: background .15s !important;
-    }
-
-    .nav-cta:hover { background: var(--blue-mid) !important; }
-
-    /* ── BUTTONS ── */
+    /* Buttons */
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border: none;
-      border-radius: var(--radius-pill);
-      padding: 12px 22px;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      font-family: inherit;
-      transition: transform .15s, box-shadow .15s, background .15s;
+      display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px;
+      border-radius: 999px; font: inherit; font-size: 15px; font-weight: 500; text-decoration: none;
+      border: 1px solid var(--ink); cursor: pointer; transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.7; }
+    .btn-dark { background: var(--ink); color: #ffffff; }
+    .btn-light { background: transparent; color: var(--ink); }
+
+    /* Hero */
+    .hero { padding: 112px 0 96px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 28px; }
+    .eyebrow { font-size: 13px; letter-spacing: 0.28em; padding-left: 0.28em; text-transform: uppercase; color: var(--muted); }
+    h1 { font-size: clamp(42px, 7vw, 80px); font-weight: 300; line-height: 1.04; letter-spacing: -0.025em; max-width: 16ch; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 58ch; }
+    .hero .actions { justify-content: center; padding-top: 8px; }
+
+    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; max-width: 760px; margin-top: 40px; border-top: 1px solid var(--line); }
+    .stat { padding: 28px 16px 0; display: flex; flex-direction: column; gap: 6px; }
+    .stat + .stat { border-left: 1px solid var(--line); }
+    .stat strong { font-size: 32px; font-weight: 300; letter-spacing: -0.01em; }
+    .stat span { font-size: 15px; color: var(--muted); }
+    @media (max-width: 600px) {
+      .stats { grid-template-columns: 1fr; }
+      .stat + .stat { border-left: 0; border-top: 1px solid var(--line); }
+      .stat { padding: 20px 0; }
     }
 
-    .btn:hover { transform: translateY(-1px); }
+    /* Sections */
+    section { border-top: 1px solid var(--line); padding: 96px 0; }
+    .label { font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+    h2 { font-size: clamp(30px, 4vw, 46px); font-weight: 300; line-height: 1.15; letter-spacing: -0.015em; max-width: 22ch; margin-bottom: 16px; }
+    .intro { color: var(--muted); max-width: 60ch; margin-bottom: 56px; }
 
-    .btn-primary {
-      background: var(--blue);
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(6,3,141,.28);
-    }
+    .ico { width: 40px; height: 40px; color: var(--ink); }
 
-    .btn-primary:hover {
-      background: var(--blue-mid);
-      box-shadow: 0 6px 20px rgba(6,3,141,.36);
-    }
+    .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 48px; }
+    .item { display: flex; flex-direction: column; gap: 12px; }
+    .item h3 { font-size: 20px; font-weight: 500; }
+    .item p { color: var(--muted); }
 
-    .btn-brand {
-      background: linear-gradient(130deg, var(--brand), var(--brand-dark));
-      color: #fff;
-      box-shadow: 0 4px 14px rgba(0,201,141,.28);
-    }
-
-    .btn-brand:hover { box-shadow: 0 6px 20px rgba(0,201,141,.38); }
-
-    .btn-ghost {
-      background: var(--card);
-      color: var(--ink);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-ghost:hover { background: #f0f2f5; }
-
-    .btn-sm { padding: 9px 16px; font-size: 13px; }
-
-    /* ── HERO ── */
-    .hero-wrap {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 80px 24px 72px;
-      display: grid;
-      grid-template-columns: 1fr 420px;
-      align-items: center;
-      gap: 72px;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0, 201, 141, 0.12);
-      color: #007A56;
-      border-radius: var(--radius-pill);
-      padding: 5px 13px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-      margin-bottom: 22px;
-    }
-
-    .hero-tag::before {
-      content: '';
-      display: block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--brand);
-    }
-
-    h1 {
-      font-family: "Bricolage Grotesque", system-ui, sans-serif;
-      font-size: clamp(38px, 4.2vw, 56px);
-      font-weight: 800;
-      line-height: 1.05;
-      letter-spacing: -.025em;
-      color: var(--ink);
-      margin-bottom: 20px;
-    }
-
-    h1 em {
-      font-style: normal;
-      color: var(--blue);
-    }
-
-    .hero-sub {
-      font-size: 17px;
-      color: var(--muted);
-      max-width: 52ch;
-      line-height: 1.7;
-      margin-bottom: 34px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-bottom: 52px;
-    }
-
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-    }
-
-    .stat {
-      background: var(--card);
-      padding: 18px 16px;
-      text-align: center;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--blue);
-      letter-spacing: -.02em;
-      margin-bottom: 4px;
-    }
-
-    .stat span { font-size: 12px; color: var(--muted); line-height: 1.35; }
-
-    /* Hero panel */
-    .hero-panel {
-      background: linear-gradient(145deg, #EEF0FF 0%, #E4F9F1 100%);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 32px 28px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-panel::after {
-      content: '';
-      position: absolute;
-      bottom: -70px; left: -70px;
-      width: 220px; height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(6,3,141,.10) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .panel-logo { width: 110px; margin-bottom: 28px; }
-
-    .panel-feat {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 14px 16px;
-      background: rgba(255,255,255,0.72);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: var(--radius-sm);
-      margin-bottom: 10px;
-      backdrop-filter: blur(4px);
-    }
-
-    .panel-feat:last-child { margin-bottom: 0; }
-
-    .feat-ico {
-      width: 38px; height: 38px;
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
-    }
-
-    .ico-g { background: rgba(0,201,141,.16); }
-    .ico-b { background: var(--blue-light); }
-    .ico-a { background: rgba(255,169,31,.14); }
-
-    .panel-feat strong { display: block; font-size: 13px; font-weight: 700; color: var(--ink); }
-    .panel-feat p { font-size: 12px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
-
-    /* ── SECTIONS ── */
-    .section {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 72px 24px;
-    }
-
-    .sh { margin-bottom: 44px; }
-
-    .eyebrow {
-      font-size: 12px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .07em;
-      color: var(--brand-dark);
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-family: "Bricolage Grotesque", system-ui, sans-serif;
-      font-size: clamp(28px, 3.5vw, 42px);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -.025em;
-      color: var(--ink);
-      margin-bottom: 12px;
-    }
-
-    .lead { font-size: 17px; color: var(--muted); max-width: 56ch; line-height: 1.65; }
-
-    /* ── VALUE GRID ── */
-    .value-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .v-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow .2s, transform .2s;
-    }
-
-    .v-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
-
-    .v-icon {
-      width: 48px; height: 48px;
-      border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px;
-      margin-bottom: 18px;
-    }
-
-    .v-card h3 { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-    .v-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
-
-    /* ── MODULES ── */
-    .bg-soft { background: #EEF1F5; }
-
-    .section-soft {
-      padding: 72px 24px;
-    }
-
-    .section-soft-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-    }
-
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-top: 44px;
-    }
-
+    /* Modules */
+    .modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
     .mod {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      box-shadow: var(--shadow-sm);
-      transition: box-shadow .2s, transform .2s;
+      display: flex; flex-direction: column; gap: 12px; padding: 32px 28px;
+      border-right: 1px solid var(--line); border-bottom: 1px solid var(--line);
+      color: var(--ink); text-decoration: none; transition: background 0.15s;
     }
+    .mod:hover { background: #fafafa; }
+    .tag { align-self: flex-start; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--green); background: var(--green-bg); padding: 4px 10px; border-radius: 999px; }
+    .tag.neutral { color: var(--muted); background: #f2f2f2; }
+    .mod h3 { font-size: 19px; font-weight: 500; line-height: 1.3; }
+    .mod p { color: var(--muted); font-size: 15px; flex: 1; }
+    .mod .go { font-size: 15px; font-weight: 500; }
+    .mod:hover .go { text-decoration: underline; text-underline-offset: 4px; }
 
-    .mod:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    /* Testimonial */
+    .testi { display: flex; justify-content: center; }
+    .testi img { width: 100%; max-width: 760px; height: auto; display: block; border: 1px solid var(--line); }
 
-    .mod.featured {
-      background: linear-gradient(145deg, #EEEFFE, #E6FBF3);
-      border-color: rgba(6,3,141,.15);
-    }
-
-    .mod-icon { font-size: 26px; }
-
-    .tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: var(--radius-pill);
-      background: var(--blue-light);
-      color: var(--blue);
-      width: fit-content;
-    }
-
-    .tag.g { background: rgba(0,201,141,.12); color: #007A56; }
-
-    .mod h3 { font-size: 15px; font-weight: 700; color: var(--ink); flex: 1; }
-    .mod p { font-size: 13px; color: var(--muted); line-height: 1.55; flex: 1; }
-
-    /* ── TESTIMONIAL ── */
-    .testi-section {
-      background: linear-gradient(150deg, var(--blue) 0%, #0C11A8 100%);
-      padding: 88px 24px;
-    }
-
-    .testi-inner {
-      max-width: 760px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .testi-inner .eyebrow { color: rgba(255,255,255,.55); }
-
-    .testi-inner h2 {
-      color: #fff;
-      margin-bottom: 44px;
-    }
-
-    .testi-card {
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 20px;
-      overflow: hidden;
-      padding: 16px;
-    }
-
-    .testi-card img {
-      width: 100%;
-      max-width: 540px;
-      display: block;
-      margin: 0 auto;
-      border-radius: 12px;
-    }
-
-    /* ── NEWS ── */
-    .news-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .news-head {
-      background: linear-gradient(135deg, #F0F3F7, #E8FBF4);
-      border-bottom: 1px solid var(--border);
-      padding: 28px 28px 24px;
-    }
-
-    .news-tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      color: var(--brand-dark);
-      background: rgba(0,201,141,.12);
-      padding: 4px 10px;
-      border-radius: var(--radius-pill);
-      margin-bottom: 14px;
-    }
-
-    .news-head h3 { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; line-height: 1.3; }
-    .news-head p { font-size: 14px; color: var(--muted); line-height: 1.65; }
-
-    .news-body { padding: 28px; }
-
-    .embed {
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      margin-bottom: 16px;
-      aspect-ratio: 16/9;
-      position: relative;
-    }
-
+    /* News */
+    .news { display: flex; flex-wrap: wrap; gap: 48px; align-items: flex-start; }
+    .news-text { flex: 1 1 300px; display: flex; flex-direction: column; gap: 16px; }
+    .news-text h3 { font-size: 26px; font-weight: 300; line-height: 1.25; }
+    .news-text p { color: var(--muted); }
+    .news-media { flex: 999 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+    .embed { position: relative; width: 100%; aspect-ratio: 16 / 9; background: #f2f2f2; }
     .embed iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .spotify iframe { width: 100%; height: 152px; border: 0; border-radius: 12px; display: block; }
 
-    .spotify {
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      margin-bottom: 20px;
-    }
-
-    .spotify iframe { display: block; width: 100%; height: 352px; border: 0; }
-
-    .row { display: flex; flex-wrap: wrap; gap: 10px; }
-
-    /* ── CONTACT ── */
-    .contact-wrap {
-      background: #0B1829;
-      padding: 88px 24px;
-    }
-
-    .contact-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .c-info .eyebrow { color: var(--brand); }
-
-    .c-info h2 { color: #fff; margin-bottom: 16px; }
-
-    .c-info p { font-size: 16px; color: rgba(255,255,255,.6); line-height: 1.65; margin-bottom: 32px; }
-
-    .c-detail {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 14px;
-      color: rgba(255,255,255,.6);
-    }
-
-    .c-detail a { color: var(--brand); text-decoration: none; font-weight: 600; }
-
-    .c-form {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.11);
-      border-radius: 20px;
-      padding: 32px;
-    }
-
-    .c-form h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-    .c-form > p { font-size: 14px; color: rgba(255,255,255,.5); margin-bottom: 26px; }
-
-    .fg {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
+    /* Contact */
+    .contact { display: flex; flex-wrap: wrap; gap: 64px; align-items: flex-start; }
+    .contact-info { flex: 1 1 300px; display: flex; flex-direction: column; gap: 20px; }
+    .contact-info p { color: var(--muted); }
+    .mail { font-size: 18px; }
+    form { flex: 999 1 460px; min-width: 0; }
+    .fg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
     .fg-full { grid-column: 1 / -1; }
-
-    label {
-      font-size: 11px;
-      font-weight: 700;
-      color: rgba(255,255,255,.5);
-      text-transform: uppercase;
-      letter-spacing: .05em;
-      display: grid;
-      gap: 6px;
-    }
-
+    @media (max-width: 600px) { .fg { grid-template-columns: 1fr; } }
+    label { display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: var(--muted); }
     input, select {
-      border: 1px solid rgba(255,255,255,.14);
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 14px;
-      font-family: inherit;
-      background: rgba(255,255,255,.07);
-      color: #fff;
-      transition: border-color .15s;
+      width: 100%; min-height: 48px; padding: 0 16px; font: inherit; font-size: 16px; color: var(--ink);
+      background: #ffffff; border: 1px solid #d6d6d6; border-radius: 8px; appearance: none;
     }
+    select { background-image: linear-gradient(45deg, transparent 50%, #555 50%), linear-gradient(135deg, #555 50%, transparent 50%); background-position: calc(100% - 20px) 21px, calc(100% - 15px) 21px; background-size: 5px 5px; background-repeat: no-repeat; }
+    input:focus, select:focus { outline: none; border-color: var(--ink); }
+    .submit { margin-top: 28px; width: 100%; }
+    .form-status { margin-top: 14px; font-size: 15px; color: var(--muted); min-height: 1.5em; }
 
-    input::placeholder { color: rgba(255,255,255,.28); }
-
-    input:focus, select:focus { outline: none; border-color: var(--brand); }
-
-    select option { background: #1a2840; color: #fff; }
-
-    .form-status { font-size: 13px; color: rgba(255,255,255,.55); margin-top: 12px; min-height: 18px; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: #060E1A;
-      padding: 36px 24px;
-    }
-
-    .footer-inner {
-      max-width: 1140px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .footer-inner img { height: 26px; opacity: .6; }
-
-    .footer-r { font-size: 13px; color: rgba(255,255,255,.38); text-align: right; }
-    .footer-r a { color: rgba(255,255,255,.45); text-decoration: none; }
-    .footer-r a:hover { color: var(--brand); }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 960px) {
-      .hero-wrap { grid-template-columns: 1fr; gap: 48px; padding: 52px 20px 44px; }
-      .hero-panel { display: none; }
-      .value-grid { grid-template-columns: 1fr; }
-      .modules-grid { grid-template-columns: repeat(2, 1fr); }
-      .contact-inner { grid-template-columns: 1fr; gap: 44px; }
-    }
-
-    @media (max-width: 640px) {
-      .nav-links { display: none; }
-      .modules-grid { grid-template-columns: 1fr; }
-      .hero-stats { grid-template-columns: 1fr; gap: 1px; }
-      .fg { grid-template-columns: 1fr; }
-      .fg-full { grid-column: 1; }
-      .footer-inner { flex-direction: column; text-align: center; }
-      .footer-r { text-align: center; }
-    }
+    footer { border-top: 1px solid var(--line); padding: 40px 0; }
+    footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; font-size: 14px; color: var(--muted); }
+    footer img { height: 28px; width: auto; display: block; }
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--ink); }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav>
-    <div class="nav-inner">
-      <a class="nav-logo" href="#inicio">
-        <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
-      </a>
-      <ul class="nav-links">
-        <li><a href="#programa">Programa</a></li>
-        <li><a href="#modulos">Módulos</a></li>
-        <li><a href="#news">News</a></li>
-        <li><a href="#inscribirse" class="nav-cta">Solicitar información</a></li>
-      </ul>
+  <header>
+    <div class="wrap top">
+      <a class="logo" href="#inicio"><img src="/static/healthy-record-logo.png" alt="Healthy Record" /></a>
+      <nav aria-label="Principal">
+        <a href="#programa">Programa</a>
+        <a href="#modulos">Módulos</a>
+        <a href="#news">News</a>
+        <a class="nav-cta" href="#inscribirse">Solicitar información</a>
+      </nav>
     </div>
-  </nav>
+  </header>
 
-  <!-- HERO -->
-  <section id="inicio">
-    <div class="hero-wrap">
-      <div>
-        <span class="hero-tag">Programa de bienestar para empresas</span>
-        <h1>Equipos más sanos,<br /><em>empresas más productivas.</em></h1>
-        <p class="hero-sub">Healthy Record integra prevención, acompañamiento y seguimiento para sostener energía, foco y bienestar en la operación diaria, reduciendo riesgos que impactan desempeño y permanencia del talento.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#inscribirse">Solicitar información</a>
-          <a class="btn btn-ghost" href="#modulos">Ver módulos</a>
-        </div>
-        <div class="hero-stats">
-          <div class="stat">
-            <strong>+Prod.</strong>
-            <span>Mejor energía y foco diario</span>
-          </div>
-          <div class="stat">
-            <strong>+Ret.</strong>
-            <span>Mayor compromiso del talento</span>
-          </div>
-          <div class="stat">
-            <strong>−Aus.</strong>
-            <span>Intervención temprana al estrés</span>
-          </div>
-        </div>
+  <main>
+    <!-- HERO -->
+    <div class="wrap hero" id="inicio">
+      <p class="eyebrow">Programa de bienestar para empresas</p>
+      <h1>Equipos más sanos, empresas más productivas.</h1>
+      <p class="lead">Healthy Record integra prevención, acompañamiento y seguimiento para sostener energía, foco y bienestar en la operación diaria, reduciendo riesgos que impactan desempeño y permanencia del talento.</p>
+      <div class="actions">
+        <a class="btn btn-dark" href="#inscribirse">Solicitar información</a>
+        <a class="btn btn-light" href="#modulos">Ver módulos</a>
       </div>
-      <div class="hero-panel" aria-hidden="true">
-        <img class="panel-logo" src="/static/healthy-record-logo.png" alt="" />
-        <div class="panel-feat">
-          <div class="feat-ico ico-g">🛡️</div>
-          <div>
-            <strong>Datos estrictamente confidenciales</strong>
+      <div class="stats">
+        <div class="stat"><strong>+ Productividad</strong><span>Mejor energía y foco diario</span></div>
+        <div class="stat"><strong>+ Retención</strong><span>Mayor compromiso del talento</span></div>
+        <div class="stat"><strong>− Ausentismo</strong><span>Intervención temprana al estrés</span></div>
+      </div>
+    </div>
+
+    <!-- GARANTIAS -->
+    <section aria-labelledby="garantias-title">
+      <div class="wrap">
+        <p class="label">Cómo trabajamos</p>
+        <h2 id="garantias-title">Confidencial, medible y personal.</h2>
+        <p class="intro">Tres principios que sostienen el programa en cada empresa.</p>
+        <div class="grid3">
+          <div class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            <h3>Datos estrictamente confidenciales</h3>
             <p>Solo indicadores agregados para RRHH. Cero datos personales expuestos.</p>
           </div>
-        </div>
-        <div class="panel-feat">
-          <div class="feat-ico ico-b">📊</div>
-          <div>
-            <strong>Reporte organizacional</strong>
+          <div class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M6 17v-5"/><path d="M11 17V7"/><path d="M16 17v-8"/><path d="M21 17V4"/></svg>
+            <h3>Reporte organizacional</h3>
             <p>Tendencias globales y oportunidades de mejora por equipos.</p>
           </div>
-        </div>
-        <div class="panel-feat">
-          <div class="feat-ico ico-a">🎯</div>
-          <div>
-            <strong>Seguimiento 1:1 semanal</strong>
+          <div class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+            <h3>Seguimiento 1:1 semanal</h3>
             <p>Detección de bloqueos y ajuste de técnicas personalizadas.</p>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- PROGRAMA -->
-  <section class="section" id="programa">
-    <div class="sh">
-      <p class="eyebrow">Qué recibe tu empresa</p>
-      <h2>Un programa integral,<br />no solo información</h2>
-      <p class="lead">Combinamos visitas presenciales, seguimiento personalizado y reportes agregados para un impacto sostenido en tu organización.</p>
-    </div>
-    <div class="value-grid">
-      <article class="v-card">
-        <div class="v-icon" style="background:rgba(0,201,141,.13)">🏥</div>
-        <h3>Visita mensual en sitio</h3>
-        <p>Evaluación con nutricionista e InBody para medir avance real con datos biométricos y redefinir metas del equipo.</p>
-      </article>
-      <article class="v-card">
-        <div class="v-icon" style="background:var(--blue-light)">💬</div>
-        <h3>Seguimiento semanal 1:1</h3>
-        <p>Detección de bloqueos, ajuste de técnicas sugeridas y recomendaciones complementarias personalizadas para cada colaborador.</p>
-      </article>
-      <article class="v-card">
-        <div class="v-icon" style="background:rgba(255,169,31,.13)">📈</div>
-        <h3>Reporte agregado para RRHH</h3>
-        <p>Solo datos organizacionales: tendencias globales y oportunidades de mejora por equipos. Confidencialidad estricta garantizada.</p>
-      </article>
-    </div>
-  </section>
-
-  <!-- MODULES -->
-  <div class="bg-soft">
-    <div class="section-soft">
-      <div class="section-soft-inner">
-        <div class="sh">
-          <p class="eyebrow">Módulos del programa</p>
-          <h2>Acceso a todos los módulos activos</h2>
-          <p class="lead">Cada módulo aborda un pilar clave del bienestar con guía práctica, contenidos y herramientas de seguimiento.</p>
+    <!-- PROGRAMA -->
+    <section id="programa" aria-labelledby="programa-title">
+      <div class="wrap">
+        <p class="label">Qué recibe tu empresa</p>
+        <h2 id="programa-title">Un programa integral, no solo información.</h2>
+        <p class="intro">Combinamos visitas presenciales, seguimiento personalizado y reportes agregados para un impacto sostenido en tu organización.</p>
+        <div class="grid3">
+          <article class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>
+            <h3>Visita mensual en sitio</h3>
+            <p>Evaluación con nutricionista e InBody para medir avance real con datos biométricos y redefinir metas del equipo.</p>
+          </article>
+          <article class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>
+            <h3>Seguimiento semanal 1:1</h3>
+            <p>Detección de bloqueos, ajuste de técnicas sugeridas y recomendaciones complementarias personalizadas para cada colaborador.</p>
+          </article>
+          <article class="item">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+            <h3>Reporte agregado para RRHH</h3>
+            <p>Solo datos organizacionales: tendencias globales y oportunidades de mejora por equipos. Confidencialidad estricta garantizada.</p>
+          </article>
         </div>
-        <div class="modules-grid" id="modulos">
-          <article class="mod">
-            <span class="mod-icon">😴</span>
-            <span class="tag g">Hábitos</span>
-            <h3>Módulo de sueño</h3>
+      </div>
+    </section>
+
+    <!-- MODULOS -->
+    <section id="modulos" aria-labelledby="modulos-title">
+      <div class="wrap">
+        <p class="label">Módulos del programa</p>
+        <h2 id="modulos-title">Acceso a todos los módulos activos.</h2>
+        <p class="intro">Cada módulo aborda un pilar clave del bienestar con guía práctica, contenidos y herramientas de seguimiento.</p>
+        <div class="modules">
+          <a class="mod" href="/sueño">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg>
+            <span class="tag">Hábitos</span>
+            <h3>Sueño</h3>
             <p>Mejora cantidad y calidad de sueño con guía práctica, beneficios y riesgos de una baja higiene de sueño.</p>
-            <div><a class="btn btn-brand btn-sm" href="/sueño">Ir al módulo</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">🤝</span>
-            <span class="tag g">Hábitos</span>
-            <h3>Módulo de relaciones sociales</h3>
+            <span class="go">Ir al módulo →</span>
+          </a>
+          <a class="mod" href="/social">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14.5c2.4 0 4 1.6 4.5 4.5"/></svg>
+            <span class="tag">Hábitos</span>
+            <h3>Relaciones sociales</h3>
             <p>Vínculos cercanos como factor protector para reducir estrés y sostener mejores hábitos de vida.</p>
-            <div><a class="btn btn-brand btn-sm" href="/social">Ir al módulo</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">🧘</span>
-            <span class="tag g">Bienestar</span>
-            <h3>Módulo de estrés y burnout</h3>
+            <span class="go">Ir al módulo →</span>
+          </a>
+          <a class="mod" href="/estres">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>
+            <span class="tag">Bienestar</span>
+            <h3>Estrés y burnout</h3>
             <p>Señales tempranas de estrés crónico y acciones prácticas para recuperar energía y enfoque.</p>
-            <div><a class="btn btn-brand btn-sm" href="/estres">Ir al módulo</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">⚡</span>
-            <span class="tag g">Hábitos</span>
-            <h3>Módulo de pausas activas</h3>
+            <span class="go">Ir al módulo →</span>
+          </a>
+          <a class="mod" href="/pausas-activas">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5"/><path d="M9 2h6"/></svg>
+            <span class="tag">Hábitos</span>
+            <h3>Pausas activas</h3>
             <p>Guía práctica para implementar micro-pausas activas de 5-7 minutos durante la jornada laboral.</p>
-            <div><a class="btn btn-brand btn-sm" href="/pausas-activas">Ir al módulo</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">🤖</span>
-            <span class="tag">Innovación</span>
+            <span class="go">Ir al módulo →</span>
+          </a>
+          <a class="mod" href="/ia-salud">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
+            <span class="tag neutral">Innovación</span>
             <h3>IA para salud y bienestar</h3>
             <p>Usos prácticos de IA para hábitos saludables, límites clínicos y riesgos de respuestas no verificadas.</p>
-            <div><a class="btn btn-brand btn-sm" href="/ia-salud">Ir al módulo</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">🏢</span>
-            <span class="tag">Análisis</span>
+            <span class="go">Ir al módulo →</span>
+          </a>
+          <a class="mod" href="/caso">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h1"/><path d="M14 7h1"/><path d="M9 11h1"/><path d="M14 11h1"/><path d="M9 15h1"/><path d="M14 15h1"/><path d="M10 21v-3h4v3"/></svg>
+            <span class="tag neutral">Análisis</span>
             <h3>Caso empresarial</h3>
             <p>Análisis agregado anonimizado con hallazgos clave y recomendaciones para la organización.</p>
-            <div><a class="btn btn-brand btn-sm" href="/caso">Ver caso</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">👤</span>
-            <span class="tag">Análisis</span>
+            <span class="go">Ver caso →</span>
+          </a>
+          <a class="mod" href="/casoind">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+            <span class="tag neutral">Análisis</span>
             <h3>Caso individual anonimizado</h3>
             <p>Perfil de muestra con indicadores y recomendaciones sin exponer la identidad real del colaborador.</p>
-            <div><a class="btn btn-brand btn-sm" href="/casoind">Ver caso</a></div>
-          </article>
-          <article class="mod">
-            <span class="mod-icon">📋</span>
-            <span class="tag g">Evaluación</span>
+            <span class="go">Ver caso →</span>
+          </a>
+          <a class="mod" href="/cuestionario">
+            <svg class="ico" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6v3H9z"/><path d="M9 11h6"/><path d="M9 15h4"/></svg>
+            <span class="tag">Evaluación</span>
             <h3>Cuestionario individual</h3>
             <p>Feedback inmediato sobre sueño, alimentación, hidratación, actividad física, relaciones y estrés.</p>
-            <div><a class="btn btn-brand btn-sm" href="/cuestionario">Responder</a></div>
-          </article>
+            <span class="go">Responder →</span>
+          </a>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- TESTIMONIAL -->
-  <section class="testi-section" id="casos-exito">
-    <div class="testi-inner">
-      <p class="eyebrow">Casos de éxito</p>
-      <h2>Resultados reales en<br />empresas mexicanas</h2>
-      <div class="testi-card">
-        <img src="/static/Testimonial%20Omar.jpeg" alt="Testimonio de Omar Morales sobre Healthy Record" />
+    <!-- CASOS DE EXITO -->
+    <section id="casos-exito" aria-labelledby="casos-title">
+      <div class="wrap">
+        <p class="label">Casos de éxito</p>
+        <h2 id="casos-title">Resultados reales en empresas mexicanas.</h2>
+        <div class="testi" style="margin-top: 48px;">
+          <img src="/static/Testimonial%20Omar.jpeg" alt="Testimonio de Omar Morales sobre Healthy Record" loading="lazy" />
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- NEWS -->
-  <section class="section" id="news">
-    <div class="sh">
-      <p class="eyebrow">News</p>
-      <h2>Últimas actualizaciones</h2>
-      <p class="lead">Entrevistas, lanzamientos y novedades del programa Healthy Record.</p>
-    </div>
-    <article class="news-card">
-      <div class="news-head">
-        <span class="news-tag">Entrevista</span>
-        <h3>Hábitos, sedentarismo y rendimiento organizacional</h3>
-        <p>El sedentarismo y los hábitos no saludables no solo afectan a las personas: afectan directamente el rendimiento de la empresa. Conversamos sobre cómo pequeñas decisiones diarias impactan productividad, energía y resultados organizacionales.</p>
+    <!-- NEWS -->
+    <section id="news" aria-labelledby="news-title">
+      <div class="wrap">
+        <p class="label">News</p>
+        <h2 id="news-title">Últimas actualizaciones.</h2>
+        <p class="intro">Entrevistas, lanzamientos y novedades del programa Healthy Record.</p>
+        <article class="news">
+          <div class="news-text">
+            <span class="tag neutral">Entrevista</span>
+            <h3>Hábitos, sedentarismo y rendimiento organizacional</h3>
+            <p>El sedentarismo y los hábitos no saludables no solo afectan a las personas: afectan directamente el rendimiento de la empresa. Conversamos sobre cómo pequeñas decisiones diarias impactan productividad, energía y resultados organizacionales.</p>
+            <div class="actions" style="padding-top: 8px;">
+              <a class="btn btn-dark" href="https://youtu.be/rgHyYxkVplw?si=O7opA1zUj6r6UD2l" target="_blank" rel="noopener noreferrer">Ver en YouTube ↗</a>
+              <a class="btn btn-light" href="https://www.instagram.com/garagebrandmx/" target="_blank" rel="noopener noreferrer">@garagebrandmx</a>
+            </div>
+            <a href="#inscribirse" style="font-size: 15px; color: var(--muted);">Recibir novedades →</a>
+          </div>
+          <div class="news-media">
+            <div class="embed">
+              <iframe src="https://www.youtube.com/embed/rgHyYxkVplw" title="Entrevista sobre hábitos, sedentarismo y rendimiento organizacional" loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+            <div class="spotify">
+              <iframe src="https://open.spotify.com/embed/episode/2RGtBFo0J3Mo5xfUG6ptPx?utm_source=generator" title="Entrevista en Spotify" loading="lazy"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+            </div>
+          </div>
+        </article>
       </div>
-      <div class="news-body">
-        <div class="embed" aria-label="Entrevista en YouTube">
-          <iframe
-            src="https://www.youtube.com/embed/rgHyYxkVplw"
-            title="Entrevista sobre hábitos, sedentarismo y rendimiento organizacional"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowfullscreen
-          ></iframe>
-        </div>
-        <div class="spotify" aria-label="Entrevista en Spotify">
-          <iframe
-            src="https://open.spotify.com/embed/episode/2RGtBFo0J3Mo5xfUG6ptPx?utm_source=generator"
-            title="Entrevista en Spotify"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-          ></iframe>
-        </div>
-        <div class="row">
-          <a class="btn btn-brand btn-sm" href="https://youtu.be/rgHyYxkVplw?si=O7opA1zUj6r6UD2l" target="_blank" rel="noopener noreferrer">Ver en YouTube</a>
-          <a class="btn btn-ghost btn-sm" href="https://www.instagram.com/garagebrandmx/" target="_blank" rel="noopener noreferrer">@garagebrandmx</a>
-        </div>
-      </div>
-    </article>
-    <div class="row" style="margin-top:20px;">
-      <a class="btn btn-ghost btn-sm" href="#inscribirse">Recibir novedades</a>
-    </div>
-  </section>
+    </section>
 
-  <!-- CONTACT -->
-  <div class="contact-wrap" id="inscribirse">
-    <div class="contact-inner">
-      <div class="c-info">
-        <p class="eyebrow">Contacto</p>
-        <h2>Lleva el bienestar<br />a tu empresa</h2>
-        <p>Completa el formulario y te contactaremos para compartir los detalles del programa y los próximos pasos adaptados a tu organización.</p>
-        <div class="c-detail">
-          <span>✉️</span>
-          <span>Email: <a href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a></span>
+    <!-- CONTACTO -->
+    <section id="inscribirse" aria-labelledby="contacto-title">
+      <div class="wrap contact">
+        <div class="contact-info">
+          <p class="label" style="margin: 0;">Contacto</p>
+          <h2 id="contacto-title" style="margin: 0;">Lleva el bienestar a tu empresa.</h2>
+          <p>Completa el formulario y te contactaremos para compartir los detalles del programa y los próximos pasos adaptados a tu organización.</p>
+          <a class="mail" href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a>
         </div>
-      </div>
-      <div class="c-form">
-        <h3>Solicitud de información</h3>
-        <p>Déjanos tus datos y te enviamos una propuesta adaptada.</p>
         <form id="companyForm">
           <div class="fg">
             <label class="fg-full">Nombre de la empresa
@@ -869,23 +373,18 @@
               <input type="email" name="email_corporativo" placeholder="contacto@empresa.com" required />
             </label>
           </div>
-          <div style="margin-top:22px;">
-            <button class="btn btn-brand" type="submit" style="width:100%;justify-content:center;">Solicitar información →</button>
-          </div>
+          <button class="btn btn-dark submit" type="submit">Solicitar información →</button>
           <p class="form-status" id="companyStatus" aria-live="polite"></p>
         </form>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
 
-  <!-- FOOTER -->
   <footer>
-    <div class="footer-inner">
+    <div class="wrap">
       <img src="/static/healthy-record-logo.png" alt="Healthy Record" />
-      <div class="footer-r">
-        Healthy Record · Hábitos saludables, empresas más productivas.<br />
-        <a href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a>
-      </div>
+      <span>Hábitos saludables, empresas más productivas.</span>
+      <a href="mailto:angelo@healthyrecord.org">angelo@healthyrecord.org</a>
     </div>
   </footer>
 
